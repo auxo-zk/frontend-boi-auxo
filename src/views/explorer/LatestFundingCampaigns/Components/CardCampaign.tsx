@@ -1,25 +1,28 @@
-import { Typography } from "@mui/material";
-import React from "react";
-import Card from "src/components/Card/Card";
-import { TCampaignData } from "src/services/campaign/api";
+import { Typography } from '@mui/material';
+import Link from 'next/link';
+import React from 'react';
+import Card from 'src/components/Card/Card';
+import { TCampaignData } from 'src/services/campaign/api';
 
 export default function CardCampaign({ data }: { data: TCampaignData }) {
     return (
         <Card>
-            <Typography variant="h6" fontWeight={600} mb={4}>
-                {data.name}
-            </Typography>
+            <Link href={`/explorer/campaigns/idcampaigndadad`} style={{ textDecoration: 'none', color: 'unset' }}>
+                <Typography variant="h6" fontWeight={600} mb={4}>
+                    {data.name}
+                </Typography>
+            </Link>
 
             <Typography>
-                <Typography component={"span"} fontWeight={600}>
+                <Typography component={'span'} fontWeight={600}>
                     Type:
-                </Typography>{" "}
+                </Typography>{' '}
                 {data.type}
             </Typography>
             <Typography>
-                <Typography component={"span"} fontWeight={600}>
+                <Typography component={'span'} fontWeight={600}>
                     Capacity:
-                </Typography>{" "}
+                </Typography>{' '}
                 {data.capacity}
             </Typography>
         </Card>
