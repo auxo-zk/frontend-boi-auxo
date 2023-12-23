@@ -21,7 +21,7 @@ export default function Explorer({ topProjects, latestFundingCampaigns }: InferG
                 </Box>
             </Box>
 
-            <TopProject topProjects={topProjects} />
+            <TopProject topProjects={topProjects} showButtonMoreProjects={true} />
             <LatestFundingCampaigns latestFundingCampaigns={latestFundingCampaigns} />
 
             <FundingActivitiesBanner sx={{ mt: 6 }} />

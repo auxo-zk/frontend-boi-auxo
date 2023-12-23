@@ -1,4 +1,4 @@
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore, ExpandMoreRounded } from "@mui/icons-material";
 import { PaletteOptions, Theme, ThemeOptions, darken, lighten, outlinedInputClasses } from "@mui/material";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { FontInter, FontRaleway } from "src/assets/fonts";
@@ -104,6 +104,7 @@ export function getThemeConfig(mode: THEME_MODE): ThemeOptions {
         },
         secondary: {
             main: "#FC8C69",
+            light: "#FFF2EE",
         },
 
         text: {
@@ -149,8 +150,8 @@ export function getThemeConfig(mode: THEME_MODE): ThemeOptions {
             fontFamily: `${FontInter.style.fontFamily}, sans-serif`,
             h1: { ...buildVariant(800, 44, 57.5), color: palette.primary.main, fontFamily: FontRaleway.style.fontFamily },
             h2: { ...buildVariant(700, 38, 56), color: palette.primary.main },
-            h3: buildVariant(700, 36, 44),
-            h4: buildVariant(700, 28, 34),
+            h3: { ...buildVariant(700, 36, 44), color: palette.primary.main },
+            h4: { ...buildVariant(700, 28, 34), color: palette.primary.main },
             h5: buildVariant(700, 24, 27),
             h6: { ...buildVariant(700, 20, 24), color: palette.primary.main },
             body1: buildVariant(400, 16, 23),
@@ -222,7 +223,10 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
             MuiFormControl: {
                 styleOverrides: {
                     root: {
-                        fieldset: { borderColor: theme.palette.primary.light },
+                        "--outlineInputBorderColor": theme.palette.background.primary,
+                        "--hoverOutlineInputBorderColor": theme.palette.primary.light,
+                        "--focusedOutlineInputBorderColor": theme.palette.primary.light,
+                        "--iconOpenSelectMenuColor": theme.palette.primary.light,
                     },
                 },
             },
@@ -233,19 +237,35 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                     },
                 },
             },
-            MuiInputAdornment: {
-                styleOverrides: {
-                    root: {
-                        "& .MuiTypography-root": {
-                            // color: 'white',
-                            // fontWeight: 600,
-                        },
-                    },
-                },
-            },
+
             MuiTextField: {
                 defaultProps: { size: "small" },
-                styleOverrides: {},
+                styleOverrides: {
+                    root: {},
+                },
+            },
+            MuiSelect: {
+                defaultProps: {
+                    IconComponent: ExpandMoreRounded,
+                },
+                styleOverrides: {
+                    root: {},
+                    icon: {
+                        color: "var(--iconOpenSelectMenuColor)",
+                    },
+                    select: {},
+                },
+            },
+            MuiFormLabel: {
+                //* Label of item like TextField_Outlined
+                styleOverrides: {
+                    root: {
+                        color: theme.palette.primary.main,
+                    },
+                    colorSecondary: {
+                        color: theme.palette.secondary.main,
+                    },
+                },
             },
             MuiInputLabel: {
                 //* title of text field outline
@@ -262,6 +282,17 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                     root: {
                         paddingRight: "6px",
                         paddingLeft: "6px",
+                        "--outlineInputBorderColor": theme.palette.background.primary,
+                        "--hoverOutlineInputBorderColor": theme.palette.primary.light,
+                        "--focusedOutlineInputBorderColor": theme.palette.primary.light,
+                    },
+
+                    colorSecondary: {
+                        "--outlineInputBorderColor": theme.palette.secondary.main,
+                        "--hoverOutlineInputBorderColor": theme.palette.secondary.main,
+                        "--focusedOutlineInputBorderColor": theme.palette.secondary.main,
+                        color: theme.palette.secondary.main,
+                        "--iconOpenSelectMenuColor": theme.palette.secondary.main,
                     },
                 },
             },
@@ -275,13 +306,13 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                             ["& > legend"]: {
                                 marginLeft: "6px",
                             },
-                            borderColor: theme.palette.background.primary,
+                            borderColor: "var(--outlineInputBorderColor)",
                         },
                         [`&:hover .${outlinedInputClasses.notchedOutline}`]: {
-                            borderColor: theme.palette.primary.light,
+                            borderColor: "var(--hoverOutlineInputBorderColor)",
                         },
                         [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
-                            borderColor: theme.palette.primary.light,
+                            borderColor: "var(--focusedOutlineInputBorderColor)",
                         },
                     },
                 },
@@ -330,10 +361,18 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                         },
                     },
                     containedSecondary: {
-                        backgroundColor: theme.palette.secondary.light,
+                        backgroundColor: theme.palette.secondary.main,
                         color: "#FFFFFF",
                         "&:hover, &.Mui-focusVisible": {
-                            backgroundColor: darken(theme.palette.secondary.dark, 0.2),
+                            backgroundColor: darken(theme.palette.secondary.main, 0.2),
+                        },
+                    },
+                    containedSuccess: {
+                        backgroundColor: theme.palette.background.primary,
+                        color: theme.palette.primary.main,
+                        "&:hover, &.Mui-focusVisible": {
+                            backgroundColor: darken(theme.palette.background.primary, 0.01),
+                            boxShadow: "0px 2px 5px 0px " + theme.palette.background.primary,
                         },
                     },
                     outlinedPrimary: {
@@ -344,7 +383,9 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                         },
                     },
                     textSecondary: {
-                        color: theme.palette.mode === "dark" ? "#FEFEF6" : "#585F5A",
+                        backgroundColor: theme.palette.background.secondary,
+                        color: theme.palette.primary.main,
+                        fontWeight: 500,
                     },
                     textPrimary: {
                         "&:hover": {
@@ -502,27 +543,26 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
             MuiButtonGroup: {
                 styleOverrides: {
                     root: {
-                        backgroundColor: "#C3C4C3",
-                        // border: '1px solid #B8BEB9',
-                        borderRadius: 18,
+                        backgroundColor: theme.palette.background.secondary,
+                        borderRadius: 12,
                         overflow: "hidden",
                         ".MuiButtonBase-root": {
                             paddingRight: "16px",
                             paddingLeft: "16px",
                         },
                     },
-
+                    lastButton: {
+                        borderTopRightRadius: 12,
+                        borderBottomRightRadius: 12,
+                        borderRightColor: "inherit",
+                    },
+                    firstButton: {
+                        borderTopLeftRadius: 12,
+                        borderBottomLeftRadius: 12,
+                    },
                     grouped: {
+                        borderRadius: 12,
                         minWidth: "85px",
-                        "&:not(:last-of-type)": {
-                            borderTopRightRadius: 18,
-                            borderBottomRightRadius: 18,
-                            borderRightColor: "inherit",
-                        },
-                        "&:not(:first-of-type)": {
-                            borderTopLeftRadius: 18,
-                            borderBottomLeftRadius: 18,
-                        },
                     },
                 },
             },

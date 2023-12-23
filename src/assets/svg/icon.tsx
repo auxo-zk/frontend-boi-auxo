@@ -1,5 +1,5 @@
-import MuiSvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
-import React from 'react';
+import MuiSvgIcon, { SvgIconProps } from "@mui/material/SvgIcon";
+import React from "react";
 
 export type SvgComponent = React.FC<SvgIconProps>;
 
@@ -19,6 +19,31 @@ export const IconMenuExplorer: SvgComponent = (props) => {
     );
 };
 
+export const IconFolder: SvgComponent = (props) => {
+    return (
+        <MuiSvgIcon {...props} viewBox="0 0 16 16" fill="none">
+            <path d="M2.66659 13.3334C2.29992 13.3334 1.98603 13.2029 1.72492 12.9417C1.46381 12.6806 1.33325 12.3667 1.33325 12.0001V4.00008C1.33325 3.63341 1.46381 3.31953 1.72492 3.05841C1.98603 2.7973 2.29992 2.66675 2.66659 2.66675H6.66658L7.99992 4.00008H13.3333C13.6999 4.00008 14.0138 4.13064 14.2749 4.39175C14.536 4.65286 14.6666 4.96675 14.6666 5.33341V12.0001C14.6666 12.3667 14.536 12.6806 14.2749 12.9417C14.0138 13.2029 13.6999 13.3334 13.3333 13.3334H2.66659Z" />
+        </MuiSvgIcon>
+    );
+};
+
+export const IconDownload: SvgComponent = (props) => {
+    return (
+        <MuiSvgIcon {...props} viewBox="0 0 12 12" fill="none">
+            <g>
+                <path
+                    d="M11.5 7.8335V10.2775C11.5 10.6016 11.3713 10.9124 11.1421 11.1416C10.9129 11.3708 10.6021 11.4995 10.278 11.4995H1.722C1.56152 11.4995 1.40262 11.4679 1.25436 11.4065C1.1061 11.3451 0.971389 11.2551 0.857915 11.1416C0.744442 11.0281 0.65443 10.8934 0.593019 10.7451C0.531608 10.5969 0.5 10.438 0.5 10.2775V7.8335"
+                    // stroke="#2C978F"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+                <path d="M9.05509 4.7775L6.00009 7.8335L2.94409 4.7775" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M6 7.8335V0.500496" strokeLinecap="round" strokeLinejoin="round" />
+            </g>
+        </MuiSvgIcon>
+    );
+};
+
 export const IconInvestor: SvgComponent = (props) => {
     return (
         <MuiSvgIcon
@@ -28,7 +53,7 @@ export const IconInvestor: SvgComponent = (props) => {
             x="0px"
             y="0px"
             viewBox="0 0 122.88 111.09"
-            sx={{ enableBackground: 'new 0 0 122.88 111.09', '.st0-invest': { fillRule: 'evenodd', clipRule: 'evenodd' }, ...props.sx }}
+            sx={{ enableBackground: "new 0 0 122.88 111.09", ".st0-invest": { fillRule: "evenodd", clipRule: "evenodd" }, ...props.sx }}
             xmlSpace="preserve"
         >
             <style type="text/css"></style>
@@ -59,7 +84,7 @@ export const IconCommittee: SvgComponent = (props) => {
             x="0px"
             y="0px"
             viewBox="0 0 122.88 71.04"
-            sx={{ enableBackground: 'new 0 0 122.88 71.04', '.st0-committee': { fillRule: 'evenodd', clipRule: 'evenodd' }, ...props.sx }}
+            sx={{ enableBackground: "new 0 0 122.88 71.04", ".st0-committee": { fillRule: "evenodd", clipRule: "evenodd" }, ...props.sx }}
             xmlSpace="preserve"
         >
             <style type="text/css"></style>
@@ -79,7 +104,7 @@ export const IconSpinLoading: SvgComponent = (props) => {
             {...props}
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
-            sx={{ mx: 'auto', display: 'block', shapeRendering: 'auto', color: 'primary.main', ...props.sx }}
+            sx={{ mx: "auto", display: "block", shapeRendering: "auto", color: "primary.main", ...props.sx }}
             viewBox="0 0 100 100"
             preserveAspectRatio="xMidYMid"
         >
