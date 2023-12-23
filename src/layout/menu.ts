@@ -6,7 +6,10 @@ export const menu = [
         icon: IconMenuExplorer,
         title: "Explorer",
         url: "/explorer",
-        children: [] as { title: string; url: string }[],
+        children: [
+            { title: "Projects", url: "/explorer/projects" },
+            { title: "Campaigns", url: "/explorer/campaigns" },
+        ] as { title: string; url: string }[],
     },
     {
         icon: IconUser,

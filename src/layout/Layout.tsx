@@ -11,8 +11,8 @@ import Sidebar from "./Sidebar/Sidebar";
 import Header from "./Header/Header";
 
 export default function Layout({ children }: { children: ReactNode }) {
-    const sidebarWidth = "230px";
-    const headerHeight = "66px";
+    const sidebarWidth = "202px";
+    const headerHeight = "64px";
     return (
         <>
             <Head>
@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                             sx={{
                                 position: "relative",
                                 zIndex: 1,
-                                ml: { xs: 0, lg: sidebarWidth },
+                                ml: { xs: 0, md: sidebarWidth },
                                 backgroundImage: `url(/images/bgheader1.png)`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "top center",

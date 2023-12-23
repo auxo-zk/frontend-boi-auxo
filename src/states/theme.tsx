@@ -100,6 +100,7 @@ export function getThemeConfig(mode: THEME_MODE): ThemeOptions {
         primary: {
             main: "#043E35", // mau xanh button theme light
             light: "#2C978F",
+            dark: "#37A9A2",
         },
         secondary: {
             main: "#FC8C69",
@@ -147,11 +148,11 @@ export function getThemeConfig(mode: THEME_MODE): ThemeOptions {
         typography: {
             fontFamily: `${FontInter.style.fontFamily}, sans-serif`,
             h1: { ...buildVariant(800, 44, 57.5), color: palette.primary.main, fontFamily: FontRaleway.style.fontFamily },
-            h2: buildVariant(700, 38, 56),
+            h2: { ...buildVariant(700, 38, 56), color: palette.primary.main },
             h3: buildVariant(700, 36, 44),
             h4: buildVariant(700, 28, 34),
             h5: buildVariant(700, 24, 27),
-            h6: buildVariant(700, 20, 24),
+            h6: { ...buildVariant(700, 20, 24), color: palette.primary.main },
             body1: buildVariant(400, 16, 23),
             body2: buildVariant(400, 14, 16),
             body3: buildVariant(400, 12, 15),
@@ -207,6 +208,17 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                     },
                 },
             },
+            MuiContainer: {
+                defaultProps: {
+                    maxWidth: false,
+                },
+                styleOverrides: {
+                    root: {
+                        maxWidth: "1078px",
+                    },
+                },
+            },
+
             MuiFormControl: {
                 styleOverrides: {
                     root: {
