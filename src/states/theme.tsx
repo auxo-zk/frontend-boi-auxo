@@ -285,6 +285,7 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                         '--outlineInputBorderColor': theme.palette.background.primary,
                         '--hoverOutlineInputBorderColor': theme.palette.primary.light,
                         '--focusedOutlineInputBorderColor': theme.palette.primary.light,
+                        color: theme.palette.primary.main,
                     },
 
                     colorSecondary: {
@@ -325,6 +326,17 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                     root: {
                         '& > .MuiFormControl-root > .MuiOutlinedInput-root': {
                             paddingLeft: '12px',
+                        },
+                    },
+                },
+            },
+            MuiButtonBase: {
+                styleOverrides: {
+                    root: {
+                        '&.MuiMenuItem-root.Mui-selected': {
+                            color: '#2C978F',
+                            backgroundColor: '#CFE9E4',
+                            fontWeight: 600,
                         },
                     },
                 },
@@ -424,7 +436,7 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                         fontSize: pxToRem(16),
                     },
                     fontSizeLarge: {
-                        fontSize: pxToRem(25),
+                        fontSize: pxToRem(24),
                     },
                 },
             },
@@ -567,12 +579,25 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                     },
                 },
             },
+
             MuiPopover: {
                 styleOverrides: {
                     root: {
                         '& .MuiBackdrop-root': {
                             backdropFilter: 'none',
                         },
+                    },
+                    paper: {
+                        color: '#043E35',
+                        background: '#F1F6F5',
+                    },
+                },
+            },
+            MuiMenuItem: {
+                styleOverrides: {
+                    selected: {
+                        color: theme.palette.primary.light,
+                        background: '#CFE9E4',
                     },
                 },
             },
