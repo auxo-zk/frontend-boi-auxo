@@ -17,3 +17,10 @@ For test contract
 ```bash
 yarn add testing_adding_number
 ```
+
+Slider
+
+```bash
+yarn add slick-carousel react-slick
+yarn add @types/react-slick --dev
+```
