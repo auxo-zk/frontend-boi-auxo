@@ -1,10 +1,9 @@
 import React from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Box, Container, MenuItem, Select, Typography } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
 import Image from 'next/image';
 import { imagePath } from 'src/constants/imagePath';
-import SliderCustom from 'src/components/Slider/Slider';
 import SliderProject from 'src/views/dashboard/SliderProject/SliderProject';
 
 export default function Dashboard() {
@@ -24,11 +23,7 @@ export default function Dashboard() {
             </Box>
 
             <Box my={5}>
-                <Select defaultValue={'Berkery'}>
-                    <MenuItem value={'Berkery'}>Berkery</MenuItem>
-                    <MenuItem value={'Devnet'}>Devnet</MenuItem>
-                    <MenuItem value={'Mainnet'}>Mainnet</MenuItem>
-                </Select>
+                <Button variant="outlined">Outlinebutton</Button>
             </Box>
         </Container>
     );
