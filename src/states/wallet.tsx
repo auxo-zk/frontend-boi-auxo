@@ -115,7 +115,6 @@ export const useWalletFunction = () => {
     }
 
     async function signMessage(content: string) {
-        console.log('🚀 ~ file: wallet.tsx:118 ~ signMessage ~ content:', content);
         try {
             const signature = await window.mina?.signMessage({ message: content });
             return signature;
