@@ -1,8 +1,9 @@
 import { Typography, Paper, Box, Button, TextField, IconButton } from '@mui/material';
-import ReactQuill from 'react-quill';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useProjectData, useProjectFunctions } from 'src/states/project';
 import AddIcon from '@mui/icons-material/Add';
+import dynamic from 'next/dynamic';
+const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEditor'), { ssr: false });
 
 export default function ApplicationForm() {
     const data = useProjectData();
@@ -67,7 +68,7 @@ export default function ApplicationForm() {
                                 handleSectionTitle(key, e.target.value);
                             }}
                         />
-                        <ReactQuill theme="snow" value={item.description} onChange={(v) => handleSectionDescription(key, v)} />
+                        <CustomEditor value={item.description || ''} onChange={(v) => handleSectionDescription(key, v)} />
                     </Paper>
                 );
             })}

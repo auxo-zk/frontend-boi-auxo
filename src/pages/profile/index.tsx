@@ -1,5 +1,6 @@
 import { LinkedIn, Telegram } from '@mui/icons-material';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
+import Link from 'next/link';
 import React from 'react';
 import { IconEdit } from 'src/assets/svg/icon';
 import Avatar from 'src/components/Avatar/Avatar';
@@ -34,6 +35,12 @@ export default function Profile() {
                         <Telegram fontSize="large" sx={{ color: 'primary.light' }} />
                     </Box>
                 </Box>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', my: 5 }}>
+                <Typography variant="h6">Hosting Campaigns</Typography>
+                <Link href="/explorer/projects/create" style={{ color: 'inherit', textDecoration: 'none' }}>
+                    <Button variant="contained">Create Projects</Button>
+                </Link>
             </Box>
         </Container>
     );

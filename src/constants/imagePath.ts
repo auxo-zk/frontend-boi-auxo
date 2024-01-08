@@ -7,6 +7,9 @@ import THUMBNAIL1 from 'public/images/auxo-thumbnail1.png';
 import THUMBNAIL2 from 'public/images/auxo-thumbnail2.png';
 import THUMBNAIL3 from 'public/images/auxo-thumbnail3.png';
 
+import DEFAULT_AVATAR from 'public/images/defaultAvatar.png';
+import DEFAULT_BANNER from 'public/images/defaultBanner.png';
+
 export const imagePath = {
     LOGO_FULLLL_GREEN,
     LOGO_FULLLL_WHITE,
@@ -17,4 +20,7 @@ export const imagePath = {
     THUMBNAIL1,
     THUMBNAIL2,
     THUMBNAIL3,
+
+    DEFAULT_AVATAR,
+    DEFAULT_BANNER,
 };

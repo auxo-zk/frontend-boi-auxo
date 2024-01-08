@@ -4,7 +4,7 @@ import { DatePicker, DateTimePicker, LocalizationProvider } from '@mui/x-date-pi
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEditor'), { ssr: false });
 import Img from 'src/components/Img/Img';
 import Timeline from './Timeline';
 import ApplicationForm from './ApplicaionForm';
@@ -48,25 +48,25 @@ export default function CreateCampaign() {
                 <TextField fullWidth label="Project's name" type="text" name="project_name" sx={{ mr: 3 }} />
                 <TextField fullWidth label="Public key" type="text" name="project_name" sx={{ ml: 3 }} />
             </Box>
-            <Typography variant="h6" mt={2} mb={1}>
+            <Typography variant="h6" mt={6} mb={1}>
                 Overview description
             </Typography>
-            <ReactQuill theme="snow" value={desciption} onChange={setDesciption} />
+            <CustomEditor value={desciption} onChange={setDesciption} />
 
-            <Typography variant="h6" mt={2} mb={1}>
+            <Typography variant="h6" mt={6} mb={1}>
                 Problem Statement*
             </Typography>
-            <ReactQuill theme="snow" value={desciption} onChange={setDesciption} />
+            <CustomEditor value={desciption} onChange={setDesciption} />
 
-            <Typography variant="h6" mt={2} mb={1}>
+            <Typography variant="h6" mt={6} mb={1}>
                 Solution*
             </Typography>
-            <ReactQuill theme="snow" value={desciption} onChange={setDesciption} />
+            <CustomEditor value={desciption} onChange={setDesciption} />
 
-            <Typography variant="h6" mt={2} mb={1}>
+            <Typography variant="h6" mt={6} mb={1}>
                 Challenges & Risks*
             </Typography>
-            <ReactQuill theme="snow" value={desciption} onChange={setDesciption} />
+            <CustomEditor value={desciption} onChange={setDesciption} />
 
             <ApplicationForm />
         </Container>

@@ -6,4 +6,6 @@ export const apiUrl = {
     //signature
     serverSigNature: `${BACKEND_BASE_URL}/v0/auth`,
     getTokenFromSig: `${BACKEND_BASE_URL}/v0/auth`,
+    //Project
+    getTopProject: `${BACKEND_BASE_URL}/v0/projects`,
 };
