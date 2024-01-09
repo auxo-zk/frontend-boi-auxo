@@ -8,4 +8,6 @@ export const apiUrl = {
     getTokenFromSig: `${BACKEND_BASE_URL}/v0/auth`,
     //Project
     getTopProject: `${BACKEND_BASE_URL}/v0/projects`,
+    //project detail
+    projectDetail: `${BACKEND_BASE_URL}/v0/projects`,
 };
