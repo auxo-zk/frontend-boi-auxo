@@ -7,7 +7,7 @@ import { formatDate } from 'src/utils/format';
 
 export default function CardProject({ data }: { data: TProjectData }) {
     return (
-        <Card>
+        <Card avatar={data.avatar}>
             <Link href={`/explorer/projects/idprojectdadad`} style={{ textDecoration: 'none', color: 'unset' }}>
                 <Typography variant="h6" fontWeight={600} mt={1}>
                     {data.name}
@@ -16,14 +16,15 @@ export default function CardProject({ data }: { data: TProjectData }) {
             <Typography variant="body3" mt={0.3} mb={1}>
                 {formatDate(data.date, 'dd MMM yyyy')}
             </Typography>
-
-            <Typography variant="h6" color={'secondary.main'}>
+            {/* <Typography variant="h6" color={'secondary.main'}>
                 $870.975.003
             </Typography>
             <Typography variant="body3" mt={0.3} mb={1} color={'secondary.main'}>
                 $1.870.975.003
+            </Typography> */}
+            <Typography mt={2} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: '4', WebkitBoxOrient: 'vertical' }}>
+                {data.desc}
             </Typography>
-            <Typography>{data.desc}</Typography>
         </Card>
     );
 }
