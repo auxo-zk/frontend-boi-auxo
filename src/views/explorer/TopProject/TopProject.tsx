@@ -13,7 +13,7 @@ export default function TopProject({ topProjects, showButtonMoreProjects }: { to
 
             <Box mt={2.5}>
                 <Grid container spacing={3.5}>
-                    {topProjects.map((item, index) => {
+                    {topProjects?.slice(0, 3).map((item, index) => {
                         return (
                             <Grid key={'topproject' + index + item.name} item xs={12} xsm={6} md={4}>
                                 <CardProject data={item}></CardProject>

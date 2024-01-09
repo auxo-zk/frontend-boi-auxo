@@ -32,9 +32,8 @@ export default function Projects({ topProjects }: InferGetStaticPropsType<typeof
 }
 
 export const getStaticProps = (async (context) => {
-    const res = await Promise.all([getTopProject()]);
-    const topProjects = res[0];
-
+    const res = await getTopProject();
+    const topProjects = res;
     return {
         props: {
             topProjects,
