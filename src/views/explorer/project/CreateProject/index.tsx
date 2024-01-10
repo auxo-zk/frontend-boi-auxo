@@ -8,10 +8,13 @@ const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEdi
 import Img from 'src/components/Img/Img';
 import Timeline from './Timeline';
 import ApplicationForm from './ApplicaionForm';
+import { useCreateProjectData, useCreateProjectFunctions } from './state';
+import TeamMember from './TeamMembers';
 
 export default function CreateCampaign() {
-    const [desciption, setDesciption] = useState<string>('');
-
+    const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey } = useCreateProjectData();
+    console.log(useCreateProjectData());
+    const { setProjectData } = useCreateProjectFunctions();
     return (
         <Container
             sx={(theme) => ({
@@ -45,30 +48,70 @@ export default function CreateCampaign() {
             {/* eslint-disable-next-line react/no-unescaped-entities */}
             <Typography variant="h1">Project's information editor</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: 3 }}>
-                <TextField fullWidth label="Project's name" type="text" name="project_name" sx={{ mr: 3 }} />
-                <TextField fullWidth label="Public key" type="text" name="project_name" sx={{ ml: 3 }} />
+                <TextField
+                    fullWidth
+                    label="Project's name"
+                    type="text"
+                    name="project_name"
+                    sx={{ mr: 3 }}
+                    value={name}
+                    onChange={(e) => {
+                        setProjectData({ name: e.target.value });
+                    }}
+                />
+                <TextField
+                    fullWidth
+                    label="Public key"
+                    type="text"
+                    name="project_name"
+                    sx={{ ml: 3 }}
+                    value={publicKey}
+                    onChange={(e) => {
+                        setProjectData({ publicKey: e.target.value });
+                    }}
+                />
             </Box>
             <Typography variant="h6" mt={6} mb={1}>
                 Overview description
             </Typography>
-            <CustomEditor value={desciption} onChange={setDesciption} />
+            <CustomEditor
+                value={overViewDescription}
+                onChange={(v: string) => {
+                    setProjectData({ overViewDescription: v });
+                }}
+            />
 
             <Typography variant="h6" mt={6} mb={1}>
                 Problem Statement*
             </Typography>
-            <CustomEditor value={desciption} onChange={setDesciption} />
+            <CustomEditor
+                value={problemStatement}
+                onChange={(v: string) => {
+                    setProjectData({ problemStatement: v });
+                }}
+            />
 
             <Typography variant="h6" mt={6} mb={1}>
                 Solution*
             </Typography>
-            <CustomEditor value={desciption} onChange={setDesciption} />
+            <CustomEditor
+                value={solution}
+                onChange={(v: string) => {
+                    setProjectData({ solution: v });
+                }}
+            />
 
             <Typography variant="h6" mt={6} mb={1}>
                 Challenges & Risks*
             </Typography>
-            <CustomEditor value={desciption} onChange={setDesciption} />
-
+            <CustomEditor
+                value={challengeAndRisk}
+                onChange={(v: string) => {
+                    setProjectData({ challengeAndRisk: v });
+                }}
+            />
             <ApplicationForm />
+            <TeamMember />
         </Container>
     );
 }

@@ -108,8 +108,8 @@ export function getThemeConfig(mode: THEME_MODE): ThemeOptions {
         },
 
         text: {
-            primary: '#707070',
-            secondary: '#666D6C',
+            primary: '#001714',
+            secondary: '#707070',
         },
     };
 
@@ -530,7 +530,7 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
             MuiAccordionSummary: {
                 styleOverrides: {
                     root: {
-                        padding: theme.spacing(1, 2.5),
+                        // padding: theme.spacing(1, 2.5),
                         '&.Mui-expanded': {
                             backgroundColor: theme.palette.background.paper,
                             // boxShadow: 'inset 0px 0px 6px #D5D9D985, 0px 3px 6px #00000014',
@@ -547,7 +547,7 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
             MuiAccordionDetails: {
                 styleOverrides: {
                     root: {
-                        padding: theme.spacing(3, 4.5),
+                        // padding: theme.spacing(3, 4.5),
                         [theme.breakpoints.down('xsm')]: {
                             padding: theme.spacing(3),
                         },

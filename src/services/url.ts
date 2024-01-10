@@ -10,4 +10,6 @@ export const apiUrl = {
     getTopProject: `${BACKEND_BASE_URL}/v0/projects`,
     //project detail
     projectDetail: `${BACKEND_BASE_URL}/v0/projects`,
+    //profile
+    getUserProfile: `${BACKEND_BASE_URL}/v0/builders`,
 };

@@ -2,12 +2,12 @@ import { ChevronLeftRounded } from '@mui/icons-material';
 import { Container, Breadcrumbs, Box, Typography } from '@mui/material';
 import Link from 'next/link';
 import Img from 'src/components/Img/Img';
-import OverviewProject from '../../explorer/DetailProject/OverviewProject/OverviewProject';
+
 import ButtonGroup from 'src/components/ButtonGroup/ButtonGroup';
 import { useProjectDetailData } from './state';
-import FundRaisingProject from 'src/views/explorer/DetailProject/FundrasingProject/FundRaising';
 import { useState } from 'react';
-
+import FundRaisingProject from './FundrasingProject/FundRaising';
+import OverviewProject from './OverviewProject/OverviewProject';
 export default function ProjectDetail() {
     const { name } = useProjectDetailData();
     const [selected, setSelected] = useState<number>(0);
@@ -32,7 +32,7 @@ export default function ProjectDetail() {
                 </Link>
             </Breadcrumbs>
 
-            <Box sx={{ position: 'sticky', top: '64px', bgcolor: 'background.default', pb: 2 }}>
+            <Box sx={{ position: 'sticky', top: '64px', bgcolor: 'background.default', pb: 2, zIndex: 2 }}>
                 <Box sx={{ display: 'flex', placeItems: 'center', gap: 1, mt: 2 }}>
                     <Img src="https://pbs.twimg.com/profile_images/1732964434363248640/UtVeR8Io_200x200.jpg" alt="avatar project" sx={{ width: '66px', height: '66px', borderRadius: '50%' }}></Img>
                     <Box sx={{ display: 'flex', placeItems: 'baseline', gap: 1 }}>

@@ -1,16 +1,60 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Avatar, Box, Grid, MenuItem, Select, Typography } from '@mui/material';
 import React from 'react';
-import { FontInter } from 'src/assets/fonts';
 import CustomAccordion from 'src/components/CustomAccordion/CustomAccordion';
-import { formatDate } from 'src/utils/format';
-import { useProjectDetailData } from 'src/views/project/ProjectDetail/state';
+import { formatDate, formatNumber } from 'src/utils/format';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import { useProjectDetailData } from '../../state';
 
 export default function LeftBox() {
     const { fundrasing } = useProjectDetailData();
 
     return (
         <Box>
-            <Box sx={{ width: '100%', backgroundColor: '#FFF8F6', borderRadius: 2, overflow: 'hidden' }}>
+            <Select color="secondary" fullWidth sx={{ mb: 4 }}>
+                <MenuItem value="Mina Hackathon">
+                    <Typography>Mina Hackathon</Typography>
+                </MenuItem>
+                <MenuItem value="Mina Hackathon2">
+                    <Typography>Mina Hackathon 2</Typography>
+                </MenuItem>
+                <MenuItem value="Mina Hackathon3">
+                    <Typography>Mina Hackathon 3</Typography>
+                </MenuItem>
+                <MenuItem value="Mina Hackathon4">
+                    <Typography>Mina Hackathon 4</Typography>
+                </MenuItem>
+            </Select>
+            <Grid container>
+                <Grid item xs={6}>
+                    <Typography variant="h6">Raised Amount</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', my: 2 }}>
+                        <Avatar src="" alt="" sx={{ width: '36px', height: '36px', p: 0 }}>
+                            <MonetizationOnIcon sx={{ color: 'yellow', fontSize: '2.5rem' }} />
+                        </Avatar>
+                        <Box sx={{ ml: 1 }}>
+                            <Typography variant="h4" color={'text.secondary'}>
+                                {formatNumber(fundrasing.raisedAmount || 123456789)}
+                            </Typography>
+                            <Typography variant="body2">$336.578.854</Typography>
+                        </Box>
+                    </Box>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant="h6">Taget Amount</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', my: 2 }}>
+                        <Avatar src="" alt="" sx={{ width: '36px', height: '36px', p: 0 }}>
+                            <MonetizationOnIcon sx={{ color: 'yellow', fontSize: '2.5rem' }} />
+                        </Avatar>
+                        <Box sx={{ ml: 1 }}>
+                            <Typography variant="h4" color={'text.secondary'}>
+                                {formatNumber(fundrasing.targetAmount || 123456789)}
+                            </Typography>
+                            <Typography variant="body2">$336.578.854</Typography>
+                        </Box>
+                    </Box>
+                </Grid>
+            </Grid>
+            <Box sx={{ width: '100%', backgroundColor: '#FFF8F6', borderRadius: 2, overflow: 'hidden', mb: 7 }}>
                 <Box sx={{ backgroundColor: 'secondary.light', p: 2, my: 0 }}>
                     <Grid container>
                         <Grid item xs={4}>

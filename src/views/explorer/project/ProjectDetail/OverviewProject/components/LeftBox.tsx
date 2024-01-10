@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { FontInter } from 'src/assets/fonts';
-import { useProjectDetailData } from 'src/views/project/ProjectDetail/state';
+import { useProjectDetailData } from '../../state';
 
 export default function LeftBox() {
     const { overview } = useProjectDetailData();
