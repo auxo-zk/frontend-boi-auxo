@@ -512,16 +512,18 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                 styleOverrides: {
                     root: {
                         overflow: 'hidden',
-                        borderRadius: 20,
+                        borderRadius: 10,
                         '&:first-of-type, &:last-of-type': {
-                            borderRadius: 20,
+                            borderRadius: 10,
                         },
                         '&:before': {
                             display: 'none',
                         },
                         '&.Mui-expanded': {
-                            backgroundColor: '#F5F5F5',
+                            backgroundColor: '#FFF',
                         },
+                        boxShadow: 'none',
+                        border: '1px solid #CFE9E4',
                     },
                 },
             },
@@ -531,7 +533,7 @@ export function getThemedComponent(theme: Theme): ThemeOptions {
                         padding: theme.spacing(1, 2.5),
                         '&.Mui-expanded': {
                             backgroundColor: theme.palette.background.paper,
-                            boxShadow: 'inset 0px 0px 6px #D5D9D985, 0px 3px 6px #00000014',
+                            // boxShadow: 'inset 0px 0px 6px #D5D9D985, 0px 3px 6px #00000014',
                         },
                         '& .MuiAccordionSummary-content': {
                             margin: 0,
