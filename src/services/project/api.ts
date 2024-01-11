@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { apiUrl } from '../url';
+import { LocalStorageKey } from 'src/constants';
 
 // export type TProjectData = { name: string; date: string; desc: string };
 //PROJECT LIST ************************************************************************************************************************************************
@@ -9,6 +10,9 @@ export type TProjectData = {
     date: string;
     banner: string;
     avatar: string;
+};
+const getJwt = () => {
+    return localStorage.getItem(LocalStorageKey.AccessToken) || '';
 };
 
 export const apiGetTopProject = '';
@@ -97,4 +101,113 @@ export async function getProjectDetail(projectId: string): Promise<TProjectDetai
             solution: response.ipfsData.solution,
         },
     };
+}
+
+//PROJECT EDIT ******************************************************************************************************************************************
+export type MemberDataType = {
+    profileName: string;
+    role: string;
+    socialLink: string;
+};
+export type TEditProjectData = {
+    draftId?: string;
+    name: string;
+    banner: string;
+    publicKey: string;
+    overViewDescription: string;
+    problemStatement: string;
+    solution: string;
+    challengeAndRisk: string;
+    customSections: {
+        [key: string]: {
+            title: string;
+            description?: string;
+        };
+    };
+    teamMember?: {
+        [id: string]: MemberDataType;
+    };
+    additionalDocument?: any;
+};
+
+export async function saveProject(address: string, project: TEditProjectData) {
+    if (!project.draftId || !address) {
+        return;
+    }
+    const jwt = getJwt();
+    await axios.post(
+        apiUrl.saveProject + `${address}/drafts/${project.draftId}`,
+        {
+            address: address,
+            name: project.name,
+            publicKey: project.publicKey,
+            description: project.overViewDescription,
+            problemStatement: project.problemStatement,
+            solution: project.solution,
+            challengeAndRisks: project.challengeAndRisk,
+            members: project.teamMember,
+            documents: [],
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+            },
+        }
+    );
+    return { success: true };
+}
+
+export async function createProject(address: string, project: TEditProjectData) {
+    if (!address) {
+        return;
+    }
+    const jwt = getJwt();
+    await axios.post(
+        apiUrl.saveProject + `/drafts`,
+        {
+            address: address,
+            name: project.name,
+            publicKey: project.publicKey,
+            description: project.overViewDescription,
+            problemStatement: project.problemStatement,
+            solution: project.solution,
+            challengeAndRisks: project.challengeAndRisk,
+            members: Object.values(project.teamMember || {}),
+            documents: [],
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+            },
+        }
+    );
+    return { success: true };
+}
+
+export type ProjectMetaData = {
+    name: string;
+    avatar: string;
+    banner: string;
+    type: 'project' | 'draft';
+    overviewDesc: string;
+};
+export async function getDraftProject(): Promise<ProjectMetaData[]> {
+    const response: any[] = (await axios.get(apiUrl.getDraft, { headers: { Authorization: `Bearer ${getJwt()}` } })).data || [];
+    return response.map((item) => ({
+        name: item.name,
+        avatar: item.avatar || '',
+        banner: item.nammer || '',
+        type: 'draft',
+        overviewDesc: item.description,
+    }));
+}
+export async function getUserProject(address: string): Promise<ProjectMetaData[]> {
+    const response: any[] = (await axios.get(apiUrl.getProject + `/${address}/projects`, { headers: { Authorization: `Bearer ${getJwt()}` } })).data || [];
+    return response.map((item) => ({
+        name: item.name,
+        avatar: item.avatar || '',
+        banner: item.nammer || '',
+        type: 'draft',
+        overviewDesc: item.description,
+    }));
 }

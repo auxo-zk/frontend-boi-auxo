@@ -1,20 +1,30 @@
 import { ChevronLeftRounded } from '@mui/icons-material';
-import { Box, Breadcrumbs, Container, Link, Paper, Switch, TextField, Typography } from '@mui/material';
-import { DatePicker, DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Box, Breadcrumbs, Button, Container, Link, Paper, Switch, TextField, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
 const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEditor'), { ssr: false });
 import Img from 'src/components/Img/Img';
-import Timeline from './Timeline';
-import ApplicationForm from './ApplicaionForm';
 import { useCreateProjectData, useCreateProjectFunctions } from './state';
 import TeamMember from './TeamMembers';
+import AdditionalDoc from './AdditionalDoc';
+import { useState } from 'react';
+import ButtonLoading from 'src/components/ButtonLoading/ButtonLoading';
+import { useRouter } from 'next/router';
 
 export default function CreateCampaign() {
     const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey } = useCreateProjectData();
-    console.log(useCreateProjectData());
-    const { setProjectData } = useCreateProjectFunctions();
+    const { setProjectData, handleCreateProject } = useCreateProjectFunctions();
+    const [loading, setLoading] = useState<boolean>(false);
+    const router = useRouter();
+    const handleSaveButton = async () => {
+        try {
+            setLoading(true);
+            await handleCreateProject();
+            setLoading(false);
+            router.push('/profile');
+        } catch (error) {
+            setLoading(false);
+        }
+    };
     return (
         <Container
             sx={(theme) => ({
@@ -110,8 +120,20 @@ export default function CreateCampaign() {
                     setProjectData({ challengeAndRisk: v });
                 }}
             />
-            <ApplicationForm />
-            <TeamMember />
+            {/* <ApplicationForm /> */}
+            <Box sx={{ mt: 5 }}>
+                <TeamMember />
+            </Box>
+            <Box sx={{ mt: 5 }}>
+                <AdditionalDoc />
+            </Box>
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                <ButtonLoading muiProps={{ variant: 'contained', onClick: handleSaveButton, sx: { mr: 1 } }} isLoading={loading}>
+                    Save
+                </ButtonLoading>
+                <Button variant="contained">Submit</Button>
+            </Box>
         </Container>
     );
 }
