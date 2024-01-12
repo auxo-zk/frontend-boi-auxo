@@ -3,9 +3,9 @@ import Image from 'next/image';
 import React from 'react';
 import { imagePath } from 'src/constants/imagePath';
 import { getTopProject } from 'src/services/project/api';
-import TopProject from 'src/views/explorer/TopProject/TopProject';
+import TopProject from 'src/views/explorer/project/TopProject/TopProject';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import LatestFundingCampaigns from 'src/views/explorer/LatestFundingCampaigns/LatestFundingCampaigns';
+import LatestFundingCampaigns from 'src/views/explorer/campaign/LatestFundingCampaigns/LatestFundingCampaigns';
 import { getLatestFundingCampaigns } from 'src/services/campaign/api';
 import FundingActivitiesBanner from 'src/views/banners/FundingActivitiesBanner';
 
@@ -33,16 +33,20 @@ export default function Explorer({ topProjects, latestFundingCampaigns }: InferG
 }
 
 export const getStaticProps = (async (context) => {
-    const res = await Promise.all([getTopProject(), getLatestFundingCampaigns()]);
-    const topProjects = res[0];
-    const latestFundingCampaigns = res[1];
+    try {
+        const res = await Promise.all([getTopProject(), getLatestFundingCampaigns()]);
+        const topProjects = res[0];
+        const latestFundingCampaigns = res[1];
 
-    return {
-        props: {
-            topProjects,
-            latestFundingCampaigns,
-        },
+        return {
+            props: {
+                topProjects,
+                latestFundingCampaigns,
+            },
 
-        revalidate: 60, // In seconds
-    };
+            revalidate: 60, // In seconds
+        };
+    } catch (error) {
+        return { notFound: true };
+    }
 }) satisfies GetStaticProps;

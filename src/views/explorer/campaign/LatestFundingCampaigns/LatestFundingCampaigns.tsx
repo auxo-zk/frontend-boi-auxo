@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { TCampaignData } from 'src/services/campaign/api';
-import CardCampaign from '../../common/CardCampaign';
+import CardCampaign from '../../../common/CardCampaign';
 
 export default function LatestFundingCampaigns({ latestFundingCampaigns }: { latestFundingCampaigns: TCampaignData[] }) {
     return (

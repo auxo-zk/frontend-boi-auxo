@@ -1,19 +1,18 @@
 import { Typography, Paper, Box, Button, TextField, IconButton } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { useProjectData, useProjectFunctions } from 'src/states/project';
 import AddIcon from '@mui/icons-material/Add';
 import dynamic from 'next/dynamic';
+import { useCreateProjectData, useCreateProjectFunctions } from './state';
 const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEditor'), { ssr: false });
 
 export default function ApplicationForm() {
-    const data = useProjectData();
-    const { setProjectData, setCustomSection } = useProjectFunctions();
-    const projectData = useProjectData();
+    const { setProjectData, setCustomSection } = useCreateProjectFunctions();
+    const projectData = useCreateProjectData();
 
     const handleSectionTitle = (key: string, value: string) => {
         setCustomSection({
             [key]: {
-                ...(data.customSections[key] || {}),
+                ...(projectData.customSections[key] || {}),
                 title: value,
             },
         });
@@ -21,7 +20,7 @@ export default function ApplicationForm() {
     const handleSectionDescription = (key: string, value: string) => {
         setCustomSection({
             [key]: {
-                ...(data.customSections[key] || {}),
+                ...(projectData.customSections[key] || {}),
                 description: value,
             },
         });
@@ -49,7 +48,7 @@ export default function ApplicationForm() {
     };
     return (
         <>
-            {Object.entries(data.customSections).map(([key, item], index) => {
+            {Object.entries(projectData?.customSections).map(([key, item], index) => {
                 return (
                     <Paper key={key} sx={{ p: 3, my: 3, backgroundColor: '#FFF8F6' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
