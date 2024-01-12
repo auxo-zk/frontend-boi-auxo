@@ -4,8 +4,8 @@ import Image from 'next/image';
 import React from 'react';
 import { imagePath } from 'src/constants/imagePath';
 import { getTopProject } from 'src/services/project/api';
-import LatestProject from 'src/views/explorer/LatestProject/LatestProject';
-import TopProject from 'src/views/explorer/TopProject/TopProject';
+import LatestProject from 'src/views/explorer/project/LatestProject/LatestProject';
+import TopProject from 'src/views/explorer/project/TopProject/TopProject';
 
 export default function Projects({ topProjects }: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
@@ -32,13 +32,17 @@ export default function Projects({ topProjects }: InferGetStaticPropsType<typeof
 }
 
 export const getStaticProps = (async (context) => {
-    const res = await getTopProject();
-    const topProjects = res;
-    return {
-        props: {
-            topProjects,
-        },
+    try {
+        const res = await getTopProject();
+        const topProjects = res;
+        return {
+            props: {
+                topProjects,
+            },
 
-        revalidate: 60, // In seconds
-    };
+            revalidate: 60, // In seconds
+        };
+    } catch (error) {
+        return { notFound: true };
+    }
 }) satisfies GetStaticProps;
