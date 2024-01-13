@@ -11,15 +11,20 @@ export default function Profile() {
     const profileProjects = useProfileProjectsData();
 
     const { fetchDraft } = useProfileProjectsFunction();
-    useEffect(() => {
+    async function getData() {
         try {
-            fetchDraft();
-        } catch (err) {}
+            await fetchDraft();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    useEffect(() => {
+        getData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
         <Container sx={{ pt: 5 }}>
-            <Typography variant="h1" textTransform={'uppercase'} maxWidth={'614px'}>
+            <Typography variant="h1" textTransform={'uppercase'}>
                 Builder Profile
             </Typography>
             <Box sx={{ display: 'flex', placeItems: 'center', gap: 4, mt: 4 }}>
@@ -30,7 +35,7 @@ export default function Profile() {
                         console.log(file);
                     }}
                 />
-                <Box>
+                <Box width={'100%'}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="h4" fontWeight={600}>
                             Alicia
