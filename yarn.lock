@@ -7,20 +7,29 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@auxo-dev/auxo-libs@^0.3.4", "@auxo-dev/auxo-libs@^0.3.5":
+"@auxo-dev/auxo-libs@0.3.5", "@auxo-dev/auxo-libs@^0.3.4", "@auxo-dev/auxo-libs@^0.3.5":
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/@auxo-dev/auxo-libs/-/auxo-libs-0.3.5.tgz#ba8cbc04a188413f08fd61a7a838f026f724450c"
   integrity sha512-H8vXMoJ2cHFQj7rugBY6q9ScEfOyZ6Z/Q6j7O88dZzcBQZNtxV+FsyWrIbfBs/n/qnS2UHdh8r7fKGsmfOy3pQ==
   dependencies:
     o1js "0.15.1"
 
-"@auxo-dev/dkg@^0.2.5":
+"@auxo-dev/dkg@0.2.12", "@auxo-dev/dkg@^0.2.5":
   version "0.2.12"
   resolved "https://registry.yarnpkg.com/@auxo-dev/dkg/-/dkg-0.2.12.tgz#0c85c485ee88b88a52d4403c92f208e34a113106"
   integrity sha512-xzVoU+pV8+VwCJoFGwjyj3fJGduuRNmrkDcwRz0fzW9HaNyjfRGCtb+mfdJMiPNWd5EBT9mkSVZNfb5AB8w4kA==
   dependencies:
     "@auxo-dev/auxo-libs" "^0.3.5"
     axios "^1.6.5"
+    o1js "0.15.1"
+
+"@auxo-dev/platform@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@auxo-dev/platform/-/platform-0.1.4.tgz#569419a0f4d354af5e1662ff4a39662cde4c7db7"
+  integrity sha512-hMEuUYORWxFEUwlUpkGjkBvO08oUVAmHd+QKMrBJjQOHz8A15DwUV16UaIB19iEf+Asccz4oIBjyNXtwapCIVA==
+  dependencies:
+    "@auxo-dev/auxo-libs" "0.3.5"
+    "@auxo-dev/dkg" "0.2.12"
     o1js "0.15.1"
 
 "@babel/code-frame@^7.0.0":

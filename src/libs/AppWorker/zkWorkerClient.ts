@@ -1,8 +1,6 @@
 import { sleep } from 'src/utils/format';
 import { ZkappWorkerReponse, ZkappWorkerRequest } from './worker';
 import { ArgumentZkFuction, ReturenValueZkFunction, TZkFuction } from './zkFunction';
-import { CommitteeAction } from '@auxo-dev/dkg/build/types/src/contracts/Committee';
-import { PublicKey } from 'o1js';
 
 export default class ZkAppWorkerClient {
     worker: Worker;
@@ -17,12 +15,17 @@ export default class ZkAppWorkerClient {
         this.nextId = 0;
 
         this.worker.onmessage = (event: MessageEvent<ZkappWorkerReponse>) => {
-            this.promises[event.data.id].resolve(event.data.data);
-            delete this.promises[event.data.id];
+            if (event.data.status == 'failed') {
+                this.promises[event.data.id].reject(event.data.error);
+                delete this.promises[event.data.id];
+            } else {
+                this.promises[event.data.id].resolve(event.data.data);
+                delete this.promises[event.data.id];
+            }
         };
     }
     async loadWorker(): Promise<void> {
-        await sleep(5000);
+        await sleep(4100);
     }
 
     _call<Key extends TZkFuction>(fn: Key, args: ArgumentZkFuction<Key>): ReturenValueZkFunction<Key> {
@@ -47,13 +50,13 @@ export default class ZkAppWorkerClient {
     fetchAccount(publicKey58: string) {
         return this._call('fetchAccount', { publicKey58 });
     }
-    initZkappInstance(publicKey58: string) {
-        return this._call('initZkappInstance', { publicKey58 });
+    initZkappInstance(args: ArgumentZkFuction<'initZkappInstance'>) {
+        return this._call('initZkappInstance', args);
+    }
+    getPercentageComplieDone() {
+        return this._call('getPercentageComplieDone', {});
     }
 
-    createCommittee(sender: PublicKey, action: CommitteeAction) {
-        return this._call('createCommittee', { sender, action });
-    }
     proveTransaction() {
         return this._call('proveTransaction', {});
     }
