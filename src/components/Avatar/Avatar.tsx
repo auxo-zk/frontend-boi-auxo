@@ -23,6 +23,7 @@ export default function Avatar({ alt = 'user avatar', src, size, onChange }: TAv
             sx={{
                 width: `${size}px`,
                 height: `${size}px`,
+                minWidth:`${size}px`,
                 borderRadius: '50%',
                 overflow: 'hidden',
                 position: 'relative',

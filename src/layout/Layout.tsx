@@ -16,8 +16,8 @@ export default function Layout({ children }: { children: ReactNode }) {
     return (
         <>
             <Head>
-                <title>Auxo App</title>
-                <meta name="description" content="auxo app" />
+                <title>Auxo Builders Platform</title>
+                <meta name="description" content="On-chain Funding - Builders Platform" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="language" content="English" />
                 <meta property="og:site_name" content="Auxo App" />

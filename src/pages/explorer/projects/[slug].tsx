@@ -22,6 +22,7 @@ export const getServerSideProps = (async (context) => {
             props: { data },
         };
     } catch (error) {
+        console.log(error);
         return { notFound: true };
     }
 }) satisfies GetServerSideProps<{
