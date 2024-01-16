@@ -225,3 +225,31 @@ export async function getUserProject(address: string): Promise<ProjectMetaData[]
         overviewDesc: item.description,
     }));
 }
+
+export type IPFSProjectInput = {
+    name: string;
+    avatarImage: string;
+    coverImage: string;
+    publicKey: string;
+    description: string;
+    members: {
+        name: string;
+        role: string;
+        link: string;
+    }[];
+
+    documents: string[];
+};
+
+export async function postProjectsToIpfs(input: IPFSProjectInput) {
+    const response: {
+        Name: string;
+        Hash: string;
+        Size: 0;
+    } = (
+        await axios.post(apiUrl.postProjectToIpfs, input, {
+            headers: { Authorization: `Bearer ${getJwt()}` },
+        })
+    ).data;
+    return response;
+}

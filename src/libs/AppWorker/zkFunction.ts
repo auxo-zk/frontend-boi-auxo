@@ -4,11 +4,9 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
-import { ZkApp } from '@auxo-dev/platform';
+import { ZkApp, Storage } from '@auxo-dev/platform';
 import { ArgumentTypes } from 'src/global.config';
 import { FileSystem } from 'src/states/cache';
-import { CreateProjectInput } from '@auxo-dev/platform/build/types/src/contracts/Project';
-import { MemberArray } from '@auxo-dev/platform/build/types/src/contracts/ProjectStorage';
 import { IPFSHash } from '@auxo-dev/auxo-libs';
 
 const state = {
@@ -82,8 +80,7 @@ export const zkFunctions = {
 
         const transaction = await Mina.transaction(sender, () => {
             state.ProjectContract!.createProject({
-                projectId: new Field(args.projectId || -1),
-                members: new MemberArray(args.members.map((mem) => PublicKey.fromBase58(mem))),
+                members: new Storage.ProjectStorage.MemberArray(args.members.map((mem) => PublicKey.fromBase58(mem))),
                 ipfsHash: IPFSHash.fromString(args.ipfsHash),
                 payeeAccount: PublicKey.fromBase58(args.projectPubBase58),
             });
