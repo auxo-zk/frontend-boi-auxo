@@ -63,4 +63,7 @@ export default class ZkAppWorkerClient {
     getTransactionJSON() {
         return this._call('getTransactionJSON', {});
     }
+    submitProject(args: ArgumentZkFuction<'submitProject'>) {
+        return this._call('submitProject', args);
+    }
 }

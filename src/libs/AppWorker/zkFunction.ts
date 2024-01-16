@@ -1,12 +1,15 @@
-import { Mina, PublicKey, fetchAccount } from 'o1js';
+import { Field, Mina, PublicKey, fetchAccount } from 'o1js';
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
-import type { ZkApp } from '@auxo-dev/platform';
+import { ZkApp } from '@auxo-dev/platform';
 import { ArgumentTypes } from 'src/global.config';
 import { FileSystem } from 'src/states/cache';
+import { CreateProjectInput } from '@auxo-dev/platform/build/types/src/contracts/Project';
+import { MemberArray } from '@auxo-dev/platform/build/types/src/contracts/ProjectStorage';
+import { IPFSHash } from '@auxo-dev/auxo-libs';
 
 const state = {
     TypeZkApp: null as null | typeof ZkApp,
@@ -70,6 +73,22 @@ export const zkFunctions = {
 
         const participationContractPub = PublicKey.fromBase58(args.participationContract);
         state.ParticipationContract = new state.TypeZkApp!.Participation.ParticipationContract!(participationContractPub);
+    },
+
+    submitProject: async (args: { sender: string; projectId: string; members: string[]; ipfsHash: string; projectPubBase58: string }) => {
+        const sender = PublicKey.fromBase58(args.sender);
+        await fetchAccount({ publicKey: sender });
+        await fetchAccount({ publicKey: state.ProjectContract!.address });
+
+        const transaction = await Mina.transaction(sender, () => {
+            state.ProjectContract!.createProject({
+                projectId: new Field(args.projectId || -1),
+                members: new MemberArray(args.members.map((mem) => PublicKey.fromBase58(mem))),
+                ipfsHash: IPFSHash.fromString(args.ipfsHash),
+                payeeAccount: PublicKey.fromBase58(args.projectPubBase58),
+            });
+        });
+        state.transaction = transaction;
     },
 
     proveTransaction: async (args: {}) => {
