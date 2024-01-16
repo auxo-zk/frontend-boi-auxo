@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from '../url';
 import { LocalStorageKey } from 'src/constants';
+import { BACKEND_BASE_URL } from '../baseUrl';
 
 // export type TProjectData = { name: string; date: string; desc: string };
 //PROJECT LIST ************************************************************************************************************************************************
@@ -184,6 +185,18 @@ export async function createProject(address: string, project: TEditProjectData) 
     return { success: true };
 }
 
+export async function getDraftProjectDetail(address: string, draftId: string): Promise<TEditProjectData | undefined> {
+    if (!address) {
+        return;
+    }
+    const jwt = getJwt();
+    const response: any = await axios.get(`${BACKEND_BASE_URL}/v0/builders`, {
+        headers: {
+            Authorization: `Bearer ${jwt}`,
+        },
+    });
+}
+
 export type ProjectMetaData = {
     name: string;
     avatar: string;
@@ -201,6 +214,7 @@ export async function getDraftProject(): Promise<ProjectMetaData[]> {
         overviewDesc: item.description,
     }));
 }
+
 export async function getUserProject(address: string): Promise<ProjectMetaData[]> {
     const response: any[] = (await axios.get(apiUrl.getProject + `/${address}/projects`, { headers: { Authorization: `Bearer ${getJwt()}` } })).data || [];
     return response.map((item) => ({
