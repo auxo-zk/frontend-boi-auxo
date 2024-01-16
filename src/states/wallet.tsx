@@ -94,7 +94,7 @@ export const useWalletFunction = () => {
         try {
             const message = await getServerSig();
             const sig = await signMessage(JSON.stringify(message));
-            console.log('🚀 ~ file: wallet.tsx:97 ~ login ~ sig:', sig);
+
             if (sig) {
                 const token = await getTokenFromSig({
                     address: walletAddress || walletData.userAddress,
@@ -135,6 +135,7 @@ export const useWalletFunction = () => {
 
 export function InitWalletData() {
     const { connectWallet, updateLoginStatus } = useWalletFunction();
+    const { userAddress } = useWalletData();
     useEffect(() => {
         async function fetch() {
             if (localStorage.getItem(LocalStorageKey.IsConnected) == LocalStorageValue.IsConnectedYes) {
@@ -145,6 +146,18 @@ export function InitWalletData() {
         fetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    useEffect(() => {
+        if (userAddress) {
+            window.mina?.on('accountsChanged', (accounts: string[]) => {
+                localStorage.removeItem(LocalStorageKey.AccessToken);
+                connectWallet();
+            });
+            return () => {
+                window.mina?.on('accountsChanged', (accounts: string[]) => {});
+            };
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userAddress]);
     return null;
 }
 
