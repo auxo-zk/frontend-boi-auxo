@@ -156,7 +156,8 @@ export function InitWalletData() {
                 window.mina?.on('accountsChanged', (accounts: string[]) => {});
             };
         }
-    }, [userAddress, connectWallet]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userAddress]);
     return null;
 }
 
