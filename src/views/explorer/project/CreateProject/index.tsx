@@ -9,11 +9,13 @@ import AdditionalDoc from './AdditionalDoc';
 import { useState } from 'react';
 import ButtonLoading from 'src/components/ButtonLoading/ButtonLoading';
 import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 
 export default function CreateCampaign() {
     const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey } = useCreateProjectData();
-    const { setProjectData, handleCreateProject } = useCreateProjectFunctions();
+    const { setProjectData, handleCreateProject, handleSubmitProject } = useCreateProjectFunctions();
     const [loading, setLoading] = useState<boolean>(false);
+    const [submiting, setSubmiting] = useState<boolean>(false);
     const router = useRouter();
     const handleSaveButton = async () => {
         try {
@@ -24,6 +26,12 @@ export default function CreateCampaign() {
         } catch (error) {
             setLoading(false);
         }
+    };
+
+    const handleSubmitClick = async () => {
+        setSubmiting(true);
+        await handleSubmitProject();
+        setSubmiting(false);
     };
     return (
         <Container
@@ -132,7 +140,9 @@ export default function CreateCampaign() {
                 <ButtonLoading muiProps={{ variant: 'contained', onClick: handleSaveButton, sx: { mr: 1 } }} isLoading={loading}>
                     Save
                 </ButtonLoading>
-                <Button variant="contained">Submit</Button>
+                <ButtonLoading isLoading={submiting} muiProps={{ variant: 'contained', onClick: handleSubmitClick }}>
+                    Submit
+                </ButtonLoading>
             </Box>
         </Container>
     );

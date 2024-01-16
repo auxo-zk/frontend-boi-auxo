@@ -1,17 +1,21 @@
-import { Mina, PublicKey, fetchAccount } from 'o1js';
+import { Field, Mina, PublicKey, fetchAccount } from 'o1js';
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
-import type { ZkApp } from '@auxo-dev/dkg';
+import { ZkApp, Storage } from '@auxo-dev/platform';
 import { ArgumentTypes } from 'src/global.config';
 import { FileSystem } from 'src/states/cache';
+import { IPFSHash } from '@auxo-dev/auxo-libs';
 
 const state = {
     TypeZkApp: null as null | typeof ZkApp,
-    CommitteeContract: null as null | ZkApp.Committee.CommitteeContract,
+    ProjectContract: null as null | ZkApp.Project.ProjectContract,
+    CampaignContract: null as null | ZkApp.Campaign.CampaignContract,
+    ParticipationContract: null as null | ZkApp.Participation.ParticipationContract,
     transaction: null as null | Transaction,
+    complieDone: 0 as number,
 };
 
 // ---------------------------------------------------------------------------------------
@@ -23,61 +27,67 @@ export const zkFunctions = {
         Mina.setActiveInstance(Berkeley);
     },
     loadContract: async (args: {}) => {
-        const { ZkApp } = await import('@auxo-dev/dkg');
+        const { ZkApp } = await import('@auxo-dev/platform');
         state.TypeZkApp = ZkApp;
     },
+    getPercentageComplieDone: async (args: {}) => {
+        return ((state.complieDone / 6) * 100).toFixed(0);
+    },
     compileContract: async (args: { fileCache: any }) => {
-        await state.TypeZkApp!.DKG.UpdateKey.compile({ cache: FileSystem(args.fileCache) });
-        await state.TypeZkApp!.Round1.ReduceRound1.compile({ cache: FileSystem(args.fileCache) });
-        await state.TypeZkApp!.Round1.FinalizeRound1.compile({ cache: FileSystem(args.fileCache) });
-        await state.TypeZkApp!.Round2.ReduceRound2.compile({ cache: FileSystem(args.fileCache) });
-        await state.TypeZkApp!.Encryption.BatchEncryption.compile({ cache: FileSystem(args.fileCache) });
-        await state.TypeZkApp!.Round2.FinalizeRound2.compile({ cache: FileSystem(args.fileCache) });
-        await state.TypeZkApp!.Response.ReduceResponse.compile({ cache: FileSystem(args.fileCache) });
-        await state.TypeZkApp!.Encryption.BatchDecryption.compile({ cache: FileSystem(args.fileCache) });
-        await state.TypeZkApp!.Response.CompleteResponse.compile({ cache: FileSystem(args.fileCache) });
+        await state.TypeZkApp!.Project.CreateProject.compile({ cache: FileSystem(args.fileCache) }); // 1
+        console.log('complie CreateProject done');
+        state.complieDone += 1;
 
-        await state.TypeZkApp!.Committee.CreateCommittee.compile({ cache: FileSystem(args.fileCache) });
-        console.log('complie Create Committee done');
+        await state.TypeZkApp!.Project.ProjectContract.compile({ cache: FileSystem(args.fileCache) }); // 2
+        console.log('complie ProjectContract done');
+        state.complieDone += 1;
 
-        await state.TypeZkApp!.Request.CreateRequest.compile({ cache: FileSystem(args.fileCache) });
-        console.log('complie Create Request done');
+        await state.TypeZkApp!.Campaign.CreateCampaign.compile({ cache: FileSystem(args.fileCache) }); // 3
+        console.log('complie CreateCampaign done');
+        state.complieDone += 1;
 
-        await state.TypeZkApp!.Committee.CommitteeContract.compile({ cache: FileSystem(args.fileCache) });
-        console.log('complie Committee Contract done');
+        await state.TypeZkApp!.Campaign.CampaignContract.compile({ cache: FileSystem(args.fileCache) }); // 4
+        console.log('complie CampaignContract done');
+        state.complieDone += 1;
 
-        await state.TypeZkApp!.DKG.DKGContract.compile({ cache: FileSystem(args.fileCache) });
-        console.log('complie DKG Contract done');
+        await state.TypeZkApp!.Participation.JoinCampaign.compile({ cache: FileSystem(args.fileCache) }); // 5
+        console.log('complie JoinCampaign done');
+        state.complieDone += 1;
 
-        await state.TypeZkApp!.Round1.Round1Contract.compile({ cache: FileSystem(args.fileCache) });
-        console.log('complie Round1 Contract done');
-
-        await state.TypeZkApp!.Round2.Round2Contract.compile({ cache: FileSystem(args.fileCache) });
-        console.log('complie Round2 Contract done');
-
-        await state.TypeZkApp!.Response.ResponseContract.compile({ cache: FileSystem(args.fileCache) });
-        console.log('complie Response Contract done');
-
-        await state.TypeZkApp!.Request.RequestContract.compile({ cache: FileSystem(args.fileCache) });
-        console.log('complie Request Contract done');
+        await state.TypeZkApp!.Participation.ParticipationContract.compile({ cache: FileSystem(args.fileCache) }); // 6
+        console.log('complie JoinCampaign done');
+        state.complieDone += 1;
     },
     fetchAccount: async (args: { publicKey58: string }) => {
         const publicKey = PublicKey.fromBase58(args.publicKey58);
         return await fetchAccount({ publicKey });
     },
-    initZkappInstance: async (args: { publicKey58: string }) => {
-        const publicKey = PublicKey.fromBase58(args.publicKey58);
-        state.CommitteeContract = new state.TypeZkApp!.Committee.CommitteeContract!(publicKey as any);
+    initZkappInstance: async (args: { projectContract: string; campaignContract: string; participationContract: string }) => {
+        const projectContractPub = PublicKey.fromBase58(args.projectContract);
+        state.ProjectContract = new state.TypeZkApp!.Project.ProjectContract!(projectContractPub);
+
+        const campaignContractPub = PublicKey.fromBase58(args.campaignContract);
+        state.CampaignContract = new state.TypeZkApp!.Campaign.CampaignContract!(campaignContractPub);
+
+        const participationContractPub = PublicKey.fromBase58(args.participationContract);
+        state.ParticipationContract = new state.TypeZkApp!.Participation.ParticipationContract!(participationContractPub);
     },
 
-    createCommittee: async (args: { sender: PublicKey; action: ZkApp.Committee.CommitteeAction }) => {
-        const transaction = await Mina.transaction(args.sender, () => {
-            state.CommitteeContract!.createCommittee({
-                ...args.action,
+    submitProject: async (args: { sender: string; projectId: string; members: string[]; ipfsHash: string; projectPubBase58: string }) => {
+        const sender = PublicKey.fromBase58(args.sender);
+        await fetchAccount({ publicKey: sender });
+        await fetchAccount({ publicKey: state.ProjectContract!.address });
+
+        const transaction = await Mina.transaction(sender, () => {
+            state.ProjectContract!.createProject({
+                members: new Storage.ProjectStorage.MemberArray(args.members.map((mem) => PublicKey.fromBase58(mem))),
+                ipfsHash: IPFSHash.fromString(args.ipfsHash),
+                payeeAccount: PublicKey.fromBase58(args.projectPubBase58),
             });
         });
         state.transaction = transaction;
     },
+
     proveTransaction: async (args: {}) => {
         await state.transaction!.prove();
     },
