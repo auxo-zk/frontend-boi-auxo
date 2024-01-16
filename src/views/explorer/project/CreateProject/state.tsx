@@ -37,12 +37,6 @@ export const useCreateProjectFunctions = () => {
     const walletData = useWalletData();
     const { workerClient } = useAppContract();
 
-    // const checkData = () => {
-    //     if (!projectData.name) {
-    //         throw
-    //     }
-    // };
-
     const setProjectData = (data: Partial<TEditProjectData>) => {
         _setProjectData((prev) => ({
             ...prev,
@@ -77,6 +71,28 @@ export const useCreateProjectFunctions = () => {
         }
     };
 
+    const checkData = () => {
+        if (!projectData.name) {
+            return { valid: false, message: 'Project Name' };
+        }
+        if (!projectData.publicKey) {
+            return { valid: false, message: 'Project PublicKey' };
+        }
+        if (!projectData.overViewDescription) {
+            return { valid: false, message: 'Overview Description' };
+        }
+        if (!projectData.problemStatement) {
+            return { valid: false, message: 'Problem Statement' };
+        }
+        if (!projectData.solution) {
+            return { valid: false, message: 'Solution' };
+        }
+        if (!projectData.challengeAndRisk) {
+            return { valid: false, message: 'Challenge and risk' };
+        }
+        return { valid: true, message: '' };
+    };
+
     const handleSubmitProject = async () => {
         const idtoast = toast.loading('Create transaction and proving...', { position: 'top-center', type: 'info' });
         try {
@@ -85,6 +101,10 @@ export const useCreateProjectFunctions = () => {
             }
             if (workerClient === null) {
                 throw Error('Worker client failed');
+            }
+            const checkResult = checkData();
+            if (!checkResult.valid) {
+                throw Error(`Missing input: ${checkResult.message}`);
             }
             const ipfsData = await postProjectsToIpfs({
                 description: projectData.overViewDescription,
