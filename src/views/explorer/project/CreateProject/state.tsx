@@ -1,6 +1,5 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
 import { toast } from 'react-toastify';
-
 import { TEditProjectData, createProject, postProjectsToIpfs } from 'src/services/project/api';
 import { useAppContract } from 'src/states/contracts';
 import { useWalletData } from 'src/states/wallet';
@@ -43,7 +42,6 @@ export const useCreateProjectFunctions = () => {
             ...data,
         }));
     };
-
     const setCustomSection = (data: TEditProjectData['customSections']) => {
         _setProjectData((prev) => ({
             ...prev,
@@ -70,7 +68,6 @@ export const useCreateProjectFunctions = () => {
             toast('There was an error creating project', { type: 'error' });
         }
     };
-
     const checkData = () => {
         if (!projectData.name) {
             return { valid: false, message: 'Project Name' };
