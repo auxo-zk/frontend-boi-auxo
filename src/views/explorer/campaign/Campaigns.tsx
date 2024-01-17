@@ -5,7 +5,7 @@ import { useState } from 'react';
 import ButtonGroup from 'src/components/ButtonGroup/ButtonGroup';
 import Img from 'src/components/Img/Img';
 import { TCampaignDetail } from 'src/services/campaign/api';
-import CampaignOverview from './CampaignOverview/CampaignOverview';
+import CampaignOverview from './DetailCampaign/CampaignOverview/CampaignOverview';
 
 export default function Campaigns({ data }: { data: TCampaignDetail }) {
     const [selected, setSelected] = useState<number>(0);

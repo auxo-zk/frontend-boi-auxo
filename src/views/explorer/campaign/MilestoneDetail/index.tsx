@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import BannerInput from './BannerInput';
 
-export default function CreateCampaign() {
+export default function MilestoneDetail() {
     const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey } = useCreateProjectData();
     const { setProjectData, handleCreateProject, handleSubmitProject } = useCreateProjectFunctions();
     const [loading, setLoading] = useState<boolean>(false);
