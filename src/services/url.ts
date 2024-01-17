@@ -1,3 +1,4 @@
+import { Constants } from '@auxo-dev/platform';
 import { BACKEND_BASE_URL } from './baseUrl';
 
 export const apiUrl = {
@@ -20,4 +21,7 @@ export const apiUrl = {
     campaignDetail: `${BACKEND_BASE_URL}/v0/campaigns`,
     //profile
     getUserProfile: `${BACKEND_BASE_URL}/v0/builders`,
+
+    getProjectMemberWitness: (projectId: string, memberId: string) => `${BACKEND_BASE_URL}/v0/storages/project/members/witness/${projectId}-${memberId}`,
+    getParticipationZkappWitness: `${BACKEND_BASE_URL}/v0/storages/participation/zkApps/witness/${Constants.ZkAppEnum.PROJECT}`,
 };

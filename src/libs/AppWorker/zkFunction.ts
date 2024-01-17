@@ -8,6 +8,8 @@ import { ZkApp, Storage } from '@auxo-dev/platform';
 import { ArgumentTypes } from 'src/global.config';
 import { FileSystem } from 'src/states/cache';
 import { IPFSHash } from '@auxo-dev/auxo-libs';
+import { BaseMerkleWitness } from 'o1js/dist/node/lib/merkle_tree';
+import { TWitness } from 'src/services/services';
 
 const state = {
     TypeZkApp: null as null | typeof ZkApp,
@@ -83,6 +85,39 @@ export const zkFunctions = {
                 members: new Storage.ProjectStorage.MemberArray(args.members.map((mem) => PublicKey.fromBase58(mem))),
                 ipfsHash: IPFSHash.fromString(args.ipfsHash),
                 payeeAccount: PublicKey.fromBase58(args.projectPubBase58),
+            });
+        });
+        state.transaction = transaction;
+    },
+    joinCampaign: async (args: {
+        sender: string;
+        campaignId: string;
+        projectId: string;
+        participationInfo: string;
+        lv1CWitness: string;
+        memberLv1Witness: TWitness;
+        memberLv2Witness: TWitness;
+        projectRef: { addressWitness: TWitness };
+    }) => {
+        const sender = PublicKey.fromBase58(args.sender);
+        await fetchAccount({ publicKey: sender });
+
+        // const indexWitness =  Storage.ParticipationStorage.IndexStorage.calculateLevel1Index({
+        //     campaignId: new Field(args.campaignId),
+        //     projectId: new Field(args.projectId),
+        // })
+        const transaction = await Mina.transaction(sender, () => {
+            state.ParticipationContract!.joinCampaign({
+                campaignId: new Field(args.campaignId),
+                projectId: new Field(args.projectId),
+                indexWitness: Storage.ParticipationStorage.Level1CWitness.fromJSON(args.lv1CWitness),
+                memberLv1Witness: Storage.ProjectStorage.Level1Witness.fromJSON(args.memberLv1Witness),
+                memberLv2Witness: Storage.ProjectStorage.Level2Witness.fromJSON(args.memberLv2Witness),
+                participationInfo: IPFSHash.fromString(args.participationInfo),
+                projectRef: new Storage.SharedStorage.ZkAppRef({
+                    address: state.ProjectContract!.address,
+                    witness: Storage.SharedStorage.AddressWitness.fromJSON(args.projectRef.addressWitness),
+                }),
             });
         });
         state.transaction = transaction;
