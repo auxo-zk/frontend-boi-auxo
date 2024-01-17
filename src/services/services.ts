@@ -60,3 +60,19 @@ export async function getTokenFromSig(data: {
     const response = (await axios.post(apiUrl.getTokenFromSig, data)).data as RTGetTokenFromSig;
     return response;
 }
+
+//TODO ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+export type TWitness = {
+    path: string[];
+    isLeft: boolean[];
+};
+
+export async function getProjectMemberWitness(projectId: string, memberId: string): Promise<TWitness[]> {
+    const response = await axios.get(apiUrl.getProjectMemberWitness(projectId, memberId));
+    return response.data || [];
+}
+
+export async function getParticipationZkappWitness(): Promise<TWitness> {
+    const response = await axios.get(apiUrl.getParticipationZkappWitness);
+    return response.data;
+}

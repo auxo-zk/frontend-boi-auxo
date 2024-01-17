@@ -3,8 +3,11 @@ import { useMemo } from 'react';
 import { IconChecked } from 'src/assets/svg/icon';
 
 import { TCampaignData, TCampaignDetail } from 'src/services/campaign/api';
+import { useModalData, useModalFunction } from 'src/states/modal';
 
 export default function CampaignOverview({ data }: { data: TCampaignDetail['overview'] }) {
+    const { open } = useModalData();
+    const { openModal, closeModal, setModalData } = useModalFunction();
     return (
         <Box>
             <Grid container sx={{ mt: 2 }} spacing={2}>

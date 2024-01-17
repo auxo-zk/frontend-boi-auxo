@@ -79,4 +79,7 @@ export default class ZkAppWorkerClient {
     submitProject(args: ArgumentZkFuction<'submitProject'>) {
         return this._call('submitProject', args);
     }
+    joinCampaign(args: ArgumentZkFuction<'joinCampaign'>) {
+        return this._call('joinCampaign', args);
+    }
 }

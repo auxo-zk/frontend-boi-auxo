@@ -113,7 +113,8 @@ export type MemberDataType = {
 export type TEditProjectData = {
     draftId?: string;
     name: string;
-    banner: string;
+    avatarImage: string;
+    coverImage: string;
     publicKey: string;
     overViewDescription: string;
     problemStatement: string;
