@@ -23,10 +23,10 @@
     axios "^1.6.5"
     o1js "0.15.1"
 
-"@auxo-dev/platform@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@auxo-dev/platform/-/platform-0.1.4.tgz#569419a0f4d354af5e1662ff4a39662cde4c7db7"
-  integrity sha512-hMEuUYORWxFEUwlUpkGjkBvO08oUVAmHd+QKMrBJjQOHz8A15DwUV16UaIB19iEf+Asccz4oIBjyNXtwapCIVA==
+"@auxo-dev/platform@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@auxo-dev/platform/-/platform-0.1.5.tgz#fdbf94698b9754c819d6746659edbdee53a88ca3"
+  integrity sha512-90ke0APOeMGyWNWJwII7YayNYC7Jf76YkxSYCwIPRTZlidfZ7aey6Jc10DUrqRc8NgH2mVCxnR4Q23jP/J32uA==
   dependencies:
     "@auxo-dev/auxo-libs" "0.3.5"
     "@auxo-dev/dkg" "0.2.12"

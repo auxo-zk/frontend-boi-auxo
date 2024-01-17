@@ -20,13 +20,8 @@ export const FileSystem = (files: any): Cache => ({
         }
 
         if (dataType === 'string') {
-            // console.log('found in cache', { persistentId, uniqueId, dataType });
             return new TextEncoder().encode(files[persistentId].data);
         }
-        // else {
-        //   let buffer = readFileSync(resolve(cacheDirectory, persistentId));
-        //   return new Uint8Array(buffer.buffer);
-        // }
 
         return undefined;
     },
