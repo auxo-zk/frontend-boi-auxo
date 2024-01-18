@@ -6,12 +6,13 @@ import ButtonGroup from 'src/components/ButtonGroup/ButtonGroup';
 import Img from 'src/components/Img/Img';
 import { TCampaignDetail } from 'src/services/campaign/api';
 import CampaignOverview from './CampaignOverview/CampaignOverview';
+import { imagePath } from 'src/constants/imagePath';
 
 export default function DetailCampaigns({ data }: { data: TCampaignDetail }) {
     const [selected, setSelected] = useState<number>(0);
     return (
         <Container sx={{ pb: 5 }}>
-            <Img src={data.banner || ''} alt="banner project" sx={{ width: '100%', height: 'auto', aspectRatio: '370/100', borderRadius: '0px 0px 12px 12px' }} />
+            <Img src={data.banner || imagePath.DEFAULT_BANNER.src} alt="banner project" sx={{ width: '100%', height: 'auto', aspectRatio: '370/100', borderRadius: '0px 0px 12px 12px' }} />
             <Breadcrumbs sx={{ mt: 2 }}>
                 <Link color="inherit" href="/explorer/campaigns" style={{ textDecoration: 'none', color: 'unset' }}>
                     <Box sx={{ display: 'flex', placeItems: 'center' }}>

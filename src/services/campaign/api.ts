@@ -2,11 +2,11 @@ import axios from 'axios';
 import { apiUrl } from '../url';
 import { BACKEND_BASE_URL } from '../baseUrl';
 
-export type TCampaignData = { name: string; type: string; date: string; capacity: string; img?: string; banner?: string; status?: number };
+export type TCampaignData = { name: string; type: string; date: string; capacity: string; img?: string; banner?: string; status?: number; campaignId: string };
 export const apiLatestFundingCampaigns = '';
 export async function getLatestFundingCampaigns(): Promise<TCampaignData[]> {
-    const response: any[] = (await axios.get(apiUrl.getCampaign + '?owner=B62qmtfTkHLzmvoKYcTLPeqvuVatnB6wtnXsP6jrEi6i2eUEjcxWauH')).data;
-
+    const response: any[] = (await axios.get(apiUrl.getCampaignAll)).data;
+    console.log(response);
     return response.map((item) => ({
         name: item.ipfsData.name || '',
         type: 'Public, grans',
@@ -15,6 +15,7 @@ export async function getLatestFundingCampaigns(): Promise<TCampaignData[]> {
         img: item.ipfsData.img || '',
         banner: '',
         status: item.status || 0,
+        campaignId: item.campaignId + '' || '#',
     }));
 }
 
