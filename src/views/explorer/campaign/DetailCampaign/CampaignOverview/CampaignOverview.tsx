@@ -4,6 +4,7 @@ import { IconChecked } from 'src/assets/svg/icon';
 
 import { TCampaignData, TCampaignDetail } from 'src/services/campaign/api';
 import { useModalData, useModalFunction } from 'src/states/modal';
+import { formatDate } from 'src/utils/format';
 
 export default function CampaignOverview({ data }: { data: TCampaignDetail['overview'] }) {
     const { open } = useModalData();
@@ -81,35 +82,17 @@ function TimeLineIndicator({ data }: { data: TCampaignDetail['overview'] }) {
                 <IconStatus text="Allocation" step={Math.max(current - 1, 1)} />
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', height: '150px', width: '350px' }}>
-                <Typography ml={22} variant="h6" fontWeight={400}>{`${new Date(Number(data.application.from || 0)).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    formatMatcher: 'best fit',
-                })} - ${new Date(Number(data.application.to || 0)).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    formatMatcher: 'best fit',
-                })}`}</Typography>
+                <Typography ml={22} variant="h6" fontWeight={400}>
+                    {formatDate(Number(data.application.from || 0), 'dd MMM')} - {formatDate(Number(data.application.to || 0), 'dd MMM')}
+                </Typography>
 
-                <Typography ml={22} variant="h6" fontWeight={400}>{`${new Date(Number(data.investment.from || 0)).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    formatMatcher: 'best fit',
-                })} - ${new Date(Number(data.investment.to || 0)).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    formatMatcher: 'best fit',
-                })}`}</Typography>
+                <Typography ml={22} variant="h6" fontWeight={400}>
+                    {formatDate(Number(data.investment.from || 0), 'dd MMM')} - {formatDate(Number(data.investment.to || 0), 'dd MMM')}
+                </Typography>
 
-                <Typography ml={22} variant="h6" fontWeight={400}>{`${new Date(Number(data.allocation.from || 0)).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    formatMatcher: 'best fit',
-                })} - ${new Date(Number(data.allocation.to || 0)).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    formatMatcher: 'best fit',
-                })}`}</Typography>
+                <Typography ml={22} variant="h6" fontWeight={400}>
+                    {formatDate(Number(data.allocation.from || 0), 'dd MMM')} - {formatDate(Number(data.allocation.to || 0), 'dd MMM')}
+                </Typography>
             </Box>
         </Box>
     );
