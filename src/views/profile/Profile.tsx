@@ -6,6 +6,7 @@ import { IconEdit } from 'src/assets/svg/icon';
 import Avatar from 'src/components/Avatar/Avatar';
 import { useProfileProjectsData, useProfileProjectsFunction } from './state';
 import Card from 'src/components/Card/Card';
+import NoData from 'src/components/NoData';
 
 export default function Profile() {
     const profileProjects = useProfileProjectsData();
@@ -95,6 +96,11 @@ export default function Profile() {
                         </Grid>
                     );
                 })}
+                {(profileProjects?.ownerProject?.draft?.length || 0) === 0 && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                        <NoData text="No Data" />
+                    </Box>
+                )}
             </Grid>
         </Container>
     );
