@@ -20,15 +20,13 @@ export default function DetailCampaigns({ data }: { data: TCampaignDetail }) {
                         <Typography color={'primary.main'}>All Campaigns</Typography>
                     </Box>
                 </Link>
-                <Link color="inherit" href="#" style={{ textDecoration: 'none', color: 'unset' }}>
-                    <Typography color={'primary.main'} fontWeight={600}>
-                        Campaigns Name
-                    </Typography>
-                </Link>
+                <Typography color={'primary.main'} fontWeight={600}>
+                    {data.name}
+                </Typography>
             </Breadcrumbs>
 
             <Box sx={{ position: 'sticky', top: '64px', bgcolor: 'background.default', pb: 2, mt: 3 }}>
-                <Typography variant="h3">PI NEtwork celebrates pi2day 2023</Typography>
+                <Typography variant="h3">{data.name}</Typography>
                 <ButtonGroup
                     sx={{ mt: 3 }}
                     options={['Overview', 'Fundraising']}

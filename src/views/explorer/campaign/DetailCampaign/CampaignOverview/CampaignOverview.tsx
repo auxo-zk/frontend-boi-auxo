@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Grid, TextField, Typography } from '@mui/material';
-import { useMemo } from 'react';
-import { IconChecked } from 'src/assets/svg/icon';
+import { ReactNode, useMemo } from 'react';
+import { IconChecked, IconDone } from 'src/assets/svg/icon';
 
 import { TCampaignData, TCampaignDetail } from 'src/services/campaign/api';
 import { useModalData, useModalFunction } from 'src/states/modal';
@@ -9,35 +9,56 @@ import { formatDate } from 'src/utils/format';
 export default function CampaignOverview({ data }: { data: TCampaignDetail['overview'] }) {
     const { open } = useModalData();
     const { openModal, closeModal, setModalData } = useModalFunction();
+    const activeSteps = useMemo(() => {
+        const timeNow = Date.now();
+        if (timeNow > data.participation.from && timeNow < data.participation.to) return 0;
+        if (timeNow > data.investment.from && timeNow < data.investment.to) return 1;
+        if (timeNow > data.allocation.from && timeNow < data.allocation.to) return 2;
+
+        return 0;
+    }, [data]);
     return (
         <Box>
             <Grid container sx={{ mt: 2 }} spacing={2}>
                 <Grid item xs={12} sm={6} sx={{ display: 'flex' }}>
-                    <Avatar src="" alt="" sx={{ width: '96px', height: '96px', mr: 3 }} />
+                    <Avatar src={''} alt="" sx={{ width: '96px', height: '96px', mr: 3 }} />
                     <Box>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                             <Box>
-                                <Typography variant="body1">Organizer</Typography>
+                                <Typography variant="body1" color={'text.secondary'} mb={1}>
+                                    Organizer
+                                </Typography>
                                 <Typography variant="h6">Pi network</Typography>
                             </Box>
                             <Box>
-                                <Typography variant="body1">Capacity</Typography>
-                                <Typography variant="h6">15/20 projects</Typography>
+                                <Typography variant="body1" color={'text.secondary'} mb={1}>
+                                    Capacity
+                                </Typography>
+                                <Typography variant="h6">{data.capacity} projects</Typography>
                             </Box>
                         </Box>
                         <Box>
-                            <Typography
-                                variant="body1"
-                                color="text.secondary"
+                            <Box
                                 sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: '3', WebkitBoxOrient: 'vertical' }}
-                            >
-                                {data.description}
-                            </Typography>
+                                dangerouslySetInnerHTML={{ __html: data.description }}
+                            ></Box>
                         </Box>
                     </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <TimeLineIndicator data={data} />
+                    <Box ml={3}>
+                        <Typography color={'text.secondary'} mb={1}>
+                            Timeline
+                        </Typography>
+                        <StepView
+                            activeStep={activeSteps}
+                            steps={[
+                                { title: 'Participation', content: `${formatDate(Number(data.participation.from || 0), 'dd MMM')} - ${formatDate(Number(data.participation.to || 0), 'dd MMM')}` },
+                                { title: 'Investment', content: `${formatDate(Number(data.investment.from || 0), 'dd MMM')} - ${formatDate(Number(data.investment.to || 0), 'dd MMM')}` },
+                                { title: 'Allocation', content: `${formatDate(Number(data.allocation.from || 0), 'dd MMM')} - ${formatDate(Number(data.allocation.to || 0), 'dd MMM')}` },
+                            ]}
+                        />
+                    </Box>
                 </Grid>
             </Grid>
             <Box>
@@ -45,7 +66,7 @@ export default function CampaignOverview({ data }: { data: TCampaignDetail['over
                     Participating Projects
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <TextField variant="outlined" color="secondary" placeholder="Search project" />
+                    <TextField variant="outlined" color="secondary" label="Search project" name="project_name" />
                     <Button sx={{ minWidth: '184px' }} variant="contained">
                         Apply
                     </Button>
@@ -55,61 +76,53 @@ export default function CampaignOverview({ data }: { data: TCampaignDetail['over
     );
 }
 
-function TimeLineIndicator({ data }: { data: TCampaignDetail['overview'] }) {
-    const current = useMemo(() => {
-        const currentTime = Date.now();
-        if (currentTime < Number(data.application.from || 0)) {
-            return 0;
-        }
-        if (currentTime < Number(data.application.to || 0)) {
-            return 1;
-        }
-        if (currentTime < Number(data.investment.to || 0)) {
-            return 2;
-        }
-        if (currentTime < Number(data.allocation.to || 0)) {
-            return 3;
-        }
-        return 4;
-    }, [data]);
+function StepView({ steps, activeStep }: { steps: { title: string; content: string }[]; activeStep: number }) {
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', height: '150px' }}>
-                <IconStatus text="Application" step={Math.min(current + 1, 3)} />
-                <BoxLink step={Math.min(current + 1, 3)} />
-                <IconStatus text="Funding" step={Math.min(current, 3)} />
-                <BoxLink step={Math.min(current, 3)} />
-                <IconStatus text="Allocation" step={Math.max(current - 1, 1)} />
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', height: '150px', width: '350px' }}>
-                <Typography ml={22} variant="h6" fontWeight={400}>
-                    {formatDate(Number(data.application.from || 0), 'dd MMM')} - {formatDate(Number(data.application.to || 0), 'dd MMM')}
-                </Typography>
-
-                <Typography ml={22} variant="h6" fontWeight={400}>
-                    {formatDate(Number(data.investment.from || 0), 'dd MMM')} - {formatDate(Number(data.investment.to || 0), 'dd MMM')}
-                </Typography>
-
-                <Typography ml={22} variant="h6" fontWeight={400}>
-                    {formatDate(Number(data.allocation.from || 0), 'dd MMM')} - {formatDate(Number(data.allocation.to || 0), 'dd MMM')}
-                </Typography>
-            </Box>
+        <Box>
+            {steps.map((item, index) => {
+                const IconStep =
+                    index < activeStep ? (
+                        <IconDone sx={{ fontSize: '24px', color: 'primary.light' }} />
+                    ) : index == activeStep ? (
+                        <Box sx={{ border: '2px solid', width: '24px', height: '24px', borderRadius: '50%', borderColor: 'primary.light' }} />
+                    ) : (
+                        <Box sx={{ border: '1px solid', width: '24px', height: '24px', borderRadius: '50%', borderColor: 'text.primary' }} />
+                    );
+                return (
+                    <Box key={'step' + item.title + index}>
+                        <Box sx={{ display: 'flex', placeItems: 'center', gap: 3 }}>
+                            <Box sx={{ display: 'flex', placeItems: 'center', gap: 1.3 }}>
+                                {IconStep}
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        minWidth: '140px',
+                                        fontWeight: index < activeStep ? 700 : 500,
+                                        color: index < activeStep ? 'primary.light' : index == activeStep ? 'text.primary' : 'text.secondary',
+                                    }}
+                                >
+                                    {item.title}
+                                </Typography>
+                            </Box>
+                            <Typography variant="h6" sx={{ fontWeight: '400', color: index < activeStep ? 'primary.light' : index == activeStep ? 'text.primary' : 'text.secondary' }}>
+                                {item.content}
+                            </Typography>
+                        </Box>
+                        {index < steps.length - 1 ? (
+                            <Box sx={{ height: '40px', width: '24px', justifyContent: 'center', display: 'flex' }}>
+                                <Box
+                                    sx={{
+                                        width: '0px',
+                                        height: '100%',
+                                        border: index < activeStep ? '0.5px solid' : '0.5px dashed',
+                                        borderColor: index < activeStep ? 'primary.light' : 'text.secondary',
+                                    }}
+                                ></Box>
+                            </Box>
+                        ) : null}
+                    </Box>
+                );
+            })}
         </Box>
     );
-}
-
-function IconStatus({ step, text }: { step: number; text: string }) {
-    return (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '24px' }}>
-            <Box sx={{ m: 0, width: '24px', height: '24px', p: 0, borderRadius: '50%', border: (step === 1 && '1px solid #043E35') || (step === 2 && '2px solid #2C978F') || 'none' }}>
-                {step === 3 && <IconChecked sx={{ width: '24px', height: '24px' }} />}
-            </Box>
-            <Typography ml={3} variant="h6" fontWeight={step === 3 ? 700 : 500} color={step === 2 ? 'primary.main' : 'primary.light'}>
-                {text}
-            </Typography>
-        </Box>
-    );
-}
-function BoxLink({ step }: { step: number }) {
-    return <Box sx={{ m: 0, width: '2x', height: '24px', p: 0, border: step === 3 ? '1px solid #2C978F' : '1px dashed #043E35' }}></Box>;
 }
