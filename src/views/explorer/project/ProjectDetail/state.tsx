@@ -6,6 +6,7 @@ const initData: TProjectDetail = {
     name: '',
     avatar: '',
     date: '',
+    banner: '',
     fundrasing: {
         raiseInfo: [],
         raisedAmount: 0,
