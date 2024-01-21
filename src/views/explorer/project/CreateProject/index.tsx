@@ -1,5 +1,5 @@
 import { ChevronLeftRounded } from '@mui/icons-material';
-import { Box, Breadcrumbs, Button, Container, Link, Paper, Switch, TextField, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Button, Container, Paper, Switch, TextField, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEditor'), { ssr: false });
 import Img from 'src/components/Img/Img';
@@ -11,6 +11,8 @@ import ButtonLoading from 'src/components/ButtonLoading/ButtonLoading';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import BannerInput from './BannerInput';
+import { imagePath } from 'src/constants/imagePath';
+import Link from 'next/link';
 
 export default function CreateCampaign() {
     const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey } = useCreateProjectData();
@@ -46,24 +48,17 @@ export default function CreateCampaign() {
                 '& .timeline-dot': { width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'background.primary', border: '2px solid ' + theme.palette.primary.light, mr: 1.5 },
             })}
         >
-            {/* <Img
-                src="https://bitnews.sgp1.digitaloceanspaces.com/uploads/admin/R4LE00ioowv4m5dB_1690012540.jpg"
-                alt="banner project"
-                sx={{ width: '100%', height: 'auto', aspectRatio: '370/100', borderRadius: '0px 0px 12px 12px' }}
-            /> */}
-            <BannerInput img="https://bitnews.sgp1.digitaloceanspaces.com/uploads/admin/R4LE00ioowv4m5dB_1690012540.jpg" />
+            <BannerInput img={imagePath.DEFAULT_BANNER.src} />
             <Breadcrumbs sx={{ mt: 2 }}>
-                <Link color="inherit" href="/explorer/projects" style={{ textDecoration: 'none', color: 'unset' }}>
+                <Link color="inherit" href="/profile" style={{ textDecoration: 'none', color: 'unset' }}>
                     <Box sx={{ display: 'flex', placeItems: 'center' }}>
                         <ChevronLeftRounded color="primary" sx={{ fontSize: '24px' }} />
-                        <Typography color={'primary.main'}>All Campaigns</Typography>
+                        <Typography color={'primary.main'}>Builder Profile</Typography>
                     </Box>
                 </Link>
-                <Link color="inherit" href="#" style={{ textDecoration: 'none', color: 'unset' }}>
-                    <Typography color={'primary.main'} fontWeight={600}>
-                        PI network
-                    </Typography>
-                </Link>
+                <Typography color={'primary.main'} fontWeight={600}>
+                    Project's Information Editor
+                </Typography>
             </Breadcrumbs>
             {/* eslint-disable-next-line react/no-unescaped-entities */}
             <Typography variant="h1">Project's information editor</Typography>
