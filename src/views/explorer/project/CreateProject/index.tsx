@@ -57,11 +57,10 @@ export default function CreateCampaign() {
                     </Box>
                 </Link>
                 <Typography color={'primary.main'} fontWeight={600}>
-                    Project's Information Editor
+                    {"Project's Information Editor"}
                 </Typography>
             </Breadcrumbs>
-            {/* eslint-disable-next-line react/no-unescaped-entities */}
-            <Typography variant="h1">Project's information editor</Typography>
+            <Typography variant="h1">{"Project's Information Editor"}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: 3 }}>
                 <TextField
                     fullWidth
