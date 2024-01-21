@@ -23,8 +23,8 @@ export async function getTopProject(): Promise<TProjectData[]> {
     const response: any[] = (await axios.get(apiUrl.getTopProject)).data;
     return response.map((item: any) => ({
         name: item.ipfsData?.name || '',
-        avatar: item.avatar || '',
-        banner: item.banner || '',
+        avatar: item?.ipfsData?.avatarImage || '',
+        banner: item?.ipfsData?.coverImage || '',
         desc: item.ipfsData?.description || '',
         date: new Date().toLocaleDateString(),
         idProject: item.projectId + '' || '#',
