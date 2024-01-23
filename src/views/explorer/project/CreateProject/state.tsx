@@ -131,6 +131,9 @@ export const useCreateProjectFunctions = () => {
                 })),
                 name: projectData.name,
                 publicKey: projectData.publicKey,
+                'challenges-and-risks': projectData.challengeAndRisk,
+                'problem-statement': projectData.problemStatement,
+                solution: projectData.solution,
             });
             const result = await workerClient.submitProject({
                 sender: walletData.userAddress,
