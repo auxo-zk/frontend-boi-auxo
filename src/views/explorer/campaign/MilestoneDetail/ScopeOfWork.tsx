@@ -103,6 +103,7 @@ export default function ScopeOfWork() {
                                                 },
                                             })
                                         }
+                                        sx={{ mr: 2 }}
                                     />
                                     <LocalizationProvider
                                         dateAdapter={AdapterDayjs}
