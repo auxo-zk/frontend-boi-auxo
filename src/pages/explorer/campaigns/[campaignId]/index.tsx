@@ -9,7 +9,7 @@ export default function DetailCampaign({ data }: InferGetServerSidePropsType<typ
 
 export const getServerSideProps = (async (context) => {
     try {
-        const id = context.params?.slug || '';
+        const id = context.params?.campaignId || '';
         const res = await getCampaignOverview(id as any);
         const data = res;
 

@@ -5,10 +5,20 @@ import { IconChecked, IconDone } from 'src/assets/svg/icon';
 import { TCampaignData, TCampaignDetail } from 'src/services/campaign/api';
 import { useModalData, useModalFunction } from 'src/states/modal';
 import { formatDate } from 'src/utils/format';
+import ProjectSelect from './ProjectSelect';
 
 export default function CampaignOverview({ data }: { data: TCampaignDetail['overview'] }) {
     const { open } = useModalData();
     const { openModal, closeModal, setModalData } = useModalFunction();
+    const handleOpen = () => {
+        openModal({
+            title: 'Select Project',
+            content: <ProjectSelect />,
+            modalProps: {
+                maxWidth: 'xs',
+            },
+        });
+    };
     const activeSteps = useMemo(() => {
         const timeNow = Date.now();
         if (timeNow > data.participation.from && timeNow < data.participation.to) return 0;
@@ -67,7 +77,7 @@ export default function CampaignOverview({ data }: { data: TCampaignDetail['over
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <TextField variant="outlined" color="secondary" label="Search project" name="project_name" />
-                    <Button sx={{ minWidth: '184px' }} variant="contained">
+                    <Button sx={{ minWidth: '184px' }} variant="contained" onClick={handleOpen}>
                         Apply
                     </Button>
                 </Box>
