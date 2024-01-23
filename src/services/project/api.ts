@@ -242,7 +242,9 @@ export type IPFSProjectInput = {
         role: string;
         link: string;
     }[];
-
+    'problem-statement': string;
+    solution: string;
+    'challenges-and-risks': string;
     documents: string[];
 };
 

@@ -4,8 +4,9 @@ import { BACKEND_BASE_URL } from '../baseUrl';
 
 export type TCampaignData = { name: string; type: string; date: string; capacity: string; avatar: string; banner: string; status: number; campaignId: string };
 export const apiLatestFundingCampaigns = '';
-export async function getLatestFundingCampaigns(): Promise<TCampaignData[]> {
-    const response: any[] = (await axios.get(apiUrl.getCampaignAll)).data;
+
+export async function getLatestFundingCampaigns(active: boolean = true): Promise<TCampaignData[]> {
+    const response: any[] = (await axios.get(apiUrl.getCampaignAll + `?active=${active}`)).data;
     console.log(response);
     return response.map((item) => ({
         name: item.ipfsData?.name || '---',
@@ -48,14 +49,13 @@ export type TCampaignDetail = {
 };
 export async function getCampaignOverview(campaignId: string): Promise<TCampaignDetail> {
     const response = (await axios.get(apiUrl.campaignDetail + `/${campaignId}`)).data;
-
     return {
         campaignId: response.campaignId + '' || '',
         name: response.ipfsData?.name || '----',
         banner: response?.ipfsData?.coverImage || '',
         avatar: response?.ipfsData?.avatarImage || '',
         overview: {
-            organizer: response.owner,
+            organizer: response.owner || '',
             capacity: response.ipfsData?.capacity || '',
             description: response.ipfsData?.description || '',
             allocation: {

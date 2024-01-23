@@ -1,4 +1,8 @@
-import { Box, Button, MenuItem, Select, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, MenuItem, Select, TextField, Typography } from '@mui/material';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { useModalData, useModalFunction } from 'src/states/modal';
 
 const mockOptions = [
     {
@@ -16,13 +20,16 @@ const mockOptions = [
 ];
 
 export default function ProjectSelect() {
+    const [project, setProject] = useState<number | string>();
+    const router = useRouter();
+    const { closeModal } = useModalFunction();
     return (
         <Box>
-            <Typography variant="h6">Select your project</Typography>
-            <Typography variant="body1">
+            {/* <Typography variant="h6">Select your project</Typography> */}
+            <Typography variant="body1" mb={3}>
                 {`Select a project to apply for this fundraising campaignYou will be required to provide answers to the organizer's questions to complete the application process`}
             </Typography>
-            <Select>
+            {/* <Select>
                 {mockOptions.map((item, index) => {
                     return (
                         <MenuItem key={item.value} value={item.value}>
@@ -30,10 +37,19 @@ export default function ProjectSelect() {
                         </MenuItem>
                     );
                 })}
-            </Select>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Button variant="outlined">Cancel</Button>
-                <Button variant="contained">Continue</Button>
+            </Select> */}
+            <Autocomplete options={mockOptions} renderInput={(params) => <TextField {...params} color="secondary" placeholder="Select project" />} onChange={(e, value) => setProject(value?.value)} />
+            <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, justifyContent: 'flex-end' }}>
+                <Button
+                    disabled={!project}
+                    variant="contained"
+                    onClick={() => {
+                        closeModal();
+                        router.push(`/${router.asPath}/milestones-detail/${project}`);
+                    }}
+                >
+                    Continue
+                </Button>
             </Box>
         </Box>
     );
