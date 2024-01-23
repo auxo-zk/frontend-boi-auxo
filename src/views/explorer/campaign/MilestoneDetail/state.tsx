@@ -1,12 +1,16 @@
+import { Constants, Storage } from '@auxo-dev/platform';
 import { atom, useSetAtom, useAtomValue } from 'jotai';
+import { Field } from 'o1js';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { getParticipationZkApp, getProjectMemLvl1, getProjectMemLvl2, getWitnessIndex, postProjectparticipation } from 'src/services/services';
 import { useAppContract } from 'src/states/contracts';
 import { useWalletData } from 'src/states/wallet';
 
 export type MilestoneData = {
     projectImg: string;
     campaignBanner: string;
+    campaignId: string;
     campaignQuestions: {
         [id: string]: {
             question: string;
@@ -28,12 +32,14 @@ export type MilestoneData = {
         solution: string;
         challengeAndRisk: string;
         customAnswer?: string;
+        projectId: string;
     };
 };
 
 export const projectInitData: MilestoneData = {
     projectImg: '',
     campaignBanner: '',
+    campaignId: '',
     campaignQuestions: {
         '0': {
             question: 'Test1',
@@ -55,6 +61,7 @@ export const projectInitData: MilestoneData = {
         solution: '',
         challengeAndRisk: '',
         customAnswer: '',
+        projectId: '',
     },
 };
 
@@ -62,8 +69,9 @@ const mileStoneData = atom<MilestoneData>(projectInitData);
 
 export const useMilestoneFunctions = () => {
     const _setMilestoneData = useSetAtom(mileStoneData);
+    const { campaignId, projectData, campaignQuestions, scopeOfWorks } = useMilestoneData();
     const milestoneData = useMilestoneData();
-    const walletData = useWalletData();
+    const { userAddress } = useWalletData();
     const { workerClient } = useAppContract();
 
     const setMilestoneData = (
@@ -96,6 +104,57 @@ export const useMilestoneFunctions = () => {
                 ...data,
             },
         }));
+    };
+    const handleSubmitProject = async () => {
+        const idtoast = toast.loading('Create transaction and proving...', { position: 'top-center', type: 'info' });
+        try {
+            if (!userAddress) throw Error('Please connect your wallet first!');
+            if (!workerClient) throw Error('Worker client is dead, reload page again!');
+            const postResult = await postProjectparticipation(projectData.projectId, {
+                answers: Object.values(campaignQuestions).map((i) => {
+                    return i.answer || '';
+                }),
+                documents: [],
+                scopeOfWorks: Object.values(scopeOfWorks).map((i) => ({
+                    deadline: i.deadline || '',
+                    information: [i.information],
+                    milestone: i.milestone,
+                    raisingAmount: i.raisingAmount,
+                })),
+            });
+            const witnessIndex = await getWitnessIndex();
+            const x = Storage.ParticipationStorage.IndexStorage.calculateLevel1Index({
+                campaignId: new Field(campaignId),
+                projectId: new Field(projectData.projectId),
+            });
+            const t = Storage.ParticipationStorage.Level1CWitness.fromJSON(witnessIndex[Number(x)]);
+            const witnessAll = await Promise.all([getProjectMemLvl1(), getProjectMemLvl2(projectData.projectId), getParticipationZkApp()]);
+            await workerClient.joinCampaign({
+                campaignId: campaignId,
+                projectId: projectData.projectId,
+                sender: userAddress,
+                memberLv1Witness: witnessAll[0][Number(projectData.projectId)],
+                memberLv2Witness: witnessAll[1][0],
+                participationInfo: String(postResult.Hash),
+                projectRef: {
+                    addressWitness: witnessAll[2][Constants.ZkAppEnum.PROJECT],
+                },
+                lv1CWitness: String(witnessIndex[Number(x)]),
+            });
+            await workerClient.proveTransaction();
+
+            toast.update(idtoast, { render: 'Prove successfull! Sending the transaction...' });
+            const transactionJSON = await workerClient.getTransactionJSON();
+            console.log(transactionJSON);
+
+            const { transactionLink } = await workerClient.sendTransaction(transactionJSON);
+            console.log(transactionLink);
+
+            toast.update(idtoast, { render: 'Send transaction successfull!', isLoading: false, type: 'success', autoClose: 3000, hideProgressBar: false });
+        } catch (err) {
+            console.log(err);
+            toast.update(idtoast, { render: (err as Error).message, type: 'error', position: 'top-center', isLoading: false, autoClose: 3000, hideProgressBar: false });
+        }
     };
     // const handleCreateProject = async () => {
     //     try {
@@ -178,6 +237,7 @@ export const useMilestoneFunctions = () => {
         setMilestoneData,
         setCampaignQuestions,
         setScopeOfWorks,
+        handleSubmitProject,
         // handleCreateProject,
         // handleSubmitProject,
     };

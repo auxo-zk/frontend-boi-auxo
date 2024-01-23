@@ -13,7 +13,7 @@ export type TProjectData = {
     avatar: string;
     idProject: string;
 };
-const getJwt = () => {
+export const getJwt = () => {
     return localStorage.getItem(LocalStorageKey.AccessToken) || '';
 };
 

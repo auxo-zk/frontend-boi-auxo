@@ -26,4 +26,9 @@ export const apiUrl = {
 
     getProjectMemberWitness: (projectId: string, memberId: string) => `${BACKEND_BASE_URL}/v0/storages/project/members/witness/${projectId}-${memberId}`,
     getParticipationZkappWitness: `${BACKEND_BASE_URL}/v0/storages/participation/zkApps/witness/${Constants.ZkAppEnum.PROJECT}`,
+    getProjectMemLvl1: `${BACKEND_BASE_URL} /v0/storages/project/members/level1`,
+    getProjectMemLvl2: (projectId: string) => `${BACKEND_BASE_URL}/v0/storages/project/members/level2/${projectId}`,
+    getParticipationZkApp: `${BACKEND_BASE_URL}/v0/storages/participation/zkapps`,
+    postProjectParticipation: (projectId: string) => `${BACKEND_BASE_URL}/v0/projects/${projectId}/participations`,
+    getWitnessIndex: `${BACKEND_BASE_URL}/v0/storages/participation/index/level1`,
 };

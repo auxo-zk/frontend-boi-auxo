@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import { GetServerSideProps, InferGetStaticPropsType } from 'next';
+import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
 import { getCampaignOverview } from 'src/services/campaign/api';
 import { getProjectDetail } from 'src/services/project/api';
@@ -8,6 +9,9 @@ import { InitMileStoneData, useMilestoneFunctions } from 'src/views/explorer/cam
 
 export default function MilestoneDetailPage({ campaignDetail, projectDetail }: InferGetStaticPropsType<typeof getServerSideProps>) {
     const { setMilestoneData } = useMilestoneFunctions();
+    const router = useRouter();
+    const projectId = String(router.query.projectId || '');
+    const campaignId = String(router.query.campaignId || '');
     useEffect(() => {
         const questions = campaignDetail.questions
             .map((i) => ({
@@ -31,11 +35,13 @@ export default function MilestoneDetailPage({ campaignDetail, projectDetail }: I
         setMilestoneData({
             campaignBanner: campaignDetail.banner,
             campaignQuestions: Object.assign({}, questions),
+            campaignId: campaignId,
             projectData: {
                 challengeAndRisk: projectDetail?.overview?.challengesAndRisk || '',
                 problemStatement: projectDetail?.overview?.problemStatement || '',
                 solution: projectDetail?.overview?.solution || '',
                 customAnswer: '',
+                projectId: projectId,
             },
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps

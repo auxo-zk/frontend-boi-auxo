@@ -16,7 +16,7 @@ import AdditionalDoc from './AdditionalDoc';
 export default function MilestoneDetail() {
     const { campaignQuestions, projectData } = useMilestoneData();
     const allData = useMilestoneData();
-    const { setCampaignQuestions } = useMilestoneFunctions();
+    const { setCampaignQuestions, handleSubmitProject } = useMilestoneFunctions();
     const [loading, setLoading] = useState<boolean>(false);
     const [submiting, setSubmiting] = useState<boolean>(false);
     const router = useRouter();
@@ -32,11 +32,11 @@ export default function MilestoneDetail() {
     //     }
     // };
 
-    // const handleSubmitClick = async () => {
-    //     setSubmiting(true);
-    //     await handleSubmitProject();
-    //     setSubmiting(false);
-    // };
+    const handleSubmitClick = async () => {
+        setSubmiting(true);
+        await handleSubmitProject();
+        setSubmiting(false);
+    };
     return (
         <Container
             sx={(theme) => ({
@@ -114,9 +114,10 @@ export default function MilestoneDetail() {
                 {/* <ButtonLoading muiProps={{ variant: 'contained', onClick: handleSaveButton, sx: { mr: 1 } }} isLoading={loading}>
                     Save
                 </ButtonLoading>
+               */}
                 <ButtonLoading isLoading={submiting} muiProps={{ variant: 'contained', onClick: handleSubmitClick }}>
                     Submit
-                </ButtonLoading> */}
+                </ButtonLoading>
             </Box>
         </Container>
     );
