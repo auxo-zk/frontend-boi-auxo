@@ -106,14 +106,14 @@ export default function ScopeOfWork() {
                                     />
                                     <LocalizationProvider
                                         dateAdapter={AdapterDayjs}
-                                        onChange={(e) =>
-                                            setScopeOfWorks({
-                                                [key]: {
-                                                    ...item,
-                                                    raisingAmount: e.target.value,
-                                                },
-                                            })
-                                        }
+                                        // onChange={(e) =>
+                                        //     setScopeOfWorks({
+                                        //         [key]: {
+                                        //             ...item,
+                                        //             raisingAmount: e.target.value,
+                                        //         },
+                                        //     })
+                                        // }
                                     >
                                         <DateTimePicker label="Deadline" sx={{ mr: 3 }} />
                                     </LocalizationProvider>
