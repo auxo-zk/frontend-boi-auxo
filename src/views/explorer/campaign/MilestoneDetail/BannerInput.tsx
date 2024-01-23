@@ -1,10 +1,11 @@
 import { Box, Button, CardMedia, Typography, alpha } from '@mui/material';
 import { ChangeEvent, LegacyRef, useEffect, useRef, useState } from 'react';
 import Img from 'src/components/Img/Img';
-import { useCreateProjectFunctions } from './state';
+import { useMilestoneFunctions } from './state';
 
 export default function BannerInput({ img }: { img?: string }) {
-    const { setProjectData } = useCreateProjectFunctions();
+    // const { setProjectData } = useCreateProjectFunctions();
+    const { setMilestoneData } = useMilestoneFunctions();
     const [previewImage, setPreviewImage] = useState<string>();
     const [uploadedFile, setUploadedFile] = useState<Blob | MediaSource>();
     const imageInputRef = useRef<HTMLInputElement>(null);
@@ -25,7 +26,7 @@ export default function BannerInput({ img }: { img?: string }) {
         if (uploadedFile) {
             const objectUrl = URL.createObjectURL(uploadedFile);
             setPreviewImage(objectUrl);
-            setProjectData({ bannerFile: uploadedFile });
+            setMilestoneData({ bannerFile: uploadedFile });
             // free memory when ever this component is unmounted
             return () => URL.revokeObjectURL(objectUrl);
         }
