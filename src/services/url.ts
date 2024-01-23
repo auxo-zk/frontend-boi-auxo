@@ -9,6 +9,7 @@ export const apiUrl = {
     getTokenFromSig: `${BACKEND_BASE_URL}/v0/auth`,
     //Project
     getTopProject: `${BACKEND_BASE_URL}/v0/projects`,
+    getListProject: `${BACKEND_BASE_URL}/v0/projects`,
     saveProject: `${BACKEND_BASE_URL}/v0/builders`,
     createProject: `${BACKEND_BASE_URL}/v0/builders`,
     getDraft: `${BACKEND_BASE_URL}/v0/builders/drafts`,

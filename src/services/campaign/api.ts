@@ -46,6 +46,7 @@ export type TCampaignDetail = {
     avatar: string;
     overview: TCampaignDetailOverview;
     result: TCampaignResult;
+    questions: { question: string; hint: ''; isRequired: boolean }[];
 };
 export async function getCampaignOverview(campaignId: string): Promise<TCampaignDetail> {
     const response = (await axios.get(apiUrl.campaignDetail + `/${campaignId}`)).data;
@@ -55,7 +56,7 @@ export async function getCampaignOverview(campaignId: string): Promise<TCampaign
         banner: response?.ipfsData?.coverImage || '',
         avatar: response?.ipfsData?.avatarImage || '',
         overview: {
-            organizer: response.owner || '',
+            organizer: response?.owner || '',
             capacity: response.ipfsData?.capacity || '',
             description: response.ipfsData?.description || '',
             allocation: {
@@ -72,5 +73,6 @@ export async function getCampaignOverview(campaignId: string): Promise<TCampaign
             },
         },
         result: {},
+        questions: response.ipfsData?.questions || [],
     };
 }

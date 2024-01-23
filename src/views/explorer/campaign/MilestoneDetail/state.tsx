@@ -20,7 +20,7 @@ export type MilestoneData = {
             information: string;
             milestone: string;
             raisingAmount: string;
-            deadline?: number;
+            deadline?: string;
         };
     };
     projectData: {
@@ -41,25 +41,13 @@ export const projectInitData: MilestoneData = {
             required: false,
             answer: '',
         },
-        '1': {
-            question: 'test2',
-            hint: '',
-            required: false,
-            answer: '',
-        },
     },
     scopeOfWorks: {
         '0': {
             information: '',
             milestone: '',
             raisingAmount: '',
-            deadline: Date.now(),
-        },
-        '1': {
-            information: '',
-            milestone: '',
-            raisingAmount: '',
-            deadline: Date.now(),
+            deadline: Date.now().toLocaleString(),
         },
     },
     projectData: {

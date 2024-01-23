@@ -1,8 +1,10 @@
 import { Autocomplete, Box, Button, MenuItem, Select, TextField, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { TProjectData, getAddressProject } from 'src/services/project/api';
 import { useModalData, useModalFunction } from 'src/states/modal';
+import { useWalletData } from 'src/states/wallet';
 
 const mockOptions = [
     {
@@ -18,11 +20,25 @@ const mockOptions = [
         value: 3,
     },
 ];
-
+// getAddressProject
 export default function ProjectSelect() {
     const [project, setProject] = useState<number | string>();
+    const [listProject, setListProject] = useState<TProjectData[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const { userAddress } = useWalletData();
     const router = useRouter();
     const { closeModal } = useModalFunction();
+    useEffect(() => {
+        const fetchProjects = async () => {
+            setLoading(true);
+            try {
+                const res = await getAddressProject(userAddress);
+                setListProject(res);
+            } catch (error) {}
+            setLoading(false);
+        };
+        fetchProjects();
+    }, [userAddress]);
     return (
         <Box>
             {/* <Typography variant="h6">Select your project</Typography> */}
@@ -38,7 +54,11 @@ export default function ProjectSelect() {
                     );
                 })}
             </Select> */}
-            <Autocomplete options={mockOptions} renderInput={(params) => <TextField {...params} color="secondary" placeholder="Select project" />} onChange={(e, value) => setProject(value?.value)} />
+            <Autocomplete
+                options={listProject.map((pj) => ({ label: pj.name, value: pj.idProject }))}
+                renderInput={(params) => <TextField {...params} color="secondary" placeholder="Select project" />}
+                onChange={(e, value) => setProject(value?.value)}
+            />
             <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, justifyContent: 'flex-end' }}>
                 <Button
                     disabled={!project}

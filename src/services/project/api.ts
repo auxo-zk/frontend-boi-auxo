@@ -31,6 +31,18 @@ export async function getTopProject(): Promise<TProjectData[]> {
     }));
 }
 
+export async function getAddressProject(address: string): Promise<TProjectData[]> {
+    const response: any[] = (await axios.get(apiUrl.getTopProject + `/${address}`)).data;
+    return response.map((item: any) => ({
+        name: item.ipfsData?.name || '',
+        avatar: item?.ipfsData?.avatarImage || '',
+        banner: item?.ipfsData?.coverImage || '',
+        desc: item.ipfsData?.description || '',
+        date: new Date().toLocaleDateString(),
+        idProject: item.projectId + '' || '#',
+    }));
+}
+
 //PROJECT DETAIL ************************************************************************************************************************************************
 export type TProjectOverview = {
     raisingAmount?: number;
