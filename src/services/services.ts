@@ -110,7 +110,6 @@ export type TProjectParticipationInput = {
 };
 export async function postProjectparticipation(projectId: string, input: TProjectParticipationInput): Promise<TProjectParticipation> {
     const jwt = getJwt();
-    console.log('🚀 ~ postProjectparticipation ~ jwt:', jwt);
     const res: TProjectParticipation = (
         await axios.post(apiUrl.postProjectParticipation(projectId), input, {
             headers: {
@@ -123,5 +122,12 @@ export async function postProjectparticipation(projectId: string, input: TProjec
 
 export async function getWitnessIndex(): Promise<TWitness[]> {
     const res: TWitness[] = (await axios.get(apiUrl.getWitnessIndex)).data;
+    return res;
+}
+
+export async function saveFile(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res: string = (await axios.post(apiUrl.saveFile, formData)).data;
     return res;
 }

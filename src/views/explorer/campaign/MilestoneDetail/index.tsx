@@ -7,8 +7,6 @@ import Img from 'src/components/Img/Img';
 import { useState } from 'react';
 import ButtonLoading from 'src/components/ButtonLoading/ButtonLoading';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
-import BannerInput from './BannerInput';
 import { MilestoneData, useMilestoneData, useMilestoneFunctions } from './state';
 import ScopeOfWork from './ScopeOfWork';
 import AdditionalDoc from './AdditionalDoc';

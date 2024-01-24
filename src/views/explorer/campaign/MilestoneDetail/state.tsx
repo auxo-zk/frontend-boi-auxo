@@ -127,7 +127,9 @@ export const useMilestoneFunctions = () => {
                 campaignId: new Field(campaignId),
                 projectId: new Field(projectData.projectId),
             });
+            console.log('🚀 ~ handleSubmitProject ~ x:', Number(x), String(witnessIndex[Number(x)]), witnessIndex[Number(x)]);
             const t = Storage.ParticipationStorage.Level1CWitness.fromJSON(witnessIndex[Number(x)]);
+            console.log('🚀 ~ handleSubmitProject ~  t:', t);
             const witnessAll = await Promise.all([getProjectMemLvl1(), getProjectMemLvl2(projectData.projectId), getParticipationZkApp()]);
             await workerClient.joinCampaign({
                 campaignId: campaignId,

@@ -1,12 +1,14 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
 import { toast } from 'react-toastify';
 import { TEditProjectData, createProject, postProjectsToIpfs } from 'src/services/project/api';
+import { saveFile } from 'src/services/services';
 import { useAppContract } from 'src/states/contracts';
 import { useWalletData } from 'src/states/wallet';
 
 export const projectInitData: TEditProjectData & {
-    avatarFile?: Blob | MediaSource;
-    bannerFile?: Blob | MediaSource;
+    avatarFile?: File;
+    bannerFile?: File;
+    documentFiles: { name: string; file: File }[];
 } = {
     name: '',
     avatarImage: '',
@@ -30,12 +32,14 @@ export const projectInitData: TEditProjectData & {
         },
     },
     additionalDocument: {},
+    documentFiles: [],
 };
 
 const createProjectData = atom<
     TEditProjectData & {
-        avatarFile?: Blob | MediaSource;
-        bannerFile?: Blob | MediaSource;
+        avatarFile?: File;
+        bannerFile?: File;
+        documentFiles: { name: string; file: File }[];
     }
 >(projectInitData);
 
@@ -48,8 +52,9 @@ export const useCreateProjectFunctions = () => {
     const setProjectData = (
         data: Partial<
             TEditProjectData & {
-                avatarFile?: Blob | MediaSource;
-                bannerFile?: Blob | MediaSource;
+                avatarFile?: File;
+                bannerFile?: File;
+                documentFiles: { name: string; file: File }[];
             }
         >
     ) => {
@@ -119,11 +124,29 @@ export const useCreateProjectFunctions = () => {
             if (!checkResult.valid) {
                 throw Error(`Missing input: ${checkResult.message}`);
             }
+            //safe image and file
+            //avatar and banner
+            let avatarUrl = '';
+            let bannerUrl = '';
+            let documentUrls: string[] = [];
+            if (!projectData.avatarFile) {
+                toast('Avatar required', { type: 'warning' });
+                return;
+            }
+            if (!projectData.bannerFile) {
+                toast('Banner required', { type: 'warning' });
+                return;
+            }
+            // if (projectData.documentFiles.length === 0) {
+            // }
+            avatarUrl = await saveFile(projectData.avatarFile);
+            bannerUrl = await saveFile(projectData.bannerFile);
+            documentUrls = await Promise.all(projectData.documentFiles.map((i) => saveFile(i.file)));
             const ipfsData = await postProjectsToIpfs({
                 description: projectData.overViewDescription,
-                documents: ['https://storage.googleapis.com/auxo/de373f009ca62b59aef619ec35b826c5e517d738234d39bff64b9a00e40559f5.png'],
-                avatarImage: 'https://storage.googleapis.com/auxo/de373f009ca62b59aef619ec35b826c5e517d738234d39bff64b9a00e40559f5.png',
-                coverImage: 'https://storage.googleapis.com/auxo/de373f009ca62b59aef619ec35b826c5e517d738234d39bff64b9a00e40559f5.png',
+                documents: documentUrls,
+                avatarImage: avatarUrl,
+                coverImage: bannerUrl,
                 members: Object.values(projectData.teamMember || {}).map((member) => ({
                     name: member.profileName,
                     link: member.socialLink,

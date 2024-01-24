@@ -6,7 +6,7 @@ import { useCreateProjectFunctions } from './state';
 export default function BannerInput({ img }: { img?: string }) {
     const { setProjectData } = useCreateProjectFunctions();
     const [previewImage, setPreviewImage] = useState<string>();
-    const [uploadedFile, setUploadedFile] = useState<Blob | MediaSource>();
+    const [uploadedFile, setUploadedFile] = useState<File>();
     const imageInputRef = useRef<HTMLInputElement>(null);
     const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e?.target?.files![0]) {

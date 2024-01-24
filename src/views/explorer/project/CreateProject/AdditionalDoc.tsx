@@ -22,6 +22,15 @@ export default function AdditionalDoc() {
         setPreviewImage('');
     };
 
+    useEffect(() => {
+        setProjectData({
+            documentFiles: uploadedFiles?.map((i) => ({
+                name: i.name,
+                file: i,
+            })),
+        });
+    }, [uploadedFiles, setProjectData]);
+
     return (
         <Box>
             <Typography variant="h6">Additional Documents</Typography>

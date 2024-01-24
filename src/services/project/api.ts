@@ -32,7 +32,7 @@ export async function getTopProject(): Promise<TProjectData[]> {
 }
 
 export async function getAddressProject(address: string): Promise<TProjectData[]> {
-    const response: any[] = (await axios.get(apiUrl.getTopProject + `/${address}`)).data;
+    const response: any[] = (await axios.get(apiUrl.getTopProject + `?member=${address}`)).data;
     return response.map((item: any) => ({
         name: item.ipfsData?.name || '',
         avatar: item?.ipfsData?.avatarImage || '',

@@ -2,6 +2,7 @@ import { Constants } from '@auxo-dev/platform';
 import { BACKEND_BASE_URL } from './baseUrl';
 
 export const apiUrl = {
+    saveFile: `${BACKEND_BASE_URL}/v0/object-storage`,
     listCommittee: `${BACKEND_BASE_URL}/v0/committee`,
     createCommittee: `${BACKEND_BASE_URL}/v0/committee`,
     //signature
@@ -26,8 +27,8 @@ export const apiUrl = {
 
     getProjectMemberWitness: (projectId: string, memberId: string) => `${BACKEND_BASE_URL}/v0/storages/project/members/witness/${projectId}-${memberId}`,
     getParticipationZkappWitness: `${BACKEND_BASE_URL}/v0/storages/participation/zkApps/witness/${Constants.ZkAppEnum.PROJECT}`,
-    getProjectMemLvl1: `${BACKEND_BASE_URL} /v0/storages/project/members/level1`,
-    getProjectMemLvl2: (projectId: string) => `${BACKEND_BASE_URL}/v0/storages/project/members/level2/${projectId}`,
+    getProjectMemLvl1: `${BACKEND_BASE_URL}/v0/storages/project/member/level1`,
+    getProjectMemLvl2: (projectId: string) => `${BACKEND_BASE_URL}/v0/storages/project/member/level2/${projectId}`,
     getParticipationZkApp: `${BACKEND_BASE_URL}/v0/storages/participation/zkapps`,
     postProjectParticipation: (projectId: string) => `${BACKEND_BASE_URL}/v0/projects/${projectId}/participations`,
     getWitnessIndex: `${BACKEND_BASE_URL}/v0/storages/participation/index/level1`,
