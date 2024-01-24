@@ -7,14 +7,14 @@ import Img from 'src/components/Img/Img';
 import { useState } from 'react';
 import ButtonLoading from 'src/components/ButtonLoading/ButtonLoading';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
-import BannerInput from './BannerInput';
-import { useMilestoneData, useMilestoneFunctions } from './state';
+import { MilestoneData, useMilestoneData, useMilestoneFunctions } from './state';
 import ScopeOfWork from './ScopeOfWork';
+import AdditionalDoc from './AdditionalDoc';
 
 export default function MilestoneDetail() {
     const { campaignQuestions, projectData } = useMilestoneData();
-    const { setCampaignQuestions } = useMilestoneFunctions();
+    const allData = useMilestoneData();
+    const { setCampaignQuestions, handleSubmitProject } = useMilestoneFunctions();
     const [loading, setLoading] = useState<boolean>(false);
     const [submiting, setSubmiting] = useState<boolean>(false);
     const router = useRouter();
@@ -30,11 +30,11 @@ export default function MilestoneDetail() {
     //     }
     // };
 
-    // const handleSubmitClick = async () => {
-    //     setSubmiting(true);
-    //     await handleSubmitProject();
-    //     setSubmiting(false);
-    // };
+    const handleSubmitClick = async () => {
+        setSubmiting(true);
+        await handleSubmitProject();
+        setSubmiting(false);
+    };
     return (
         <Container
             sx={(theme) => ({
@@ -65,26 +65,27 @@ export default function MilestoneDetail() {
             {Object.entries(campaignQuestions || {}).map(([questionKey, question]) => {
                 return (
                     <Box key={questionKey}>
-                        <Typography variant="h6" mt={6} mb={1}>
-                            {question.question}
-                            {question.required}
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Box dangerouslySetInnerHTML={{ __html: question.question }} />
+                            {question.required && <Typography color={'secondary'}> *</Typography>}
+                        </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
                             <Select
+                                size="small"
                                 onChange={(e) => {
                                     const setValue = String(e.target.value || '');
                                     setCampaignQuestions({
                                         [questionKey]: {
                                             ...question,
-                                            answer: setValue,
+                                            answer: projectData[setValue as keyof MilestoneData['projectData']],
                                         },
                                     });
                                 }}
                                 sx={{ minWidth: '210px' }}
                             >
-                                <MenuItem value={String(projectData.problemStatement)}>Problem statement</MenuItem>
-                                <MenuItem value={String(projectData.solution)}>Solution</MenuItem>
-                                <MenuItem value={String(projectData.challengeAndRisk)}>Challenges & Risks</MenuItem>
+                                <MenuItem value={'problemStatement'}>Problem statement</MenuItem>
+                                <MenuItem value={'solution'}>Solution</MenuItem>
+                                <MenuItem value={'challengeAndRisk'}>Challenges & Risks</MenuItem>
                             </Select>
                         </Box>
                         <CustomEditor
@@ -104,14 +105,17 @@ export default function MilestoneDetail() {
             <Box sx={{ mt: 5 }}>
                 <ScopeOfWork />
             </Box>
-
+            <Box sx={{ mt: 8 }}>
+                <AdditionalDoc />
+            </Box>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                 {/* <ButtonLoading muiProps={{ variant: 'contained', onClick: handleSaveButton, sx: { mr: 1 } }} isLoading={loading}>
                     Save
                 </ButtonLoading>
+               */}
                 <ButtonLoading isLoading={submiting} muiProps={{ variant: 'contained', onClick: handleSubmitClick }}>
                     Submit
-                </ButtonLoading> */}
+                </ButtonLoading>
             </Box>
         </Container>
     );

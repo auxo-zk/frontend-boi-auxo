@@ -2,24 +2,25 @@ import { ChevronLeftRounded } from '@mui/icons-material';
 import { Box, Breadcrumbs, Button, Container, Paper, Switch, TextField, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEditor'), { ssr: false });
-import Img from 'src/components/Img/Img';
 import { useCreateProjectData, useCreateProjectFunctions } from './state';
 import TeamMember from './TeamMembers';
 import AdditionalDoc from './AdditionalDoc';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ButtonLoading from 'src/components/ButtonLoading/ButtonLoading';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
 import BannerInput from './BannerInput';
 import { imagePath } from 'src/constants/imagePath';
 import Link from 'next/link';
+import Avatar from 'src/components/Avatar/Avatar';
 
-export default function CreateCampaign() {
+export default function CreateProject() {
     const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey } = useCreateProjectData();
     const { setProjectData, handleCreateProject, handleSubmitProject } = useCreateProjectFunctions();
     const [loading, setLoading] = useState<boolean>(false);
     const [submiting, setSubmiting] = useState<boolean>(false);
     const router = useRouter();
+    const [previewImage, setPreviewImage] = useState<string>();
+    const [uploadedFile, setUploadedFile] = useState<File>();
     const handleSaveButton = async () => {
         try {
             setLoading(true);
@@ -48,7 +49,18 @@ export default function CreateCampaign() {
                 '& .timeline-dot': { width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'background.primary', border: '2px solid ' + theme.palette.primary.light, mr: 1.5 },
             })}
         >
-            <BannerInput img={imagePath.DEFAULT_BANNER.src} />
+            <Box sx={{ position: 'relative', mb: 9 }}>
+                <BannerInput img={imagePath.DEFAULT_BANNER.src} />
+                <Box sx={{ position: 'absolute', left: '20px', bottom: '-50px', backgroundColor: '#041315', borderRadius: '50%', border: '4px solid #FFFFFF' }}>
+                    <Avatar
+                        size={100}
+                        onChange={(files) => {
+                            setProjectData({ avatarFile: files![0] });
+                            setUploadedFile(files![0]);
+                        }}
+                    />
+                </Box>
+            </Box>
             <Breadcrumbs sx={{ mt: 2 }}>
                 <Link color="inherit" href="/profile" style={{ textDecoration: 'none', color: 'unset' }}>
                     <Box sx={{ display: 'flex', placeItems: 'center' }}>

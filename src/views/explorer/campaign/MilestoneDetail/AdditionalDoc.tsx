@@ -1,10 +1,8 @@
 import { Avatar, Box, Grid, Typography } from '@mui/material';
 import { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { IconCloud } from 'src/assets/svg/icon';
-import { useCreateProjectFunctions } from './state';
 
 export default function AdditionalDoc() {
-    const { setProjectData } = useCreateProjectFunctions();
     const [previewImage, setPreviewImage] = useState<string>();
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const imageInputRef = useRef<HTMLInputElement>(null);
@@ -21,15 +19,6 @@ export default function AdditionalDoc() {
         setUploadedFiles([]);
         setPreviewImage('');
     };
-
-    useEffect(() => {
-        setProjectData({
-            documentFiles: uploadedFiles?.map((i) => ({
-                name: i.name,
-                file: i,
-            })),
-        });
-    }, [uploadedFiles, setProjectData]);
 
     return (
         <Box>
