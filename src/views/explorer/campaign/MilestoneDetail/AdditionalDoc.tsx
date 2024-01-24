@@ -1,23 +1,23 @@
 import { Avatar, Box, Grid, Typography } from '@mui/material';
 import { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { IconCloud } from 'src/assets/svg/icon';
+import { useMilestoneData, useMilestoneFunctions } from './state';
 
 export default function AdditionalDoc() {
-    const [previewImage, setPreviewImage] = useState<string>();
-    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+    const { documentFiles } = useMilestoneData();
+    const { addDocumentFiles } = useMilestoneFunctions();
+
     const imageInputRef = useRef<HTMLInputElement>(null);
 
     const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e?.target?.files) {
-            setUploadedFiles((prev) => {
-                return prev?.concat(Object.values(e.target.files || {}));
-            });
-            Object.values(e.target.files).map((item) => console.log(item));
+            addDocumentFiles(
+                Array.from(e.target.files).map((i) => ({
+                    name: i.name,
+                    file: i,
+                }))
+            );
         }
-    };
-    const handleRemove = () => {
-        setUploadedFiles([]);
-        setPreviewImage('');
     };
 
     return (
@@ -63,15 +63,14 @@ export default function AdditionalDoc() {
                             Uploaded Files
                         </Typography>
                         <Box sx={{ maxHeight: '200px', overflow: 'auto' }}>
-                            {uploadedFiles &&
-                                uploadedFiles.map((item, index) => {
-                                    return (
-                                        <Box key={index} sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', my: 1 }}>
-                                            <Avatar sx={{ border: '1px solid black' }} />
-                                            <Typography ml={2}>{item.name}</Typography>
-                                        </Box>
-                                    );
-                                })}
+                            {documentFiles.map((item, index) => {
+                                return (
+                                    <Box key={index} sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', my: 1 }}>
+                                        <Avatar sx={{ border: '1px solid black' }} />
+                                        <Typography ml={2}>{item.name}</Typography>
+                                    </Box>
+                                );
+                            })}
                         </Box>
                     </Box>
                 </Grid>

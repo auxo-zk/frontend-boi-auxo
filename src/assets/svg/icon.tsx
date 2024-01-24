@@ -344,8 +344,8 @@ export const IconEmpty: SvgComponent = (props) => {
                 fill="#60CFC4"
             />
             <defs>
-                <filter id="filter0_d_1053_1107" x="0.681152" y="34.9258" width="116.735" height="84.4531" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <filter id="filter0_d_1053_1107" x="0.681152" y="34.9258" width="116.735" height="84.4531" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
                     <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
                     <feOffset dy="11" />
                     <feGaussianBlur stdDeviation="11" />
@@ -354,8 +354,8 @@ export const IconEmpty: SvgComponent = (props) => {
                     <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1053_1107" result="shape" />
                 </filter>
                 <linearGradient id="paint0_linear_1053_1107" x1="59.025" y1="44.9901" x2="59.025" y2="86.8148" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#FDFEFF" />
-                    <stop offset="0.9964" stop-color="#E6F0EE" />
+                    <stop stopColor="#FDFEFF" />
+                    <stop offset="0.9964" stopColor="#E6F0EE" />
                 </linearGradient>
             </defs>
         </MuiSvgIcon>

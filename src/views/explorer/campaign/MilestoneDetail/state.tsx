@@ -34,6 +34,7 @@ export type MilestoneData = {
         customAnswer?: string;
         projectId: string;
     };
+    documentFiles: { name: string; file: File }[];
 };
 
 export const projectInitData: MilestoneData = {
@@ -63,6 +64,7 @@ export const projectInitData: MilestoneData = {
         customAnswer: '',
         projectId: '',
     },
+    documentFiles: [],
 };
 
 const mileStoneData = atom<MilestoneData>(projectInitData);
@@ -105,6 +107,16 @@ export const useMilestoneFunctions = () => {
             },
         }));
     };
+
+    const addDocumentFiles = (files: { name: string; file: File }[]) => {
+        _setMilestoneData((prev) => {
+            return {
+                ...prev,
+                documentFiles: [...prev.documentFiles, ...files],
+            };
+        });
+    };
+
     const handleSubmitProject = async () => {
         const idtoast = toast.loading('Create transaction and proving...', { position: 'top-center', type: 'info' });
         try {
@@ -127,9 +139,9 @@ export const useMilestoneFunctions = () => {
                 campaignId: new Field(campaignId),
                 projectId: new Field(projectData.projectId),
             });
-            console.log('🚀 ~ handleSubmitProject ~ x:', Number(x), String(witnessIndex[Number(x)]), witnessIndex[Number(x)]);
+            console.log('🚀 ~ handleSubmitProject ~ x:', Number(x), witnessIndex[Number(x)]);
             const t = Storage.ParticipationStorage.Level1CWitness.fromJSON(witnessIndex[Number(x)]);
-            console.log('🚀 ~ handleSubmitProject ~  t:', t);
+            // console.log('🚀 ~ handleSubmitProject ~  t:', t);
             const witnessAll = await Promise.all([getProjectMemLvl1(), getProjectMemLvl2(projectData.projectId), getParticipationZkApp()]);
             await workerClient.joinCampaign({
                 campaignId: campaignId,
@@ -141,7 +153,7 @@ export const useMilestoneFunctions = () => {
                 projectRef: {
                     addressWitness: witnessAll[2][Constants.ZkAppEnum.PROJECT],
                 },
-                lv1CWitness: String(witnessIndex[Number(x)]),
+                lv1CWitness: witnessIndex[Number(x)],
             });
             await workerClient.proveTransaction();
 
@@ -240,6 +252,7 @@ export const useMilestoneFunctions = () => {
         setCampaignQuestions,
         setScopeOfWorks,
         handleSubmitProject,
+        addDocumentFiles,
         // handleCreateProject,
         // handleSubmitProject,
     };

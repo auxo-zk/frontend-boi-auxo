@@ -8,7 +8,7 @@ export default function Img({ sx, alt, src }: { sx?: SxProps; src: string; alt: 
         <Box sx={{ position: 'relative', ...sx }}>
             <Image
                 fill
-                src={src}
+                src={src || imagePath.DEFAULT_BANNER.src}
                 alt={alt}
                 style={{ objectFit: 'inherit', borderRadius: 'inherit' }}
                 onError={(e) => {

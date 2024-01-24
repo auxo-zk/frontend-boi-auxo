@@ -94,8 +94,7 @@ export const zkFunctions = {
         campaignId: string;
         projectId: string;
         participationInfo: string;
-        lv1CWitness: string;
-        // lv1CWitness: TWitness;
+        lv1CWitness: TWitness;
         memberLv1Witness: TWitness;
         memberLv2Witness: TWitness;
         projectRef: { addressWitness: TWitness };

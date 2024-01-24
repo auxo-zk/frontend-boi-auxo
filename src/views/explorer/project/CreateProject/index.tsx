@@ -1,11 +1,11 @@
 import { ChevronLeftRounded } from '@mui/icons-material';
-import { Box, Breadcrumbs, Button, Container, Paper, Switch, TextField, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Container, TextField, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEditor'), { ssr: false });
 import { useCreateProjectData, useCreateProjectFunctions } from './state';
 import TeamMember from './TeamMembers';
 import AdditionalDoc from './AdditionalDoc';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ButtonLoading from 'src/components/ButtonLoading/ButtonLoading';
 import { useRouter } from 'next/router';
 import BannerInput from './BannerInput';
@@ -14,13 +14,12 @@ import Link from 'next/link';
 import Avatar from 'src/components/Avatar/Avatar';
 
 export default function CreateProject() {
-    const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey } = useCreateProjectData();
+    const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey, avatarImage } = useCreateProjectData();
     const { setProjectData, handleCreateProject, handleSubmitProject } = useCreateProjectFunctions();
     const [loading, setLoading] = useState<boolean>(false);
     const [submiting, setSubmiting] = useState<boolean>(false);
     const router = useRouter();
-    const [previewImage, setPreviewImage] = useState<string>();
-    const [uploadedFile, setUploadedFile] = useState<File>();
+
     const handleSaveButton = async () => {
         try {
             setLoading(true);
@@ -37,6 +36,7 @@ export default function CreateProject() {
         await handleSubmitProject();
         setSubmiting(false);
     };
+
     return (
         <Container
             sx={(theme) => ({
@@ -53,10 +53,17 @@ export default function CreateProject() {
                 <BannerInput img={imagePath.DEFAULT_BANNER.src} />
                 <Box sx={{ position: 'absolute', left: '20px', bottom: '-50px', backgroundColor: '#041315', borderRadius: '50%', border: '4px solid #FFFFFF' }}>
                     <Avatar
+                        src={avatarImage}
                         size={100}
                         onChange={(files) => {
-                            setProjectData({ avatarFile: files![0] });
-                            setUploadedFile(files![0]);
+                            const file = files?.[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = () => {
+                                    setProjectData({ avatarImage: reader.result as string, avatarFile: file });
+                                };
+                                reader.readAsDataURL(file);
+                            }
                         }}
                     />
                 </Box>

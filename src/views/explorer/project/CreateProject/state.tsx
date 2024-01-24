@@ -81,6 +81,16 @@ export const useCreateProjectFunctions = () => {
             },
         }));
     };
+
+    const addDocumentFiles = (files: { name: string; file: File }[]) => {
+        _setProjectData((prev) => {
+            return {
+                ...prev,
+                documentFiles: [...prev.documentFiles, ...files],
+            };
+        });
+    };
+
     const handleCreateProject = async () => {
         try {
             const result = await createProject(walletData.userAddress, projectData);
@@ -185,6 +195,7 @@ export const useCreateProjectFunctions = () => {
         setTeamMember,
         handleCreateProject,
         handleSubmitProject,
+        addDocumentFiles,
     };
 };
 
