@@ -13,7 +13,7 @@ export type TProjectData = {
     avatar: string;
     idProject: string;
 };
-const getJwt = () => {
+export const getJwt = () => {
     return localStorage.getItem(LocalStorageKey.AccessToken) || '';
 };
 
@@ -21,6 +21,18 @@ export const apiGetTopProject = '';
 
 export async function getTopProject(): Promise<TProjectData[]> {
     const response: any[] = (await axios.get(apiUrl.getTopProject)).data;
+    return response.map((item: any) => ({
+        name: item.ipfsData?.name || '',
+        avatar: item?.ipfsData?.avatarImage || '',
+        banner: item?.ipfsData?.coverImage || '',
+        desc: item.ipfsData?.description || '',
+        date: new Date().toLocaleDateString(),
+        idProject: item.projectId + '' || '#',
+    }));
+}
+
+export async function getAddressProject(address: string): Promise<TProjectData[]> {
+    const response: any[] = (await axios.get(apiUrl.getTopProject + `?member=${address}`)).data;
     return response.map((item: any) => ({
         name: item.ipfsData?.name || '',
         avatar: item?.ipfsData?.avatarImage || '',

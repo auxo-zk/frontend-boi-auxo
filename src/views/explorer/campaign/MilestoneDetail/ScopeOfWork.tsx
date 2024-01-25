@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useMilestoneData, useMilestoneFunctions } from './state';
 import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Dayjs } from 'dayjs';
 const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEditor'), { ssr: false });
 
 export default function ScopeOfWork() {
@@ -103,20 +104,16 @@ export default function ScopeOfWork() {
                                                 },
                                             })
                                         }
-                                        sx={{ mr: 2 }}
+                                        sx={{ mr: 1 }}
                                     />
-                                    <LocalizationProvider
-                                        dateAdapter={AdapterDayjs}
-                                        // onChange={(e) =>
-                                        //     setScopeOfWorks({
-                                        //         [key]: {
-                                        //             ...item,
-                                        //             raisingAmount: e.target.value,
-                                        //         },
-                                        //     })
-                                        // }
-                                    >
-                                        <DateTimePicker label="Deadline" sx={{ mr: 3 }} />
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DateTimePicker
+                                            label="Deadline"
+                                            sx={{ ml: 1 }}
+                                            onChange={(value: Dayjs | null, _: any) => {
+                                                setScopeOfWorks({ [key]: { ...item, deadline: value?.toDate().toISOString() || '' } });
+                                            }}
+                                        />
                                     </LocalizationProvider>
                                 </Box>
                             </Box>

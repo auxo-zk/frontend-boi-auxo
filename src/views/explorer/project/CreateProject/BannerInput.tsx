@@ -1,41 +1,37 @@
-import { Box, Button, CardMedia, Typography, alpha } from '@mui/material';
-import { ChangeEvent, LegacyRef, useEffect, useRef, useState } from 'react';
+import { Box, Button, Typography, alpha } from '@mui/material';
+import { ChangeEvent, useRef, useState } from 'react';
 import Img from 'src/components/Img/Img';
 import { useCreateProjectFunctions } from './state';
 
 export default function BannerInput({ img }: { img?: string }) {
     const { setProjectData } = useCreateProjectFunctions();
-    const [previewImage, setPreviewImage] = useState<string>();
-    const [uploadedFile, setUploadedFile] = useState<Blob | MediaSource>();
+    const [previewImage, setPreviewImage] = useState<string>(img || '');
     const imageInputRef = useRef<HTMLInputElement>(null);
+
     const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e?.target?.files![0]) {
-            setUploadedFile(e.target.files[0]);
-            console.log(e.target.files[0]);
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setProjectData({ bannerFile: file });
+                setPreviewImage(reader.result as any);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
     const handleRemove = () => {
-        setUploadedFile(undefined);
         setPreviewImage('');
+        if (imageInputRef.current) {
+            imageInputRef.current.value = '';
+        }
     };
 
-    useEffect(() => {
-        // create the preview
-        if (uploadedFile) {
-            const objectUrl = URL.createObjectURL(uploadedFile);
-            setPreviewImage(objectUrl);
-            setProjectData({ bannerFile: uploadedFile });
-            // free memory when ever this component is unmounted
-            return () => URL.revokeObjectURL(objectUrl);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [uploadedFile]);
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ width: '100%', aspectRatio: '978 / 260', position: 'relative', overflow: 'hidden', borderRadius: '0px 0px 12px 12px' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <Img src={previewImage || img || ''} alt="banner project" sx={{ width: '100%', height: 'auto', aspectRatio: '370/100', borderRadius: '0px 0px 12px 12px' }} />
+                <Img src={previewImage || ''} alt="banner project" sx={{ width: '100%', height: 'auto', aspectRatio: '370/100', borderRadius: '0px 0px 12px 12px' }} />
                 <input ref={imageInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={onImageChange} />
                 <Box
                     sx={{

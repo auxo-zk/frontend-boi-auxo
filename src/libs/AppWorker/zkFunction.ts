@@ -8,7 +8,7 @@ import { ZkApp, Storage } from '@auxo-dev/platform';
 import { ArgumentTypes } from 'src/global.config';
 import { FileSystem } from 'src/states/cache';
 import { IPFSHash } from '@auxo-dev/auxo-libs';
-import { BaseMerkleWitness } from 'o1js/dist/node/lib/merkle_tree';
+import { BaseMerkleWitness, Witness } from 'o1js/dist/node/lib/merkle_tree';
 import { TWitness } from 'src/services/services';
 
 const state = {
@@ -94,7 +94,7 @@ export const zkFunctions = {
         campaignId: string;
         projectId: string;
         participationInfo: string;
-        lv1CWitness: string;
+        lv1CWitness: TWitness;
         memberLv1Witness: TWitness;
         memberLv2Witness: TWitness;
         projectRef: { addressWitness: TWitness };

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { apiUrl } from './url';
+import { getJwt } from './project/api';
 
 export type TCommitteeData = {
     id: string;
@@ -72,7 +73,61 @@ export async function getProjectMemberWitness(projectId: string, memberId: strin
     return response.data || [];
 }
 
-export async function getParticipationZkappWitness(): Promise<TWitness> {
+export async function getParticipationZkappWitness(): Promise<TWitness[]> {
     const response = await axios.get(apiUrl.getParticipationZkappWitness);
     return response.data;
+}
+
+export async function getProjectMemLvl1(): Promise<TWitness[]> {
+    const res: TWitness[] = (await axios.get(apiUrl.getProjectMemLvl1)).data || [];
+    return res;
+}
+
+export async function getProjectMemLvl2(projectId: string): Promise<TWitness[]> {
+    const res: TWitness[] = (await axios.get(apiUrl.getProjectMemLvl2(projectId || ''))).data || [];
+    return res;
+}
+
+export async function getParticipationZkApp(): Promise<TWitness[]> {
+    const res: TWitness[] = (await axios.get(apiUrl.getParticipationZkApp)).data || [];
+    return res;
+}
+
+export type TProjectParticipation = {
+    Name: 'string';
+    Hash: 'string';
+    Size: number;
+};
+export type TProjectParticipationInput = {
+    answers: string[];
+    scopeOfWorks: {
+        information: string[];
+        milestone: string;
+        raisingAmount: string;
+        deadline: string;
+    }[];
+    documents: string[];
+};
+export async function postProjectparticipation(projectId: string, input: TProjectParticipationInput): Promise<TProjectParticipation> {
+    const jwt = getJwt();
+    const res: TProjectParticipation = (
+        await axios.post(apiUrl.postProjectParticipation(projectId), input, {
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+            },
+        })
+    ).data;
+    return res;
+}
+
+export async function getWitnessIndex(): Promise<TWitness[]> {
+    const res: TWitness[] = (await axios.get(apiUrl.getWitnessIndex)).data;
+    return res;
+}
+
+export async function saveFile(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res: string = (await axios.post(apiUrl.saveFile, formData)).data;
+    return res;
 }

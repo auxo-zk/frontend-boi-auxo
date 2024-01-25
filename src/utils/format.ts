@@ -54,6 +54,27 @@ export function numberWithCommas(x: number | string, delimiter = ','): string {
     return out;
 }
 
+/**
+ * Compact large number
+ * @param {*} n The number
+ * @param {Number} fractionDigits Number of digits after the decimal point
+ */
+export function compactNumber(n: number | string, fractionDigits = 1) {
+    if (!isNumeric(n)) {
+        throw new Error('Must provide a correct number');
+    }
+    const suffixes = ['', 'K', 'M', 'B', 'T'];
+    const suffixNum = Math.floor((('' + parseInt('' + n)).length - 1) / 3);
+
+    let shortValue = (Number(n) / Math.pow(1000, suffixNum)).toPrecision(fractionDigits + 1);
+
+    if (Number(shortValue) % 1 !== 0) {
+        shortValue = Number(shortValue).toFixed(fractionDigits);
+    }
+
+    return Number(shortValue).toLocaleString() + suffixes[suffixNum];
+}
+
 export const sleep = (milisecond: number) => new Promise((resolve) => setTimeout(resolve, milisecond));
 
 export type TDateFormat = 'MMM dd, h:mm a' | 'MMM dd yyyy, h:mm a' | 'MMMM dd, YYY' | 'dd MMM yyyy' | 'dd MMM';
