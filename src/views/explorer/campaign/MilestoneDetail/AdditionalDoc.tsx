@@ -1,11 +1,14 @@
-import { Avatar, Box, Grid, Typography } from '@mui/material';
+import { Avatar, Box, Grid, IconButton, Typography } from '@mui/material';
 import { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { IconCloud } from 'src/assets/svg/icon';
 import { useMilestoneData, useMilestoneFunctions } from './state';
+import { fileIcon } from 'src/constants';
+import { compactNumber } from 'src/utils/format';
+import { DeleteOutlineRounded } from '@mui/icons-material';
 
 export default function AdditionalDoc() {
     const { documentFiles } = useMilestoneData();
-    const { addDocumentFiles } = useMilestoneFunctions();
+    const { addDocumentFiles, deleteDocumentFiles } = useMilestoneFunctions();
 
     const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -64,10 +67,21 @@ export default function AdditionalDoc() {
                         </Typography>
                         <Box sx={{ maxHeight: '200px', overflow: 'auto' }}>
                             {documentFiles.map((item, index) => {
+                                const FileIcon = fileIcon[item.file.type] ? fileIcon[item.file.type] : fileIcon['unknown'];
                                 return (
-                                    <Box key={index} sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', my: 1 }}>
-                                        <Avatar sx={{ border: '1px solid black' }} />
-                                        <Typography ml={2}>{item.name}</Typography>
+                                    <Box key={item.name + index} sx={{ display: 'flex', alignItems: 'center', my: 1, gap: 2 }}>
+                                        <FileIcon sx={{ fontSize: '40px', color: 'primary.light' }} />
+                                        <Box>
+                                            <Typography title={item.name} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '290px' }}>
+                                                {item.name}
+                                            </Typography>
+                                            <Typography variant="body3" color={'text.secondary'}>
+                                                {compactNumber(item.file.size)}B
+                                            </Typography>
+                                        </Box>
+                                        <IconButton sx={{ ml: 'auto', color: 'primary.light' }} onClick={() => deleteDocumentFiles(index)}>
+                                            <DeleteOutlineRounded />
+                                        </IconButton>
                                     </Box>
                                 );
                             })}

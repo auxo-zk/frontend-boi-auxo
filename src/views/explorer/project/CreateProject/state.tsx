@@ -91,6 +91,17 @@ export const useCreateProjectFunctions = () => {
         });
     };
 
+    const deleteDocumentFiles = (index: number) => {
+        _setProjectData((prev) => {
+            const newDoc = [...prev.documentFiles];
+            newDoc.splice(index, 1);
+            return {
+                ...prev,
+                documentFiles: newDoc,
+            };
+        });
+    };
+
     const handleCreateProject = async () => {
         try {
             const result = await createProject(walletData.userAddress, projectData);
@@ -170,7 +181,7 @@ export const useCreateProjectFunctions = () => {
             });
             const result = await workerClient.submitProject({
                 sender: walletData.userAddress,
-                ipfsHash: String(ipfsData.Hash),
+                ipfsHash: ipfsData.Hash,
                 members: [walletData.userAddress],
                 projectId: '',
                 projectPubBase58: projectData.publicKey,
@@ -196,6 +207,7 @@ export const useCreateProjectFunctions = () => {
         handleCreateProject,
         handleSubmitProject,
         addDocumentFiles,
+        deleteDocumentFiles,
     };
 };
 

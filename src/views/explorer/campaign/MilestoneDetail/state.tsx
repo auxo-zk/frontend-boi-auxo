@@ -116,6 +116,16 @@ export const useMilestoneFunctions = () => {
             };
         });
     };
+    const deleteDocumentFiles = (index: number) => {
+        _setMilestoneData((prev) => {
+            const newDoc = [...prev.documentFiles];
+            newDoc.splice(index, 1);
+            return {
+                ...prev,
+                documentFiles: newDoc,
+            };
+        });
+    };
 
     const handleSubmitProject = async () => {
         const idtoast = toast.loading('Create transaction and proving...', { position: 'top-center', type: 'info' });
@@ -253,6 +263,7 @@ export const useMilestoneFunctions = () => {
         setScopeOfWorks,
         handleSubmitProject,
         addDocumentFiles,
+        deleteDocumentFiles,
         // handleCreateProject,
         // handleSubmitProject,
     };

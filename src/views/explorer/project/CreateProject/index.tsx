@@ -51,9 +51,9 @@ export default function CreateProject() {
         >
             <Box sx={{ position: 'relative', mb: 9 }}>
                 <BannerInput img={imagePath.DEFAULT_BANNER.src} />
-                <Box sx={{ position: 'absolute', left: '20px', bottom: '-50px', backgroundColor: '#041315', borderRadius: '50%', border: '4px solid #FFFFFF' }}>
+                <Box sx={{ position: 'absolute', left: '20px', bottom: '-50px', borderRadius: '50%', border: '4px solid #FFFFFF' }}>
                     <Avatar
-                        src={avatarImage}
+                        src={avatarImage || imagePath.DEFAULT_AVATAR.src}
                         size={100}
                         onChange={(files) => {
                             const file = files?.[0];
