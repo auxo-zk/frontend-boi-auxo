@@ -57,7 +57,7 @@ export default function AdditionalDoc() {
                         <Typography variant="body2" fontWeight={500}>
                             Browse
                         </Typography>
-                        <input ref={imageInputRef} type="file" accept="image/*" style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0 }} onChange={onImageChange} multiple />
+                        <input ref={imageInputRef} type="file" accept=".pdf, image/*" style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0 }} onChange={onImageChange} multiple />
                     </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>

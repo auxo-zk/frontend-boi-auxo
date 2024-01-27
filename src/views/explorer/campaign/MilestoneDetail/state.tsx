@@ -72,7 +72,6 @@ const mileStoneData = atom<MilestoneData>(projectInitData);
 export const useMilestoneFunctions = () => {
     const _setMilestoneData = useSetAtom(mileStoneData);
     const { campaignId, projectData, campaignQuestions, scopeOfWorks } = useMilestoneData();
-    const milestoneData = useMilestoneData();
     const { userAddress } = useWalletData();
     const { workerClient } = useAppContract();
 

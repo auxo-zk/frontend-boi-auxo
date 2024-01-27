@@ -11,10 +11,11 @@ import NoData from 'src/components/NoData';
 export default function Profile() {
     const profileProjects = useProfileProjectsData();
 
-    const { fetchDraft } = useProfileProjectsFunction();
+    const { fetchDraft, fetchProject } = useProfileProjectsFunction();
     async function getData() {
         try {
             await fetchDraft();
+            await fetchProject();
         } catch (err) {
             console.log(err);
         }
@@ -59,6 +60,35 @@ export default function Profile() {
                 </Link>
             </Box>
             <Grid container spacing={2}>
+                {profileProjects?.ownerProject?.project?.map((item, index) => {
+                    return (
+                        <Grid key={index} item xs={12} sm={3}>
+                            <Card avatar={item.avatar} banner={item.banner}>
+                                <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Box sx={{ width: '100%' }}>
+                                        <Typography mb={1} variant="h6">
+                                            {item.name || 'No name'}
+                                        </Typography>
+
+                                        <Typography variant="body1" mt={1}>
+                                            {item.overviewDesc}
+                                        </Typography>
+                                    </Box>
+                                    <Button fullWidth variant="outlined">
+                                        Edit
+                                    </Button>
+                                </Box>
+                            </Card>
+                        </Grid>
+                    );
+                })}
+                {(profileProjects?.ownerProject?.project?.length || 0) === 0 && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                        <NoData text="No Project Found!" />
+                    </Box>
+                )}
+            </Grid>
+            <Grid container spacing={2} mt={2}>
                 {profileProjects?.ownerProject?.draft?.map((item, index) => {
                     return (
                         <Grid key={index} item xs={12} sm={3}>
@@ -98,7 +128,7 @@ export default function Profile() {
                 })}
                 {(profileProjects?.ownerProject?.draft?.length || 0) === 0 && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                        <NoData text="No Data" />
+                        <NoData text="No Draft Found!" />
                     </Box>
                 )}
             </Grid>

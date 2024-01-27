@@ -3,7 +3,6 @@ import { apiUrl } from '../url';
 import { BACKEND_BASE_URL } from '../baseUrl';
 
 export type TCampaignData = { name: string; type: string; date: string; capacity: string; avatar: string; banner: string; status: number; campaignId: string };
-export const apiLatestFundingCampaigns = '';
 
 export async function getLatestFundingCampaigns(active: boolean = true): Promise<TCampaignData[]> {
     const response: any[] = (await axios.get(apiUrl.getCampaignAll + `?active=${active}`)).data;

@@ -17,8 +17,6 @@ export const getJwt = () => {
     return localStorage.getItem(LocalStorageKey.AccessToken) || '';
 };
 
-export const apiGetTopProject = '';
-
 export async function getTopProject(): Promise<TProjectData[]> {
     const response: any[] = (await axios.get(apiUrl.getTopProject)).data;
     return response.map((item: any) => ({
@@ -233,11 +231,14 @@ export async function getDraftProject(): Promise<ProjectMetaData[]> {
 }
 
 export async function getUserProject(address: string): Promise<ProjectMetaData[]> {
-    const response: any[] = (await axios.get(apiUrl.getProject + `/${address}/projects`, { headers: { Authorization: `Bearer ${getJwt()}` } })).data || [];
+    const response: any[] = (await axios.get(apiUrl.getProject + `?member=${address}`, { headers: { Authorization: `Bearer ${getJwt()}` } })).data || [];
     return response.map((item) => ({
-        name: item.name,
-        avatar: item.avatar || '',
-        banner: item.nammer || '',
+        name: item.ipfsData?.name || '',
+        avatar: item?.ipfsData?.avatarImage || '',
+        banner: item?.ipfsData?.coverImage || '',
+        desc: item.ipfsData?.description || '',
+        date: new Date().toLocaleDateString(),
+        idProject: item.projectId + '' || '#',
         type: 'draft',
         overviewDesc: item.description,
     }));

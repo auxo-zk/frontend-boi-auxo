@@ -28,8 +28,7 @@ export default class ZkAppWorkerClient {
         await sleep(4100);
     }
 
-    async sendTransaction(transactionJSON: string, memo?: string) {
-        const transactionFee = 0.1;
+    async sendTransaction(transactionJSON: string, memo?: string, transactionFee: number = 0.1) {
         const { hash } = await window.mina!.sendTransaction({
             transaction: transactionJSON,
             feePayer: {
