@@ -3,7 +3,7 @@ import { GetServerSideProps, InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
 import { getCampaignOverview } from 'src/services/campaign/api';
-import { getProjectDetail } from 'src/services/project/api';
+import { KeyProjectInput, getProjectDetail } from 'src/services/project/api';
 import MilestoneDetail from 'src/views/explorer/campaign/MilestoneDetail';
 import { InitMileStoneData, useMilestoneFunctions } from 'src/views/explorer/campaign/MilestoneDetail/state';
 
@@ -37,9 +37,9 @@ export default function MilestoneDetailPage({ campaignDetail, projectDetail }: I
             campaignQuestions: Object.assign({}, questions),
             campaignId: campaignId,
             projectData: {
-                challengeAndRisk: projectDetail?.overview?.challengesAndRisk || '',
-                problemStatement: projectDetail?.overview?.problemStatement || '',
-                solution: projectDetail?.overview?.solution || '',
+                challengeAndRisk: projectDetail?.overview ? projectDetail?.overview[KeyProjectInput.challengesAndRisks] || '' : '',
+                problemStatement: projectDetail?.overview ? projectDetail?.overview[KeyProjectInput.problemStatement] || '' : '',
+                solution: projectDetail?.overview ? projectDetail?.overview[KeyProjectInput.solution] || '' : '',
                 customAnswer: '',
                 projectId: projectId,
             },

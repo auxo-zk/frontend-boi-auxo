@@ -24,8 +24,12 @@ const state = {
 
 export const zkFunctions = {
     setActiveInstanceToBerkeley: async (args: {}) => {
-        // const Berkeley = Mina.Network('https://proxy.berkeley.minaexplorer.com/graphql');
-        const Berkeley = Mina.Network('https://api.minascan.io/node/berkeley/v1/graphql');
+        const MINAURL = 'https://proxy.berkeley.minaexplorer.com/graphql';
+        const ARCHIVEURL = 'https://archive.berkeley.minaexplorer.com';
+        const Berkeley = Mina.Network({
+            mina: MINAURL,
+            archive: ARCHIVEURL,
+        });
         console.log('Berkeley Instance Created');
         Mina.setActiveInstance(Berkeley);
     },
@@ -102,7 +106,8 @@ export const zkFunctions = {
     }) => {
         const sender = PublicKey.fromBase58(args.sender);
         await fetchAccount({ publicKey: sender });
-
+        await fetchAccount({ publicKey: state.ParticipationContract!.address });
+        await fetchAccount({ publicKey: state.ProjectContract!.address });
         // const indexWitness =  Storage.ParticipationStorage.IndexStorage.calculateLevel1Index({
         //     campaignId: new Field(args.campaignId),
         //     projectId: new Field(args.projectId),

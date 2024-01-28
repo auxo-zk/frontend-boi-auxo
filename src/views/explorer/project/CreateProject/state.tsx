@@ -1,6 +1,6 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
 import { toast } from 'react-toastify';
-import { TEditProjectData, createProject, postProjectsToIpfs } from 'src/services/project/api';
+import { KeyProjectInput, TEditProjectData, createProject, postProjectsToIpfs } from 'src/services/project/api';
 import { saveFile } from 'src/services/services';
 import { useAppContract } from 'src/states/contracts';
 import { useWalletData } from 'src/states/wallet';
@@ -175,9 +175,9 @@ export const useCreateProjectFunctions = () => {
                 })),
                 name: projectData.name,
                 publicKey: projectData.publicKey,
-                'challenges-and-risks': projectData.challengeAndRisk,
-                'problem-statement': projectData.problemStatement,
-                solution: projectData.solution,
+                [KeyProjectInput.challengesAndRisks]: projectData.challengeAndRisk,
+                [KeyProjectInput.problemStatement]: projectData.problemStatement,
+                [KeyProjectInput.solution]: projectData.solution,
             });
             const result = await workerClient.submitProject({
                 sender: walletData.userAddress,

@@ -6,6 +6,8 @@ import { TCampaignData, TCampaignDetail } from 'src/services/campaign/api';
 import { useModalData, useModalFunction } from 'src/states/modal';
 import { formatDate } from 'src/utils/format';
 import ProjectSelect from './ProjectSelect';
+import Img from 'src/components/Img/Img';
+import { imagePath } from 'src/constants/imagePath';
 
 export default function CampaignOverview({ data }: { data: TCampaignDetail['overview'] }) {
     const { open } = useModalData();
@@ -31,16 +33,16 @@ export default function CampaignOverview({ data }: { data: TCampaignDetail['over
         <Box>
             <Grid container sx={{ mt: 2 }} spacing={2}>
                 <Grid item xs={12} sm={6} sx={{ display: 'flex' }}>
-                    <Avatar src={''} alt="" sx={{ width: '96px', height: '96px', mr: 3 }} />
-                    <Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                            <Box>
+                    <Img src={data.organizer.avatar || imagePath.DEFAULT_AVATAR.src} alt="organizer avatar" sx={{ width: '96px', height: '96px', mr: 2.2, borderRadius: '50%' }} />
+                    <Box flexGrow={1}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, gap: 1.5 }}>
+                            <Box sx={{ flexGrow: 1 }}>
                                 <Typography variant="body1" color={'text.secondary'} mb={1}>
                                     Organizer
                                 </Typography>
-                                <Typography variant="h6">Pi network</Typography>
+                                <Typography variant="h6">{data.organizer.name}</Typography>
                             </Box>
-                            <Box>
+                            <Box sx={{ flexGrow: 1 }}>
                                 <Typography variant="body1" color={'text.secondary'} mb={1}>
                                     Capacity
                                 </Typography>

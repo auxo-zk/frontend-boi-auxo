@@ -20,7 +20,11 @@ export async function getLatestFundingCampaigns(active: boolean = true): Promise
 }
 
 export type TCampaignDetailOverview = {
-    organizer: string;
+    organizer: {
+        address: string;
+        name: string;
+        avatar: string;
+    };
     capacity: string;
     description: string;
 
@@ -55,7 +59,11 @@ export async function getCampaignOverview(campaignId: string): Promise<TCampaign
         banner: response?.ipfsData?.coverImage || '',
         avatar: response?.ipfsData?.avatarImage || '',
         overview: {
-            organizer: response?.owner || '',
+            organizer: {
+                address: response?.owner || '',
+                avatar: response?.ownerInfo?.img || '',
+                name: response?.ownerInfo?.name || 'Unnkown Name',
+            },
             capacity: response.ipfsData?.capacity || '',
             description: response.ipfsData?.description || '',
             allocation: {
