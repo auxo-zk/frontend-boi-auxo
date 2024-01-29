@@ -8,8 +8,9 @@ import { formatDate } from 'src/utils/format';
 import ProjectSelect from './ProjectSelect';
 import Img from 'src/components/Img/Img';
 import { imagePath } from 'src/constants/imagePath';
+import ParticipatingProjects from './ParticipatingProjects';
 
-export default function CampaignOverview({ data }: { data: TCampaignDetail['overview'] }) {
+export default function CampaignOverview({ data, idCampaign }: { data: TCampaignDetail['overview']; idCampaign: string }) {
     const { open } = useModalData();
     const { openModal, closeModal, setModalData } = useModalFunction();
     const handleOpen = () => {
@@ -23,9 +24,9 @@ export default function CampaignOverview({ data }: { data: TCampaignDetail['over
     };
     const activeSteps = useMemo(() => {
         const timeNow = Date.now();
-        if (timeNow > data.participation.from && timeNow < data.participation.to) return 0;
-        if (timeNow > data.investment.from && timeNow < data.investment.to) return 1;
-        if (timeNow > data.allocation.from && timeNow < data.allocation.to) return 2;
+        if (timeNow > data.allocation.from) return 2;
+        if (timeNow > data.investment.from) return 1;
+        if (timeNow > data.participation.from) return 0;
 
         return 0;
     }, [data]);
@@ -73,16 +74,14 @@ export default function CampaignOverview({ data }: { data: TCampaignDetail['over
                     </Box>
                 </Grid>
             </Grid>
-            <Box>
-                <Typography variant="h6" mt={4} mb={1}>
-                    Participating Projects
-                </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <TextField variant="outlined" color="secondary" label="Search project" name="project_name" />
-                    <Button sx={{ minWidth: '184px' }} variant="contained" onClick={handleOpen}>
-                        Apply
-                    </Button>
-                </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', placeItems: 'center' }} mt={5.5}>
+                <Typography variant="h6">Participating Projects</Typography>
+                <Button sx={{ minWidth: '184px' }} variant="contained" onClick={handleOpen}>
+                    Apply New
+                </Button>
+            </Box>
+            <Box mt={2.5}>
+                <ParticipatingProjects campaignId={idCampaign} />
             </Box>
         </Box>
     );

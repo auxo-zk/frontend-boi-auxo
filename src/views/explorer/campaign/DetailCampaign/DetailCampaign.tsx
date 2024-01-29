@@ -7,8 +7,9 @@ import Img from 'src/components/Img/Img';
 import { TCampaignDetail } from 'src/services/campaign/api';
 import CampaignOverview from './CampaignOverview/CampaignOverview';
 import { imagePath } from 'src/constants/imagePath';
+import NoData from 'src/components/NoData';
 
-export default function DetailCampaigns({ data }: { data: TCampaignDetail }) {
+export default function DetailCampaigns({ data, idCampaign }: { data: TCampaignDetail; idCampaign: string }) {
     const [selected, setSelected] = useState<number>(0);
     return (
         <Container sx={{ pb: 5 }}>
@@ -29,7 +30,7 @@ export default function DetailCampaigns({ data }: { data: TCampaignDetail }) {
                 <Typography variant="h3">{data.name}</Typography>
                 <ButtonGroup
                     sx={{ mt: 3 }}
-                    options={['Overview', 'Fundraising']}
+                    options={['Overview', 'Results']}
                     selected={selected}
                     changeSelected={(val) => {
                         setSelected(val);
@@ -37,9 +38,13 @@ export default function DetailCampaigns({ data }: { data: TCampaignDetail }) {
                     fullWidth={true}
                 />
             </Box>
-            {selected === 0 && (
+            {selected === 0 ? (
                 <Box>
-                    <CampaignOverview data={data.overview || {}} />
+                    <CampaignOverview data={data.overview || {}} idCampaign={idCampaign} />
+                </Box>
+            ) : (
+                <Box>
+                    <NoData text="No Data" />
                 </Box>
             )}
         </Container>
