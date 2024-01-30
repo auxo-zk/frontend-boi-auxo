@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { apiUrl } from '../url';
-import { BACKEND_BASE_URL } from '../baseUrl';
 import { TProjectData } from '../project/api';
 
 export type TCampaignData = { name: string; type: string; date: string; capacity: string; avatar: string; banner: string; status: number; campaignId: string };

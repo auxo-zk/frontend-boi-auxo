@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Img from '../Img/Img';
-import { IconEdit } from 'src/assets/svg/icon';
 import { AddAPhotoRounded } from '@mui/icons-material';
 
 export type TAvatarProps = {
