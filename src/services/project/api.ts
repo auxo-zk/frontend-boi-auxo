@@ -3,7 +3,11 @@ import { apiUrl } from '../url';
 import { LocalStorageKey } from 'src/constants';
 import { BACKEND_BASE_URL } from '../baseUrl';
 
-// export type TProjectData = { name: string; date: string; desc: string };
+export enum KeyProjectInput {
+    'solution' = 'solution',
+    'problemStatement' = 'problem-statement',
+    'challengesAndRisks' = 'challenges-and-risks',
+}
 //PROJECT LIST ************************************************************************************************************************************************
 export type TProjectData = {
     name: string;
@@ -16,8 +20,6 @@ export type TProjectData = {
 export const getJwt = () => {
     return localStorage.getItem(LocalStorageKey.AccessToken) || '';
 };
-
-export const apiGetTopProject = '';
 
 export async function getTopProject(): Promise<TProjectData[]> {
     const response: any[] = (await axios.get(apiUrl.getTopProject)).data;
@@ -48,15 +50,14 @@ export type TProjectOverview = {
     raisingAmount?: number;
     campaignAmount?: number;
     description: string;
-    problemStatement: string;
-    solution: string;
-    challengesAndRisk: string;
     documents: string[];
     member: {
         name: string;
         role: string;
         link: string;
     }[];
+} & {
+    [key in KeyProjectInput]: string;
 };
 
 export type TProjectFundRaising = {
@@ -111,11 +112,11 @@ export async function getProjectDetail(projectId: string): Promise<TProjectDetai
             description: response?.ipfsData?.description || '',
             documents: [],
             member: response?.ipfsData?.members || [],
-            problemStatement: response.ipfsData?.problemStatement || '',
             campaignAmount: 0,
             raisingAmount: 0,
-            challengesAndRisk: response.ipfsData?.challengesAndRisks || '',
-            solution: response?.ipfsData?.solution || '',
+            [KeyProjectInput.solution]: response?.ipfsData ? response?.ipfsData[KeyProjectInput.solution] || '' : '',
+            [KeyProjectInput.problemStatement]: response?.ipfsData ? response?.ipfsData[KeyProjectInput.problemStatement] || '' : '',
+            [KeyProjectInput.challengesAndRisks]: response?.ipfsData ? response?.ipfsData[KeyProjectInput.challengesAndRisks] || '' : '',
         },
     };
 }
@@ -147,7 +148,6 @@ export type TEditProjectData = {
     };
     additionalDocument?: any;
 };
-
 export async function saveProject(address: string, project: TEditProjectData) {
     if (!project.draftId || !address) {
         return;
@@ -175,6 +175,7 @@ export async function saveProject(address: string, project: TEditProjectData) {
     return { success: true };
 }
 
+// ****************************************************************************************************************************************************
 export async function createProject(address: string, project: TEditProjectData) {
     if (!address) {
         return;
@@ -202,6 +203,7 @@ export async function createProject(address: string, project: TEditProjectData) 
     return { success: true };
 }
 
+// ****************************************************************************************************************************************************
 export async function getDraftProjectDetail(address: string, draftId: string): Promise<TEditProjectData | undefined> {
     if (!address) {
         return;
@@ -214,6 +216,7 @@ export async function getDraftProjectDetail(address: string, draftId: string): P
     });
 }
 
+// ****************************************************************************************************************************************************
 export type ProjectMetaData = {
     name: string;
     avatar: string;
@@ -232,16 +235,22 @@ export async function getDraftProject(): Promise<ProjectMetaData[]> {
     }));
 }
 
+// ****************************************************************************************************************************************************
 export async function getUserProject(address: string): Promise<ProjectMetaData[]> {
-    const response: any[] = (await axios.get(apiUrl.getProject + `/${address}/projects`, { headers: { Authorization: `Bearer ${getJwt()}` } })).data || [];
+    const response: any[] = (await axios.get(apiUrl.getProject + `?member=${address}`, { headers: { Authorization: `Bearer ${getJwt()}` } })).data || [];
     return response.map((item) => ({
-        name: item.name,
-        avatar: item.avatar || '',
-        banner: item.nammer || '',
+        name: item.ipfsData?.name || '',
+        avatar: item?.ipfsData?.avatarImage || '',
+        banner: item?.ipfsData?.coverImage || '',
+        desc: item.ipfsData?.description || '',
+        date: new Date().toLocaleDateString(),
+        idProject: item.projectId + '' || '#',
         type: 'draft',
         overviewDesc: item.description,
     }));
 }
+
+// ****************************************************************************************************************************************************
 
 export type IPFSProjectInput = {
     name: string;
@@ -254,11 +263,9 @@ export type IPFSProjectInput = {
         role: string;
         link: string;
     }[];
-    'problem-statement': string;
-    solution: string;
-    'challenges-and-risks': string;
     documents: string[];
-};
+    //
+} & { [key in KeyProjectInput]: string };
 
 export async function postProjectsToIpfs(input: IPFSProjectInput): Promise<{
     Name: string;
