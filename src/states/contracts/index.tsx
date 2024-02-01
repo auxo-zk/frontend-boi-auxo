@@ -76,7 +76,6 @@ export const useAppContractFunction = () => {
                 await zkApp.workerClient.compileContract(cacheFiles);
                 await zkApp.workerClient.initZkappInstance({
                     projectContract: 'B62qkkQtrPfqBmECb2hFpD2PRfhVCRjhxzxcRcUoWR3J7WdhfjGp5yv',
-                    campaignContract: 'B62qij4Pc5we9m1n7sx7Cpsq4JB6tjaaHYT2CwJa8Uz9ZwcY2qt5vPn',
                     participationContract: 'B62qqKAeVVxmGqLwGwDWMQ99Szfus5jgKmHTFwTMkwDXh3wtQA694Zk',
                 });
                 setAppContractData({

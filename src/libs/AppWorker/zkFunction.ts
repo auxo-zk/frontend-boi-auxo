@@ -8,13 +8,11 @@ import { ZkApp, Storage } from '@auxo-dev/platform';
 import { ArgumentTypes } from 'src/global.config';
 import { FileSystem } from 'src/states/cache';
 import { IPFSHash } from '@auxo-dev/auxo-libs';
-import { BaseMerkleWitness, Witness } from 'o1js/dist/node/lib/merkle_tree';
 import { TWitness } from 'src/services/services';
 
 const state = {
     TypeZkApp: null as null | typeof ZkApp,
     ProjectContract: null as null | ZkApp.Project.ProjectContract,
-    CampaignContract: null as null | ZkApp.Campaign.CampaignContract,
     ParticipationContract: null as null | ZkApp.Participation.ParticipationContract,
     transaction: null as null | Transaction,
     complieDone: 0 as number,
@@ -38,7 +36,7 @@ export const zkFunctions = {
         state.TypeZkApp = ZkApp;
     },
     getPercentageComplieDone: async (args: {}) => {
-        return ((state.complieDone / 6) * 100).toFixed(0);
+        return ((state.complieDone / 4) * 100).toFixed(0);
     },
     compileContract: async (args: { fileCache: any }) => {
         await state.TypeZkApp!.Project.CreateProject.compile({ cache: FileSystem(args.fileCache) }); // 1
@@ -49,19 +47,11 @@ export const zkFunctions = {
         console.log('complie ProjectContract done');
         state.complieDone += 1;
 
-        await state.TypeZkApp!.Campaign.CreateCampaign.compile({ cache: FileSystem(args.fileCache) }); // 3
-        console.log('complie CreateCampaign done');
-        state.complieDone += 1;
-
-        await state.TypeZkApp!.Campaign.CampaignContract.compile({ cache: FileSystem(args.fileCache) }); // 4
-        console.log('complie CampaignContract done');
-        state.complieDone += 1;
-
-        await state.TypeZkApp!.Participation.JoinCampaign.compile({ cache: FileSystem(args.fileCache) }); // 5
+        await state.TypeZkApp!.Participation.JoinCampaign.compile({ cache: FileSystem(args.fileCache) }); // 3
         console.log('complie JoinCampaign done');
         state.complieDone += 1;
 
-        await state.TypeZkApp!.Participation.ParticipationContract.compile({ cache: FileSystem(args.fileCache) }); // 6
+        await state.TypeZkApp!.Participation.ParticipationContract.compile({ cache: FileSystem(args.fileCache) }); // 4
         console.log('complie JoinCampaign done');
         state.complieDone += 1;
     },
@@ -69,12 +59,9 @@ export const zkFunctions = {
         const publicKey = PublicKey.fromBase58(args.publicKey58);
         return await fetchAccount({ publicKey });
     },
-    initZkappInstance: async (args: { projectContract: string; campaignContract: string; participationContract: string }) => {
+    initZkappInstance: async (args: { projectContract: string; participationContract: string }) => {
         const projectContractPub = PublicKey.fromBase58(args.projectContract);
         state.ProjectContract = new state.TypeZkApp!.Project.ProjectContract!(projectContractPub);
-
-        const campaignContractPub = PublicKey.fromBase58(args.campaignContract);
-        state.CampaignContract = new state.TypeZkApp!.Campaign.CampaignContract!(campaignContractPub);
 
         const participationContractPub = PublicKey.fromBase58(args.participationContract);
         state.ParticipationContract = new state.TypeZkApp!.Participation.ParticipationContract!(participationContractPub);
@@ -108,10 +95,7 @@ export const zkFunctions = {
         await fetchAccount({ publicKey: sender });
         await fetchAccount({ publicKey: state.ParticipationContract!.address });
         await fetchAccount({ publicKey: state.ProjectContract!.address });
-        // const indexWitness =  Storage.ParticipationStorage.IndexStorage.calculateLevel1Index({
-        //     campaignId: new Field(args.campaignId),
-        //     projectId: new Field(args.projectId),
-        // })
+
         const transaction = await Mina.transaction(sender, () => {
             state.ParticipationContract!.joinCampaign({
                 campaignId: new Field(args.campaignId),

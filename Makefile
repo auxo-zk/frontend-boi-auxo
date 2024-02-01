@@ -10,4 +10,4 @@ plat:
 	yarm remove @auxo-dev/platform && yarn add @auxo-dev/platform
 
 all:
-	yarn remove o1js @auxo-dev/auxo-libs @auxo-dev/dkg && yarn add o1js @auxo-dev/auxo-libs @auxo-dev/dkg
+	yarn remove o1js @auxo-dev/auxo-libs @auxo-dev/platform && yarn add o1js @auxo-dev/auxo-libs @auxo-dev/platform
