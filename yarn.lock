@@ -7,14 +7,14 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@auxo-dev/auxo-libs@0.3.5", "@auxo-dev/auxo-libs@^0.3.4", "@auxo-dev/auxo-libs@^0.3.5":
+"@auxo-dev/auxo-libs@0.3.5", "@auxo-dev/auxo-libs@^0.3.5":
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/@auxo-dev/auxo-libs/-/auxo-libs-0.3.5.tgz#ba8cbc04a188413f08fd61a7a838f026f724450c"
   integrity sha512-H8vXMoJ2cHFQj7rugBY6q9ScEfOyZ6Z/Q6j7O88dZzcBQZNtxV+FsyWrIbfBs/n/qnS2UHdh8r7fKGsmfOy3pQ==
   dependencies:
     o1js "0.15.1"
 
-"@auxo-dev/dkg@0.2.12", "@auxo-dev/dkg@^0.2.5":
+"@auxo-dev/dkg@0.2.12":
   version "0.2.12"
   resolved "https://registry.yarnpkg.com/@auxo-dev/dkg/-/dkg-0.2.12.tgz#0c85c485ee88b88a52d4403c92f208e34a113106"
   integrity sha512-xzVoU+pV8+VwCJoFGwjyj3fJGduuRNmrkDcwRz0fzW9HaNyjfRGCtb+mfdJMiPNWd5EBT9mkSVZNfb5AB8w4kA==
@@ -23,13 +23,14 @@
     axios "^1.6.5"
     o1js "0.15.1"
 
-"@auxo-dev/platform@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@auxo-dev/platform/-/platform-0.1.5.tgz#fdbf94698b9754c819d6746659edbdee53a88ca3"
-  integrity sha512-90ke0APOeMGyWNWJwII7YayNYC7Jf76YkxSYCwIPRTZlidfZ7aey6Jc10DUrqRc8NgH2mVCxnR4Q23jP/J32uA==
+"@auxo-dev/platform@^0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@auxo-dev/platform/-/platform-0.1.7.tgz#e5d9eab45c8dfa0e6cc976200148732a33a908e6"
+  integrity sha512-on6d4I5mPNBgqjgv9hEW7T8PNLgYsY4Eyrf3R1+AivOJZnxXu8YN0tVEl4oHu4mRsrzv4p9PimMX3ZSa8LE6hw==
   dependencies:
     "@auxo-dev/auxo-libs" "0.3.5"
     "@auxo-dev/dkg" "0.2.12"
+    dotenv "^16.3.1"
     o1js "0.15.1"
 
 "@babel/code-frame@^7.0.0":
@@ -863,10 +864,19 @@ axe-core@=4.7.0:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.7.0.tgz#34ba5a48a8b564f67e103f0aa5768d76e15bbbbf"
   integrity sha512-M0JtH+hlOL5pLQwHOLNYZaXuhqmvS8oExsqB1SBYgA4Dk7u/xx+YdGHXaK5pyUfed5mYXdlYiphWq3G8cRi5JQ==
 
-axios@^1.6.2, axios@^1.6.5:
+axios@^1.6.2:
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.5.tgz#2c090da14aeeab3770ad30c3a1461bc970fb0cd8"
   integrity sha512-Ii012v05KEVuUoFWmMW/UQv9aRIc3ZwkWDcM+h5Il8izZCtRVpDUfwpoFf7eOtajT3QiGR4yDUx7lPqHJULgbg==
+  dependencies:
+    follow-redirects "^1.15.4"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
+axios@^1.6.5:
+  version "1.6.7"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.7.tgz#7b48c2e27c96f9c68a2f8f31e2ab19f59b06b0a7"
+  integrity sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==
   dependencies:
     follow-redirects "^1.15.4"
     form-data "^4.0.0"
@@ -1160,9 +1170,9 @@ dequal@^2.0.3:
   integrity sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==
 
 detect-gpu@^5.0.5:
-  version "5.0.37"
-  resolved "https://registry.yarnpkg.com/detect-gpu/-/detect-gpu-5.0.37.tgz#27febe44d478ef4d35cd38007355da795ba075d5"
-  integrity sha512-EraWs84faI4iskB4qvE39bevMIazEvd1RpoyGLOBesRLbiz6eMeJqqRPHjEFClfRByYZzi9IzU35rBXIO76oDw==
+  version "5.0.38"
+  resolved "https://registry.yarnpkg.com/detect-gpu/-/detect-gpu-5.0.38.tgz#1c05ce728ea1229d16db15b865631609bf0d6952"
+  integrity sha512-36QeGHSXYcJ/RfrnPEScR8GDprbXFG4ZhXsfVNVHztZr38+fRxgHnJl3CjYXXjbeRUhu3ZZBJh6Lg0A9v0Qd8A==
   dependencies:
     webgl-constants "^1.1.1"
 
@@ -1199,6 +1209,11 @@ dom-helpers@^5.0.1:
   dependencies:
     "@babel/runtime" "^7.8.7"
     csstype "^3.0.2"
+
+dotenv@^16.3.1:
+  version "16.4.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.1.tgz#1d9931f1d3e5d2959350d1250efab299561f7f11"
+  integrity sha512-CjA3y+Dr3FyFDOAMnxZEGtnW9KBR2M0JvvUtXNW+dYJL5ROWxP9DUHCwgFqpMk0OXCc0ljhaNTr2w/kutYIcHQ==
 
 emoji-regex@^9.2.2:
   version "9.2.2"
@@ -2337,10 +2352,10 @@ o1js@0.15.1:
     reflect-metadata "^0.1.13"
     tslib "^2.3.0"
 
-o1js@^0.15.1:
-  version "0.15.2"
-  resolved "https://registry.yarnpkg.com/o1js/-/o1js-0.15.2.tgz#04b8ccf84861c3151548ba77b26acc09bd7cb104"
-  integrity sha512-EbbXhbozScP3SzbFt0yA509cwcDC0mfa+6D0w2xzMYIerVOyUjzhSFQjy/dUJjQ8VZEffcuDedmIhVv+fqR7dw==
+o1js@^0.15.4:
+  version "0.15.4"
+  resolved "https://registry.yarnpkg.com/o1js/-/o1js-0.15.4.tgz#bfd6f7a63292cb84b460a20230a9b351416fa10a"
+  integrity sha512-70/9NI+Nq4WCFnhYOj2RUynOOqdH0I4wCGxOlmem7GLL2qgj3r/w6DiMV8ZQVjG/MSEyjXxcmEwQpa5R2ef34A==
   dependencies:
     blakejs "1.2.1"
     cachedir "^2.4.0"
