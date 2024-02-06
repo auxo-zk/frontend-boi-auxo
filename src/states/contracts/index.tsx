@@ -77,6 +77,7 @@ export const useAppContractFunction = () => {
                 await zkApp.workerClient.initZkappInstance({
                     projectContract: 'B62qkkQtrPfqBmECb2hFpD2PRfhVCRjhxzxcRcUoWR3J7WdhfjGp5yv',
                     participationContract: 'B62qqKAeVVxmGqLwGwDWMQ99Szfus5jgKmHTFwTMkwDXh3wtQA694Zk',
+                    treasuryContract: 'B62qm7GPk6oLpgTfkio8XYzeAtykht8aMpH1VfmfqXgB22TVXqJXd3A',
                 });
                 setAppContractData({
                     isLoading: false,
