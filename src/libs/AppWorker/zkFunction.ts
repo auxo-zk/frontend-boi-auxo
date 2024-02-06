@@ -14,6 +14,7 @@ const state = {
     TypeZkApp: null as null | typeof ZkApp,
     ProjectContract: null as null | ZkApp.Project.ProjectContract,
     ParticipationContract: null as null | ZkApp.Participation.ParticipationContract,
+    TreasuryContract: null as null | ZkApp.Treasury.TreasuryContract,
     transaction: null as null | Transaction,
     complieDone: 0 as number,
 };
@@ -22,8 +23,8 @@ const state = {
 
 export const zkFunctions = {
     setActiveInstanceToBerkeley: async (args: {}) => {
-        const MINAURL = 'https://proxy.berkeley.minaexplorer.com/graphql';
-        const ARCHIVEURL = 'https://archive.berkeley.minaexplorer.com';
+        const MINAURL = 'https://api.minascan.io/node/berkeley/v1/graphql';
+        const ARCHIVEURL = 'https://api.minascan.io/archive/berkeley/v1/graphql';
         const Berkeley = Mina.Network({
             mina: MINAURL,
             archive: ARCHIVEURL,
@@ -36,7 +37,7 @@ export const zkFunctions = {
         state.TypeZkApp = ZkApp;
     },
     getPercentageComplieDone: async (args: {}) => {
-        return ((state.complieDone / 4) * 100).toFixed(0);
+        return ((state.complieDone / 6) * 100).toFixed(0);
     },
     compileContract: async (args: { fileCache: any }) => {
         await state.TypeZkApp!.Project.CreateProject.compile({ cache: FileSystem(args.fileCache) }); // 1
@@ -54,17 +55,28 @@ export const zkFunctions = {
         await state.TypeZkApp!.Participation.ParticipationContract.compile({ cache: FileSystem(args.fileCache) }); // 4
         console.log('complie JoinCampaign done');
         state.complieDone += 1;
+
+        await state.TypeZkApp!.Treasury.ClaimFund.compile({ cache: FileSystem(args.fileCache) }); // 5
+        console.log('complie ClaimFund done');
+        state.complieDone += 1;
+
+        await state.TypeZkApp!.Treasury.TreasuryContract.compile({ cache: FileSystem(args.fileCache) }); // 6
+        console.log('complie TreasuryContract done');
+        state.complieDone += 1;
     },
     fetchAccount: async (args: { publicKey58: string }) => {
         const publicKey = PublicKey.fromBase58(args.publicKey58);
         return await fetchAccount({ publicKey });
     },
-    initZkappInstance: async (args: { projectContract: string; participationContract: string }) => {
+    initZkappInstance: async (args: { projectContract: string; participationContract: string; treasuryContract: string }) => {
         const projectContractPub = PublicKey.fromBase58(args.projectContract);
         state.ProjectContract = new state.TypeZkApp!.Project.ProjectContract!(projectContractPub);
 
         const participationContractPub = PublicKey.fromBase58(args.participationContract);
         state.ParticipationContract = new state.TypeZkApp!.Participation.ParticipationContract!(participationContractPub);
+
+        const treasuryContractPub = PublicKey.fromBase58(args.treasuryContract);
+        state.TreasuryContract = new state.TypeZkApp!.Treasury.TreasuryContract!(treasuryContractPub);
     },
 
     submitProject: async (args: { sender: string; projectId: string; members: string[]; ipfsHash: string; projectPubBase58: string }) => {
