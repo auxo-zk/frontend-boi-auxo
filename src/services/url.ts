@@ -25,6 +25,8 @@ export const apiUrl = {
     getParticipatingProjects: (campaignId: string) => `${BACKEND_BASE_URL}/v0/campaigns/${campaignId}/projects`,
     //profile
     getUserProfile: `${BACKEND_BASE_URL}/v0/builders`,
+    editProfile: `${BACKEND_BASE_URL}/v0/builders`,
+    editProfileImage: `${BACKEND_BASE_URL}/v0/builders/update-avatar`,
 
     getProjectMemberWitness: (projectId: string, memberId: string) => `${BACKEND_BASE_URL}/v0/storages/project/members/witness/${projectId}-${memberId}`,
     getParticipationZkappWitness: `${BACKEND_BASE_URL}/v0/storages/participation/zkApps/witness/${Constants.ZkAppEnum.PROJECT}`,

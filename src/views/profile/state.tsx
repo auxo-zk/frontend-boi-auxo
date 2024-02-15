@@ -1,36 +1,75 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { ProjectMetaData, getDraftProject, getUserProject } from 'src/services/project/api';
+import { useCallback } from 'react';
+import { toast } from 'react-toastify';
+import { TProfileInput, getUserProfile, postProfileAvatar, postProfileInfo } from 'src/services/profile/api';
 import { useWalletData } from 'src/states/wallet';
 
-export type TProfileProjects = { ownerProject: { project: ProjectMetaData[]; draft: ProjectMetaData[] }; participatingProject: ProjectMetaData[] };
-const initData: TProfileProjects = {
-    ownerProject: { project: [], draft: [] },
-    participatingProject: [],
+export type TProfileState = {
+    address: string;
+    name: string;
+    website: string;
+    description: string;
+    img: string;
+    imgFile?: File;
 };
 
-const profileProjects = atom<TProfileProjects>(initData);
+const initState: TProfileState = {
+    address: '',
+    name: '',
+    website: '',
+    description: '',
+    img: '',
+};
 
-export const useProfileProjectsData = () => useAtomValue(profileProjects);
+const profileData = atom<TProfileState>(initState);
+export const useProfileData = () => useAtomValue(profileData);
 
-export const useProfileProjectsFunction = () => {
-    const _setProfileProjects = useSetAtom(profileProjects);
-    const profileProjectsData = useProfileProjectsData();
+export const useProfileFunction = () => {
+    const _setProfileData = useSetAtom(profileData);
+    const { imgFile } = useProfileData();
     const { userAddress } = useWalletData();
-    const setProfileProjects = (data: Partial<TProfileProjects>) => {
-        _setProfileProjects((prev) => {
+    const setProfileData = (data: Partial<TProfileState>) => {
+        _setProfileData((prev) => {
             return {
                 ...prev,
                 ...data,
             };
         });
     };
-    const fetchDraft = async () => {
-        const res = await getDraftProject();
-        setProfileProjects({ ownerProject: { draft: res, project: profileProjectsData.ownerProject.project } });
+    const getProfileData = useCallback(async () => {
+        if (userAddress) {
+            try {
+                const result = await getUserProfile(userAddress);
+                console.log('🚀 ~ getProfileData ~ result:', result);
+                setProfileData({
+                    address: userAddress,
+                    description: result.description,
+                    img: result.img,
+                    name: result.name,
+                });
+            } catch (error) {}
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userAddress]);
+
+    const submitProfileInfo = async (input: TProfileInput) => {
+        try {
+            const result = await postProfileInfo(input);
+            toast('Edit Profile Successfully: ', { type: 'success' });
+            return result;
+        } catch (error) {
+            toast('Edit Profile Failed: ' + (error as Error).message, { type: 'error' });
+        }
     };
-    const fetchProject = async () => {
-        const res = await getUserProject(userAddress);
-        setProfileProjects({ ownerProject: { project: res, draft: profileProjectsData.ownerProject.draft } });
+
+    const submitProfileAvatar = async (imgFile: File) => {
+        try {
+            const result = await postProfileAvatar(imgFile);
+            toast('Edit Profile Avatar Successfully: ', { type: 'success' });
+            return result;
+        } catch (error) {
+            toast('Edit Profile Avatar Failed: ' + (error as Error).message, { type: 'error' });
+        }
     };
-    return { fetchDraft, fetchProject };
+    return { setProfileData, getProfileData, submitProfileInfo, submitProfileAvatar };
 };
