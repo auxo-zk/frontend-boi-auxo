@@ -13,7 +13,7 @@ export type TProfileData = {
 };
 
 export async function getUserProfile(address: string): Promise<TProfileData> {
-    const response: any = await axios.get(apiUrl.getUserProfile + `/${address}`);
+    const response: any = (await axios.get(apiUrl.getUserProfile + `/${address}`)).data;
     return {
         address: response.address,
         name: response.name || '',
@@ -25,13 +25,14 @@ export async function getUserProfile(address: string): Promise<TProfileData> {
 }
 export type TProfileInput = {
     name: string;
-    website: string;
+    link: string;
     description: string;
+    role: string;
 };
 export type TEditResult = {
     address: string;
     name: string;
-    website: string;
+    link: string;
     description: string;
     img: string;
 };

@@ -8,5 +8,9 @@ import Img from 'src/components/Img/Img';
 import Profile from 'src/views/profile/Profile';
 
 export default function ProfilePage() {
-    return <Profile />;
+    return (
+        <Container sx={{ pt: 5 }}>
+            <Profile />
+        </Container>
+    );
 }

@@ -2,44 +2,61 @@ import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { TProfileInput, getUserProfile, postProfileAvatar, postProfileInfo } from 'src/services/profile/api';
+import { ProjectMetaData, getDraftProject, getUserProject } from 'src/services/project/api';
 import { useWalletData } from 'src/states/wallet';
 
-export type TProfileState = {
+export type TProfile = {
+    ownerProject: { project: ProjectMetaData[]; draft: ProjectMetaData[] };
+    participatingProject: ProjectMetaData[];
     address: string;
     name: string;
     website: string;
     description: string;
+    role: string;
     img: string;
     imgFile?: File;
 };
-
-const initState: TProfileState = {
+const initData: TProfile = {
+    ownerProject: { project: [], draft: [] },
+    participatingProject: [],
     address: '',
     name: '',
     website: '',
     description: '',
     img: '',
+    role: '',
 };
 
-const profileData = atom<TProfileState>(initState);
-export const useProfileData = () => useAtomValue(profileData);
+const profileProjects = atom<TProfile>(initData);
+
+export const useProfileData = () => useAtomValue(profileProjects);
 
 export const useProfileFunction = () => {
-    const _setProfileData = useSetAtom(profileData);
+    const _setProfileProjects = useSetAtom(profileProjects);
+    const profileProjectsData = useProfileData();
     const { imgFile } = useProfileData();
     const { userAddress } = useWalletData();
-    const setProfileData = (data: Partial<TProfileState>) => {
-        _setProfileData((prev) => {
+    const setProfileData = (data: Partial<TProfile>) => {
+        _setProfileProjects((prev) => {
             return {
                 ...prev,
                 ...data,
             };
         });
     };
+    const fetchDraft = async () => {
+        const res = await getDraftProject();
+        setProfileData({ ownerProject: { draft: res, project: profileProjectsData.ownerProject.project } });
+    };
+    const fetchProject = async () => {
+        const res = await getUserProject(userAddress);
+        setProfileData({ ownerProject: { project: res, draft: profileProjectsData.ownerProject.draft } });
+    };
     const getProfileData = useCallback(async () => {
         if (userAddress) {
             try {
                 const result = await getUserProfile(userAddress);
+                console.log('🚀 ~ getProfileData ~ userAddress:', userAddress);
                 console.log('🚀 ~ getProfileData ~ result:', result);
                 setProfileData({
                     address: userAddress,
@@ -71,5 +88,5 @@ export const useProfileFunction = () => {
             toast('Edit Profile Avatar Failed: ' + (error as Error).message, { type: 'error' });
         }
     };
-    return { setProfileData, getProfileData, submitProfileInfo, submitProfileAvatar };
+    return { fetchDraft, fetchProject, setProfileData, submitProfileInfo, submitProfileAvatar, getProfileData };
 };
