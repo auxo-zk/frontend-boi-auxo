@@ -57,3 +57,13 @@ export async function postProfileAvatar(input: File): Promise<string> {
     });
     return result;
 }
+
+export async function verifyJwt() {
+    const jwt = getJwt();
+    await axios.get(apiUrl.checkJwt, {
+        headers: {
+            Authorization: `Bearer ${jwt}`,
+        },
+    });
+    return true;
+}
