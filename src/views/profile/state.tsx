@@ -6,7 +6,8 @@ import { ProjectMetaData, getDraftProject, getUserProject } from 'src/services/p
 import { useWalletData } from 'src/states/wallet';
 
 export type TProfile = {
-    ownerProject: { project: ProjectMetaData[]; draft: ProjectMetaData[] };
+    project: ProjectMetaData[];
+    draft: ProjectMetaData[];
     participatingProject: ProjectMetaData[];
     address: string;
     name: string;
@@ -17,7 +18,8 @@ export type TProfile = {
     imgFile?: File;
 };
 const initData: TProfile = {
-    ownerProject: { project: [], draft: [] },
+    project: [],
+    draft: [],
     participatingProject: [],
     address: '',
     name: '',
@@ -46,11 +48,11 @@ export const useProfileFunction = () => {
     };
     const fetchDraft = async () => {
         const res = await getDraftProject();
-        setProfileData({ ownerProject: { draft: res, project: profileProjectsData.ownerProject.project } });
+        setProfileData({ draft: res });
     };
     const fetchProject = async () => {
         const res = await getUserProject(userAddress);
-        setProfileData({ ownerProject: { project: res, draft: profileProjectsData.ownerProject.draft } });
+        setProfileData({ project: res });
     };
     const getProfileData = useCallback(async () => {
         if (userAddress) {

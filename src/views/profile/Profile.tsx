@@ -39,7 +39,7 @@ export default function Profile() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
-        <Container sx={{ pt: 5 }}>
+        <Container sx={{ pt: 5, pb: 3 }}>
             <Typography variant="h1" textTransform={'uppercase'}>
                 Builder Profile
             </Typography>
@@ -80,7 +80,7 @@ export default function Profile() {
                 </Link>
             </Box>
             <Grid container spacing={2}>
-                {profileProjects?.ownerProject?.project?.map((item, index) => {
+                {profileProjects?.project?.map((item, index) => {
                     return (
                         <Grid key={index} item xs={12} sm={3}>
                             <Card avatar={item.avatar} banner={item.banner}>
@@ -90,11 +90,9 @@ export default function Profile() {
                                             {item.name || 'No name'}
                                         </Typography>
 
-                                        <Typography variant="body1" mt={1}>
-                                            {item.overviewDesc}
-                                        </Typography>
+                                        <Box dangerouslySetInnerHTML={{ __html: item.overviewDesc }}></Box>
                                     </Box>
-                                    <Button fullWidth variant="outlined">
+                                    <Button fullWidth variant="outlined" size="small">
                                         Edit
                                     </Button>
                                 </Box>
@@ -102,14 +100,14 @@ export default function Profile() {
                         </Grid>
                     );
                 })}
-                {(profileProjects?.ownerProject?.project?.length || 0) === 0 && (
+                {(profileProjects?.project?.length || 0) === 0 && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                         <NoData text="No Project Found!" />
                     </Box>
                 )}
             </Grid>
             <Grid container spacing={2} mt={2}>
-                {profileProjects?.ownerProject?.draft?.map((item, index) => {
+                {profileProjects?.draft?.map((item, index) => {
                     return (
                         <Grid key={index} item xs={12} sm={3}>
                             <Card avatar="" banner="">
@@ -130,15 +128,13 @@ export default function Profile() {
                                                 color: '#FFCCBC',
                                             }}
                                         >
-                                            <Typography variant="body3" color="inherit">
+                                            <Typography variant="body3" color="secondary.main">
                                                 Drafting...
                                             </Typography>
                                         </Box>
-                                        <Typography variant="body1" mt={1}>
-                                            {item.overviewDesc}
-                                        </Typography>
+                                        <Box dangerouslySetInnerHTML={{ __html: item.overviewDesc }}></Box>
                                     </Box>
-                                    <Button fullWidth variant="outlined">
+                                    <Button fullWidth variant="outlined" size="small">
                                         Edit
                                     </Button>
                                 </Box>
@@ -146,7 +142,7 @@ export default function Profile() {
                         </Grid>
                     );
                 })}
-                {(profileProjects?.ownerProject?.draft?.length || 0) === 0 && (
+                {(profileProjects?.draft?.length || 0) === 0 && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                         <NoData text="No Draft Found!" />
                     </Box>

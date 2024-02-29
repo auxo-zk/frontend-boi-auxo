@@ -245,7 +245,7 @@ export async function getUserProject(address: string): Promise<ProjectMetaData[]
         desc: item.ipfsData?.description || '',
         date: new Date().toLocaleDateString(),
         idProject: item.projectId + '' || '#',
-        type: 'draft',
+        type: 'project',
         overviewDesc: item.description,
     }));
 }
