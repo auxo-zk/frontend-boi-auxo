@@ -14,7 +14,7 @@ import Link from 'next/link';
 import Avatar from 'src/components/Avatar/Avatar';
 
 export default function CreateProject() {
-    const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey, avatarImage } = useCreateProjectData();
+    const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey, avatarImage, coverImage } = useCreateProjectData();
     const { setProjectData, handleCreateProject, handleSubmitProject } = useCreateProjectFunctions();
     const [loading, setLoading] = useState<boolean>(false);
     const [submiting, setSubmiting] = useState<boolean>(false);
@@ -23,7 +23,7 @@ export default function CreateProject() {
     const handleSaveButton = async () => {
         try {
             setLoading(true);
-            await handleCreateProject();
+            await handleCreateProject(String(router.query.id || ''));
             setLoading(false);
             router.push('/profile');
         } catch (error) {
@@ -50,7 +50,7 @@ export default function CreateProject() {
             })}
         >
             <Box sx={{ position: 'relative', mb: 9 }}>
-                <BannerInput img={imagePath.DEFAULT_BANNER.src} />
+                <BannerInput img={coverImage || imagePath.DEFAULT_BANNER.src} />
                 <Box sx={{ position: 'absolute', left: '20px', bottom: '-50px', borderRadius: '50%', border: '4px solid #FFFFFF' }}>
                     <Avatar
                         src={avatarImage || imagePath.DEFAULT_AVATAR.src}

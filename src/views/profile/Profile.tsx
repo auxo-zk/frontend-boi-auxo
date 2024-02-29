@@ -110,7 +110,7 @@ export default function Profile() {
                 {profileProjects?.draft?.map((item, index) => {
                     return (
                         <Grid key={index} item xs={12} sm={3}>
-                            <Card avatar="" banner="">
+                            <Card avatar={item.avatar} banner={item.banner}>
                                 <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <Box sx={{ width: '100%' }}>
                                         <Typography mb={1} variant="h6">
@@ -135,7 +135,9 @@ export default function Profile() {
                                         <Box dangerouslySetInnerHTML={{ __html: item.overviewDesc }}></Box>
                                     </Box>
                                     <Button fullWidth variant="outlined" size="small">
-                                        Edit
+                                        <Link style={{ color: 'inherit', textDecoration: 'none' }} href={`/explorer/projects/edit/${item.id}`}>
+                                            Edit
+                                        </Link>
                                     </Button>
                                 </Box>
                             </Card>

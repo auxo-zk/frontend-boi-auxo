@@ -25,7 +25,7 @@ export const projectInitData: TEditProjectData & {
         },
     },
     teamMember: {
-        root: {
+        0: {
             profileName: 'You',
             role: 'Product Owner',
             socialLink: '',
@@ -102,10 +102,23 @@ export const useCreateProjectFunctions = () => {
         });
     };
 
-    const handleCreateProject = async () => {
+    const handleCreateProject = async (id: string | undefined) => {
         try {
-            const result = await createProject(walletData.userAddress, projectData);
+            let avatarUrl = '';
+            let banner = '';
+            if (projectData.avatarFile) {
+                avatarUrl = await saveFile(projectData.avatarFile);
+            }
+            if (projectData.bannerFile) {
+                banner = await saveFile(projectData.bannerFile);
+            }
+            const result = await createProject(id, walletData.userAddress, {
+                ...projectData,
+                avatarImage: avatarUrl || projectData.avatarImage || '',
+                coverImage: banner || projectData.coverImage || '',
+            });
             toast('Create Project Success', { type: 'success' });
+            resetProjectData();
         } catch (error) {
             toast('There was an error creating project', { type: 'error' });
         }
@@ -200,6 +213,10 @@ export const useCreateProjectFunctions = () => {
             }
         }
     };
+
+    const resetProjectData = () => {
+        setProjectData(projectInitData);
+    };
     return {
         setProjectData,
         setCustomSection,
@@ -208,6 +225,7 @@ export const useCreateProjectFunctions = () => {
         handleSubmitProject,
         addDocumentFiles,
         deleteDocumentFiles,
+        resetProjectData,
     };
 };
 
