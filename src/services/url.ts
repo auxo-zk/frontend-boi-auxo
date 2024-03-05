@@ -14,6 +14,7 @@ export const apiUrl = {
     saveProject: `${BACKEND_BASE_URL}/v0/builders`,
     createProject: `${BACKEND_BASE_URL}/v0/builders`,
     getDraft: `${BACKEND_BASE_URL}/v0/builders/drafts`,
+    getDraftDetail: (id: string) => `${BACKEND_BASE_URL}/v0/builders/drafts/${id}`,
     getProject: `${BACKEND_BASE_URL}/v0/projects`,
     postProjectToIpfs: `${BACKEND_BASE_URL}/v0/projects`,
     //project detail
@@ -25,6 +26,9 @@ export const apiUrl = {
     getParticipatingProjects: (campaignId: string) => `${BACKEND_BASE_URL}/v0/campaigns/${campaignId}/projects`,
     //profile
     getUserProfile: `${BACKEND_BASE_URL}/v0/builders`,
+    editProfile: `${BACKEND_BASE_URL}/v0/builders`,
+    editProfileImage: `${BACKEND_BASE_URL}/v0/builders/update-avatar`,
+    checkJwt: `${BACKEND_BASE_URL}/v0/auth/profile`,
 
     getProjectMemberWitness: (projectId: string, memberId: string) => `${BACKEND_BASE_URL}/v0/storages/project/members/witness/${projectId}-${memberId}`,
     getParticipationZkappWitness: `${BACKEND_BASE_URL}/v0/storages/participation/zkApps/witness/${Constants.ZkAppEnum.PROJECT}`,

@@ -5,7 +5,8 @@ import { useCreateProjectFunctions } from './state';
 
 export default function BannerInput({ img }: { img?: string }) {
     const { setProjectData } = useCreateProjectFunctions();
-    const [previewImage, setPreviewImage] = useState<string>(img || '');
+    const [previewImage, setPreviewImage] = useState<string>('');
+    console.log('🚀 ~ BannerInput ~ previewImage:', previewImage);
     const imageInputRef = useRef<HTMLInputElement>(null);
 
     const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +32,7 @@ export default function BannerInput({ img }: { img?: string }) {
         <Box sx={{ width: '100%' }}>
             <Box sx={{ width: '100%', aspectRatio: '978 / 260', position: 'relative', overflow: 'hidden', borderRadius: '0px 0px 12px 12px' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <Img src={previewImage || ''} alt="banner project" sx={{ width: '100%', height: 'auto', aspectRatio: '370/100', borderRadius: '0px 0px 12px 12px' }} />
+                <Img src={previewImage || img || ''} alt="banner project" sx={{ width: '100%', height: 'auto', aspectRatio: '370/100', borderRadius: '0px 0px 12px 12px' }} />
                 <input ref={imageInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={onImageChange} />
                 <Box
                     sx={{

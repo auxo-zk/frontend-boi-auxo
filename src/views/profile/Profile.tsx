@@ -1,17 +1,19 @@
 import { LinkedIn, Telegram } from '@mui/icons-material';
-import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, IconButton, Typography } from '@mui/material';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import { IconEdit } from 'src/assets/svg/icon';
 import Avatar from 'src/components/Avatar/Avatar';
-import { useProfileProjectsData, useProfileProjectsFunction } from './state';
+import { useProfileData, useProfileFunction } from './state';
 import Card from 'src/components/Card/Card';
 import NoData from 'src/components/NoData';
+import { useModalData, useModalFunction } from 'src/states/modal';
+import EditForm from './EditForm';
 
 export default function Profile() {
-    const profileProjects = useProfileProjectsData();
+    const profileProjects = useProfileData();
 
-    const { fetchDraft, fetchProject } = useProfileProjectsFunction();
+    const { fetchDraft, fetchProject } = useProfileFunction();
     async function getData() {
         try {
             await fetchDraft();
@@ -20,37 +22,55 @@ export default function Profile() {
             console.log(err);
         }
     }
+    const { description, name, img } = useProfileData();
+    const { getProfileData, setProfileData, submitProfileAvatar } = useProfileFunction();
+    const {} = useModalData();
+    const { setModalData } = useModalFunction();
+
+    const handleOpenModal = () => {
+        setModalData({ content: <EditForm />, open: true, title: 'Edit your profile' });
+    };
+    useEffect(() => {
+        getProfileData();
+    }, [getProfileData]);
+
     useEffect(() => {
         getData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
-        <Container sx={{ pt: 5 }}>
+        <Container sx={{ pt: 5, pb: 3 }}>
             <Typography variant="h1" textTransform={'uppercase'}>
                 Builder Profile
             </Typography>
             <Box sx={{ display: 'flex', placeItems: 'center', gap: 4, mt: 4 }}>
                 <Avatar
-                    src="https://pbs.twimg.com/profile_images/1732964434363248640/UtVeR8Io_200x200.jpg"
+                    src={img}
                     size={150}
-                    onChange={(file) => {
-                        console.log(file);
+                    onChange={async (file) => {
+                        try {
+                            if (file![0]) {
+                                await submitProfileAvatar(file![0]);
+                                getProfileData();
+                            }
+                        } catch (error) {}
                     }}
                 />
-                <Box width={'100%'}>
+                <Box sx={{ flexGrow: 1 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="h4" fontWeight={600}>
-                            Alicia
+                            {name}
                         </Typography>
-                        <IconEdit color="primary" sx={{ cursor: 'pointer' }} />
+                        <IconButton onClick={handleOpenModal}>
+                            <IconEdit color="primary" sx={{ cursor: 'pointer' }} />
+                        </IconButton>
                     </Box>
-                    <Typography color={'primary.light'}>Business Development</Typography>
-                    <Typography mt={1.5}>zkApp & Backend Developer 3 year experience of Typescript and NodejsLooking for a team</Typography>
+                    <Typography mt={1.5}>{description}</Typography>
 
-                    <Box sx={{ display: 'flex', gap: 1.5, placeItems: 'center', mt: 2 }}>
+                    {/* <Box sx={{ display: 'flex', gap: 1.5, placeItems: 'center', mt: 2 }}>
                         <LinkedIn fontSize="large" sx={{ color: 'primary.light' }} />
                         <Telegram fontSize="large" sx={{ color: 'primary.light' }} />
-                    </Box>
+                    </Box> */}
                 </Box>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', my: 5 }}>
@@ -60,7 +80,7 @@ export default function Profile() {
                 </Link>
             </Box>
             <Grid container spacing={2}>
-                {profileProjects?.ownerProject?.project?.map((item, index) => {
+                {profileProjects?.project?.map((item, index) => {
                     return (
                         <Grid key={index} item xs={12} sm={3}>
                             <Card avatar={item.avatar} banner={item.banner}>
@@ -70,11 +90,9 @@ export default function Profile() {
                                             {item.name || 'No name'}
                                         </Typography>
 
-                                        <Typography variant="body1" mt={1}>
-                                            {item.overviewDesc}
-                                        </Typography>
+                                        <Box dangerouslySetInnerHTML={{ __html: item.overviewDesc }}></Box>
                                     </Box>
-                                    <Button fullWidth variant="outlined">
+                                    <Button fullWidth variant="outlined" size="small">
                                         Edit
                                     </Button>
                                 </Box>
@@ -82,17 +100,17 @@ export default function Profile() {
                         </Grid>
                     );
                 })}
-                {(profileProjects?.ownerProject?.project?.length || 0) === 0 && (
+                {(profileProjects?.project?.length || 0) === 0 && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                         <NoData text="No Project Found!" />
                     </Box>
                 )}
             </Grid>
             <Grid container spacing={2} mt={2}>
-                {profileProjects?.ownerProject?.draft?.map((item, index) => {
+                {profileProjects?.draft?.map((item, index) => {
                     return (
                         <Grid key={index} item xs={12} sm={3}>
-                            <Card avatar="" banner="">
+                            <Card avatar={item.avatar} banner={item.banner}>
                                 <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <Box sx={{ width: '100%' }}>
                                         <Typography mb={1} variant="h6">
@@ -110,23 +128,23 @@ export default function Profile() {
                                                 color: '#FFCCBC',
                                             }}
                                         >
-                                            <Typography variant="body3" color="inherit">
+                                            <Typography variant="body3" color="secondary.main">
                                                 Drafting...
                                             </Typography>
                                         </Box>
-                                        <Typography variant="body1" mt={1}>
-                                            {item.overviewDesc}
-                                        </Typography>
+                                        <Box dangerouslySetInnerHTML={{ __html: item.overviewDesc }}></Box>
                                     </Box>
-                                    <Button fullWidth variant="outlined">
-                                        Edit
+                                    <Button fullWidth variant="outlined" size="small">
+                                        <Link style={{ color: 'inherit', textDecoration: 'none' }} href={`/explorer/projects/edit/${item.id}`}>
+                                            Edit
+                                        </Link>
                                     </Button>
                                 </Box>
                             </Card>
                         </Grid>
                     );
                 })}
-                {(profileProjects?.ownerProject?.draft?.length || 0) === 0 && (
+                {(profileProjects?.draft?.length || 0) === 0 && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                         <NoData text="No Draft Found!" />
                     </Box>

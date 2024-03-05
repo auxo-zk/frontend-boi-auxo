@@ -1,22 +1,44 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { useCallback } from 'react';
+import { toast } from 'react-toastify';
+import { TProfileInput, getUserProfile, postProfileAvatar, postProfileInfo } from 'src/services/profile/api';
 import { ProjectMetaData, getDraftProject, getUserProject } from 'src/services/project/api';
 import { useWalletData } from 'src/states/wallet';
 
-export type TProfileProjects = { ownerProject: { project: ProjectMetaData[]; draft: ProjectMetaData[] }; participatingProject: ProjectMetaData[] };
-const initData: TProfileProjects = {
-    ownerProject: { project: [], draft: [] },
+export type TProfile = {
+    project: ProjectMetaData[];
+    draft: ProjectMetaData[];
+    participatingProject: ProjectMetaData[];
+    address: string;
+    name: string;
+    website: string;
+    description: string;
+    role: string;
+    img: string;
+    imgFile?: File;
+};
+const initData: TProfile = {
+    project: [],
+    draft: [],
     participatingProject: [],
+    address: '',
+    name: '',
+    website: '',
+    description: '',
+    img: '',
+    role: '',
 };
 
-const profileProjects = atom<TProfileProjects>(initData);
+const profileProjects = atom<TProfile>(initData);
 
-export const useProfileProjectsData = () => useAtomValue(profileProjects);
+export const useProfileData = () => useAtomValue(profileProjects);
 
-export const useProfileProjectsFunction = () => {
+export const useProfileFunction = () => {
     const _setProfileProjects = useSetAtom(profileProjects);
-    const profileProjectsData = useProfileProjectsData();
+    const profileProjectsData = useProfileData();
+    const { imgFile } = useProfileData();
     const { userAddress } = useWalletData();
-    const setProfileProjects = (data: Partial<TProfileProjects>) => {
+    const setProfileData = (data: Partial<TProfile>) => {
         _setProfileProjects((prev) => {
             return {
                 ...prev,
@@ -26,11 +48,47 @@ export const useProfileProjectsFunction = () => {
     };
     const fetchDraft = async () => {
         const res = await getDraftProject();
-        setProfileProjects({ ownerProject: { draft: res, project: profileProjectsData.ownerProject.project } });
+        setProfileData({ draft: res });
     };
     const fetchProject = async () => {
         const res = await getUserProject(userAddress);
-        setProfileProjects({ ownerProject: { project: res, draft: profileProjectsData.ownerProject.draft } });
+        setProfileData({ project: res });
     };
-    return { fetchDraft, fetchProject };
+    const getProfileData = useCallback(async () => {
+        if (userAddress) {
+            try {
+                const result = await getUserProfile(userAddress);
+                console.log('🚀 ~ getProfileData ~ userAddress:', userAddress);
+                console.log('🚀 ~ getProfileData ~ result:', result);
+                setProfileData({
+                    address: userAddress,
+                    description: result.description,
+                    img: result.img,
+                    name: result.name,
+                });
+            } catch (error) {}
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userAddress]);
+
+    const submitProfileInfo = async (input: TProfileInput) => {
+        try {
+            const result = await postProfileInfo(input);
+            toast('Edit Profile Successfully: ', { type: 'success' });
+            return result;
+        } catch (error) {
+            toast('Edit Profile Failed: ' + (error as Error).message, { type: 'error' });
+        }
+    };
+
+    const submitProfileAvatar = async (imgFile: File) => {
+        try {
+            const result = await postProfileAvatar(imgFile);
+            toast('Edit Profile Avatar Successfully: ', { type: 'success' });
+            return result;
+        } catch (error) {
+            toast('Edit Profile Avatar Failed: ' + (error as Error).message, { type: 'error' });
+        }
+    };
+    return { fetchDraft, fetchProject, setProfileData, submitProfileInfo, submitProfileAvatar, getProfileData };
 };
