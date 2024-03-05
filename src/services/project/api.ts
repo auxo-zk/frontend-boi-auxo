@@ -176,22 +176,26 @@ export async function saveProject(address: string, project: TEditProjectData) {
 }
 
 // ****************************************************************************************************************************************************
-export async function createProject(address: string, project: TEditProjectData) {
+export async function createProject(id: string = '', address: string, project: TEditProjectData) {
     if (!address) {
         return;
     }
     const jwt = getJwt();
     await axios.post(
-        apiUrl.saveProject + `/drafts`,
+        apiUrl.saveProject + `/drafts${id ? `/${id}` : ''}`,
         {
             address: address,
             name: project.name,
+            avatarImage: project.avatarImage,
+            coverImage: project.coverImage,
             publicKey: project.publicKey,
             description: project.overViewDescription,
             problemStatement: project.problemStatement,
             solution: project.solution,
             challengeAndRisks: project.challengeAndRisk,
-            members: Object.values(project.teamMember || {}),
+            members: Object.values(project.teamMember || {}).map((member) => {
+                return { name: member.profileName, role: member.role, link: member.socialLink };
+            }),
             documents: [],
         },
         {
@@ -204,16 +208,33 @@ export async function createProject(address: string, project: TEditProjectData) 
 }
 
 // ****************************************************************************************************************************************************
-export async function getDraftProjectDetail(address: string, draftId: string): Promise<TEditProjectData | undefined> {
-    if (!address) {
-        return;
-    }
+export async function getDraftProjectDetail(draftId: string): Promise<TEditProjectData | undefined> {
     const jwt = getJwt();
-    const response: any = await axios.get(`${BACKEND_BASE_URL}/v0/builders`, {
-        headers: {
-            Authorization: `Bearer ${jwt}`,
-        },
-    });
+    const response: any = (
+        await axios.get(apiUrl.getDraftDetail(draftId), {
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+            },
+        })
+    ).data;
+    return {
+        name: response.name,
+        challengeAndRisk: response.challengeAndRisks,
+        overViewDescription: response.description,
+        problemStatement: response.problemStatement,
+        publicKey: response.publicKey,
+        // customSections:
+        solution: response.solution,
+        additionalDocument: response.documents,
+        draftId: response._id,
+        teamMember: Object.assign(
+            {},
+            (response.members || []).map((member: any) => ({ profileName: member.name, role: member.role, socialLink: member.link }))
+        ),
+        avatarImage: response.avatarImage,
+        coverImage: response.coverImage,
+        customSections: {},
+    };
 }
 
 // ****************************************************************************************************************************************************
@@ -223,15 +244,17 @@ export type ProjectMetaData = {
     banner: string;
     type: 'project' | 'draft';
     overviewDesc: string;
+    id?: string;
 };
 export async function getDraftProject(): Promise<ProjectMetaData[]> {
     const response: any[] = (await axios.get(apiUrl.getDraft, { headers: { Authorization: `Bearer ${getJwt()}` } })).data || [];
     return response.map((item) => ({
         name: item.name,
-        avatar: item.avatar || '',
-        banner: item.nammer || '',
+        avatar: item.avatarImage || '',
+        banner: item.coverImage || '',
         type: 'draft',
         overviewDesc: item.description,
+        id: item._id,
     }));
 }
 

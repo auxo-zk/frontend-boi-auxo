@@ -67,18 +67,18 @@ export default function TeamMember() {
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar sx={{ width: '50px', height: '50px' }} />
                         <Typography ml={2} variant="body1" fontWeight={500}>
-                            {teamMember!['root']?.profileName}
+                            {teamMember!['0']?.profileName}
                         </Typography>
                     </Box>
                 </Grid>
                 <Grid item xs={12} md={3}>
                     <Typography variant="body1" fontWeight={500}>
-                        {teamMember!['root']?.role}
+                        {teamMember!['0']?.role}
                     </Typography>
                 </Grid>
                 <Grid item xs={12} md={4}>
                     <Typography variant="body1" fontWeight={500}>
-                        {teamMember!['root']?.socialLink}
+                        {teamMember!['0']?.socialLink}
                     </Typography>
                 </Grid>
                 <Grid item xs={12} md={1.5} sx={{ justifyContent: 'flex-end' }}>
@@ -88,7 +88,7 @@ export default function TeamMember() {
                 </Grid>
             </Grid>
             {Object.entries(teamMember || {}).map(([id, member], index) => {
-                if (id === 'root') {
+                if (id === '0') {
                     return;
                 }
                 return (
@@ -115,6 +115,7 @@ export default function TeamMember() {
                                             profileName: e.target.value,
                                         });
                                     }}
+                                    defaultValue={member.profileName}
                                 />
                             </Box>
                         </Grid>
@@ -126,6 +127,7 @@ export default function TeamMember() {
                                         role: e.target.value,
                                     });
                                 }}
+                                defaultValue={member.role}
                             />
                         </Grid>
                         <Grid item xs={12} md={4}>
@@ -136,6 +138,7 @@ export default function TeamMember() {
                                         socialLink: e.target.value,
                                     });
                                 }}
+                                defaultValue={member.socialLink}
                             />
                         </Grid>
                         <Grid item xs={12} md={1.5} sx={{ justifyContent: 'flex-end' }}>

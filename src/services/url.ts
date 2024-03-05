@@ -14,6 +14,7 @@ export const apiUrl = {
     saveProject: `${BACKEND_BASE_URL}/v0/builders`,
     createProject: `${BACKEND_BASE_URL}/v0/builders`,
     getDraft: `${BACKEND_BASE_URL}/v0/builders/drafts`,
+    getDraftDetail: (id: string) => `${BACKEND_BASE_URL}/v0/builders/drafts/${id}`,
     getProject: `${BACKEND_BASE_URL}/v0/projects`,
     postProjectToIpfs: `${BACKEND_BASE_URL}/v0/projects`,
     //project detail
