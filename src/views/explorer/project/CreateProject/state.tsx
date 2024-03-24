@@ -164,12 +164,10 @@ export const useCreateProjectFunctions = () => {
             let bannerUrl = '';
             let documentUrls: string[] = [];
             if (!projectData.avatarFile) {
-                toast('Avatar required', { type: 'warning' });
-                return;
+                throw Error('Avatar required!');
             }
             if (!projectData.bannerFile) {
-                toast('Banner required', { type: 'warning' });
-                return;
+                throw Error('Banner required!');
             }
             // if (projectData.documentFiles.length === 0) {
             // }
