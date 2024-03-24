@@ -6,7 +6,6 @@ import { useCreateProjectFunctions } from './state';
 export default function BannerInput({ img }: { img?: string }) {
     const { setProjectData } = useCreateProjectFunctions();
     const [previewImage, setPreviewImage] = useState<string>('');
-    console.log('🚀 ~ BannerInput ~ previewImage:', previewImage);
     const imageInputRef = useRef<HTMLInputElement>(null);
 
     const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
