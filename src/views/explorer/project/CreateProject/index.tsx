@@ -12,6 +12,7 @@ import BannerInput from './BannerInput';
 import { imagePath } from 'src/constants/imagePath';
 import Link from 'next/link';
 import Avatar from 'src/components/Avatar/Avatar';
+import { toast } from 'react-toastify';
 
 export default function CreateProject() {
     const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey, avatarImage, coverImage } = useCreateProjectData();
@@ -21,14 +22,15 @@ export default function CreateProject() {
     const router = useRouter();
 
     const handleSaveButton = async () => {
+        setLoading(true);
         try {
-            setLoading(true);
             await handleCreateProject(String(router.query.id || ''));
-            setLoading(false);
             router.push('/profile');
         } catch (error) {
-            setLoading(false);
+            console.log(error);
+            toast((error as Error).message, { type: 'error' });
         }
+        setLoading(false);
     };
 
     const handleSubmitClick = async () => {
