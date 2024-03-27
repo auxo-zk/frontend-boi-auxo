@@ -103,25 +103,21 @@ export const useCreateProjectFunctions = () => {
     };
 
     const handleCreateProject = async (id: string | undefined) => {
-        try {
-            let avatarUrl = '';
-            let banner = '';
-            if (projectData.avatarFile) {
-                avatarUrl = await saveFile(projectData.avatarFile);
-            }
-            if (projectData.bannerFile) {
-                banner = await saveFile(projectData.bannerFile);
-            }
-            const result = await createProject(id, walletData.userAddress, {
-                ...projectData,
-                avatarImage: avatarUrl || projectData.avatarImage || '',
-                coverImage: banner || projectData.coverImage || '',
-            });
-            toast('Create Project Success', { type: 'success' });
-            resetProjectData();
-        } catch (error) {
-            toast('There was an error creating project', { type: 'error' });
+        let avatarUrl = '';
+        let banner = '';
+        if (projectData.avatarFile) {
+            avatarUrl = await saveFile(projectData.avatarFile);
         }
+        if (projectData.bannerFile) {
+            banner = await saveFile(projectData.bannerFile);
+        }
+        const result = await createProject(id, walletData.userAddress, {
+            ...projectData,
+            avatarImage: avatarUrl || projectData.avatarImage || '',
+            coverImage: banner || projectData.coverImage || '',
+        });
+        toast('Create Project Success', { type: 'success' });
+        resetProjectData();
     };
     const checkData = () => {
         if (!projectData.name) {

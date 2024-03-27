@@ -9,8 +9,8 @@ const CreateProject = dynamic(() => import('src/views/explorer/project/CreatePro
 export default function EditProjectPage() {
     const router = useRouter();
     const draftId = router.query.id;
-    console.log('🚀 ~ EditProjectPage ~ draftId:', draftId);
     useEffect(() => {
+        console.log('🚀 ~ EditProjectPage ~ draftId:', draftId);
         const fetchDraft = async () => {
             if (draftId) {
                 try {

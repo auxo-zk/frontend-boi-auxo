@@ -109,7 +109,7 @@ export default function Profile() {
             <Grid container spacing={2} mt={2}>
                 {profileProjects?.draft?.map((item, index) => {
                     return (
-                        <Grid key={index} item xs={12} sm={3}>
+                        <Grid key={index} item xs={12} xsm={6} sm={4} lg={3}>
                             <Card avatar={item.avatar} banner={item.banner}>
                                 <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <Box sx={{ width: '100%' }}>
@@ -132,13 +132,26 @@ export default function Profile() {
                                                 Drafting...
                                             </Typography>
                                         </Box>
-                                        <Box dangerouslySetInnerHTML={{ __html: item.overviewDesc }}></Box>
+                                        <Box
+                                            dangerouslySetInnerHTML={{ __html: item.overviewDesc }}
+                                            sx={{
+                                                '& > p': {
+                                                    display: '-webkit-box',
+                                                    WebkitLineClamp: '3',
+                                                    WebkitBoxOrient: 'vertical',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    height: '60px',
+                                                    lineHeight: '20px',
+                                                },
+                                            }}
+                                        ></Box>
                                     </Box>
-                                    <Button fullWidth variant="outlined" size="small">
-                                        <Link style={{ color: 'inherit', textDecoration: 'none' }} href={`/explorer/projects/edit/${item.id}`}>
+                                    <Link style={{ color: 'inherit', textDecoration: 'none', width: '100%' }} href={`/explorer/projects/edit/${item.id}`}>
+                                        <Button fullWidth variant="outlined" size="small">
                                             Edit
-                                        </Link>
-                                    </Button>
+                                        </Button>
+                                    </Link>
                                 </Box>
                             </Card>
                         </Grid>

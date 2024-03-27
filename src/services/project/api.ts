@@ -5,8 +5,8 @@ import { BACKEND_BASE_URL } from '../baseUrl';
 
 export enum KeyProjectInput {
     'solution' = 'solution',
-    'problemStatement' = 'problem-statement',
-    'challengesAndRisks' = 'challenges-and-risks',
+    'problemStatement' = 'problemStatement',
+    'challengesAndRisks' = 'challengesAndRisk',
 }
 //PROJECT LIST ************************************************************************************************************************************************
 export type TProjectData = {
@@ -192,7 +192,7 @@ export async function createProject(id: string = '', address: string, project: T
             description: project.overViewDescription,
             problemStatement: project.problemStatement,
             solution: project.solution,
-            challengeAndRisks: project.challengeAndRisk,
+            challengeAndRisk: project.challengeAndRisk,
             members: Object.values(project.teamMember || {}).map((member) => {
                 return { name: member.profileName, role: member.role, link: member.socialLink };
             }),
@@ -219,7 +219,7 @@ export async function getDraftProjectDetail(draftId: string): Promise<TEditProje
     ).data;
     return {
         name: response.name,
-        challengeAndRisk: response.challengeAndRisks,
+        challengeAndRisk: response.challengeAndRisk,
         overViewDescription: response.description,
         problemStatement: response.problemStatement,
         publicKey: response.publicKey,
