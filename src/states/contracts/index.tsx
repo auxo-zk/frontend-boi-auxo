@@ -1,5 +1,4 @@
 import { atom, useAtom, useAtomValue } from 'jotai';
-import { PublicKey } from 'o1js';
 import ZkAppWorkerClient from 'src/libs/AppWorker/zkWorkerClient';
 import { toast } from 'react-toastify';
 

@@ -16,7 +16,9 @@ export default function EditProjectPage() {
                 try {
                     const draftData = await getDraftProjectDetail(String(draftId));
                     setProjectData(draftData || {});
-                } catch (error) {}
+                } catch (error) {
+                    console.log(error);
+                }
             }
         };
         fetchDraft();

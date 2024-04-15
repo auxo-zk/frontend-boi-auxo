@@ -39,6 +39,14 @@ export const zkFunctions = {
     getPercentageComplieDone: async (args: {}) => {
         return ((state.complieDone / 6) * 100).toFixed(0);
     },
+    checkValidAddress: async (args: { address: string }) => {
+        try {
+            PublicKey.fromBase58(args.address);
+            return true;
+        } catch (err) {
+            return false;
+        }
+    },
     compileContract: async (args: { fileCache: any }) => {
         await state.TypeZkApp!.Project.CreateProject.compile({ cache: FileSystem(args.fileCache) }); // 1
         console.log('complie CreateProject done');
