@@ -154,21 +154,37 @@ export const useCreateProjectFunctions = () => {
             if (!checkResult.valid) {
                 throw Error(`Missing input: ${checkResult.message}`);
             }
+            if (!(await workerClient.checkValidAddress(projectData.publicKey))) {
+                throw Error(`Project PublicKey is invalid!`);
+            }
             //safe image and file
             //avatar and banner
             let avatarUrl = '';
             let bannerUrl = '';
             let documentUrls: string[] = [];
-            if (!projectData.avatarFile) {
-                throw Error('Avatar required!');
+
+            if (projectData.avatarFile) {
+                avatarUrl = await saveFile(projectData.avatarFile);
+            } else {
+                if (projectData.avatarImage) {
+                    avatarUrl = projectData.avatarImage;
+                } else {
+                    throw Error('Avatar required!');
+                }
             }
-            if (!projectData.bannerFile) {
-                throw Error('Banner required!');
+
+            if (projectData.bannerFile) {
+                bannerUrl = await saveFile(projectData.bannerFile);
+            } else {
+                if (projectData.coverImage) {
+                    bannerUrl = projectData.coverImage;
+                } else {
+                    throw Error('Banner required!');
+                }
             }
-            // if (projectData.documentFiles.length === 0) {
-            // }
-            avatarUrl = await saveFile(projectData.avatarFile);
-            bannerUrl = await saveFile(projectData.bannerFile);
+
+            console.log({ bannerUrl, avatarUrl });
+
             documentUrls = await Promise.all(projectData.documentFiles.map((i) => saveFile(i.file)));
             const ipfsData = await postProjectsToIpfs({
                 description: projectData.overViewDescription,
@@ -202,8 +218,9 @@ export const useCreateProjectFunctions = () => {
             console.log(transactionLink);
             toast.update(idtoast, { render: 'Send transaction successfull!', isLoading: false, type: 'success', autoClose: 3000, hideProgressBar: false });
         } catch (error) {
+            console.log(error);
             if (idtoast) {
-                toast.update(idtoast, { render: (error as Error).message, type: 'error', position: 'top-center', isLoading: false, autoClose: 3000, hideProgressBar: false });
+                toast.update(idtoast, { render: error as string, type: 'error', position: 'top-center', isLoading: false, autoClose: 3000, hideProgressBar: false });
             }
         }
     };

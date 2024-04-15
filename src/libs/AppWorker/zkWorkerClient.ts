@@ -5,7 +5,7 @@ import { ArgumentZkFuction, ReturenValueZkFunction, TZkFuction } from './zkFunct
 export default class ZkAppWorkerClient {
     worker: Worker;
 
-    promises: { [id: number]: { resolve: (res: any) => void; reject: (err: any) => void } };
+    promises: { [id: number]: { resolve: (res: any) => void; reject: (error: any) => void } };
 
     nextId: number;
 
@@ -80,5 +80,8 @@ export default class ZkAppWorkerClient {
     }
     joinCampaign(args: ArgumentZkFuction<'joinCampaign'>) {
         return this._call('joinCampaign', args);
+    }
+    checkValidAddress(address: string) {
+        return this._call('checkValidAddress', { address: address });
     }
 }
