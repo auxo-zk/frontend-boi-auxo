@@ -1,11 +1,12 @@
 import { sleep } from 'src/utils/format';
 import { ZkappWorkerReponse, ZkappWorkerRequest } from './worker';
 import { ArgumentZkFuction, ReturenValueZkFunction, TZkFuction } from './zkFunction';
+import { NetworkId } from 'src/constants';
 
 export default class ZkAppWorkerClient {
     worker: Worker;
 
-    promises: { [id: number]: { resolve: (res: any) => void; reject: (error: any) => void } };
+    promises: { [id: number]: { resolve: (res: any) => void; reject: (err: any) => void } };
 
     nextId: number;
 
@@ -49,8 +50,8 @@ export default class ZkAppWorkerClient {
         }) as ReturenValueZkFunction<Key>;
     }
 
-    setActiveInstanceToBerkeley() {
-        return this._call('setActiveInstanceToBerkeley', {});
+    setActiveInstanceToNetwork(chainId: NetworkId) {
+        return this._call('setActiveInstanceToNetwork', { chainId });
     }
     loadContract() {
         console.log('Loading contract');

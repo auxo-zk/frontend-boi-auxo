@@ -4,17 +4,27 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
-import { ZkApp, Storage } from '@auxo-dev/platform';
+import { Storage, type ZkApp as ZkAppPlatform } from '@auxo-dev/platform';
+import type { ZkApp as ZkAppDkg } from '@auxo-dev/dkg';
 import { ArgumentTypes } from 'src/global.config';
 import { FileSystem } from 'src/states/cache';
-import { IPFSHash } from '@auxo-dev/auxo-libs';
 import { TWitness } from 'src/services/services';
+import { IpfsHash } from '@auxo-dev/auxo-libs';
+import { chainInfo } from 'src/constants/chainInfo';
+import { NetworkId } from 'src/constants';
 
 const state = {
-    TypeZkApp: null as null | typeof ZkApp,
-    ProjectContract: null as null | ZkApp.Project.ProjectContract,
-    ParticipationContract: null as null | ZkApp.Participation.ParticipationContract,
-    TreasuryContract: null as null | ZkApp.Treasury.TreasuryContract,
+    ZkAppPlatform: null as null | typeof ZkAppPlatform,
+    ZkAppDkg: null as null | typeof ZkAppDkg,
+    FundingRequesterContract: null as null | ZkAppDkg.Requester.RequesterContract,
+    VestingRequesterContract: null as null | ZkAppDkg.Requester.RequesterContract,
+    DkgContract: null as null | ZkAppDkg.DKG.DkgContract,
+    RequestContract: null as null | ZkAppDkg.Request.RequestContract,
+    ProjectContract: null as null | ZkAppPlatform.Project.ProjectContract,
+    ParticipationContract: null as null | ZkAppPlatform.Participation.ParticipationContract,
+    CommitmentContract: null as null | ZkAppPlatform.Commitment.CommitmentContract,
+    VestingContract: null as null | ZkAppPlatform.Vesting.VestingContract,
+    TreasuryContract: null as null | ZkAppPlatform.TreasuryManager.TreasuryManagerContract,
     transaction: null as null | Transaction,
     complieDone: 0 as number,
 };
@@ -22,22 +32,22 @@ const state = {
 // ---------------------------------------------------------------------------------------
 
 export const zkFunctions = {
-    setActiveInstanceToBerkeley: async (args: {}) => {
-        const MINAURL = 'https://api.minascan.io/node/berkeley/v1/graphql';
-        const ARCHIVEURL = 'https://api.minascan.io/archive/berkeley/v1/graphql';
-        const Berkeley = Mina.Network({
-            mina: MINAURL,
-            archive: ARCHIVEURL,
+    setActiveInstanceToNetwork: async (args: { chainId: NetworkId }) => {
+        const networkInfo = chainInfo[args.chainId];
+        const Network = Mina.Network({
+            mina: networkInfo.rpcUrl,
+            archive: networkInfo.archiveUrl,
         });
-        console.log('Berkeley Instance Created');
-        Mina.setActiveInstance(Berkeley);
+        console.log(`${networkInfo.name} Instance Created`);
+        Mina.setActiveInstance(Network);
     },
     loadContract: async (args: {}) => {
-        const { ZkApp } = await import('@auxo-dev/platform');
-        state.TypeZkApp = ZkApp;
+        const [{ ZkApp: ZkAppPlatform }, { ZkApp: ZkAppDkg }] = await Promise.all([import('@auxo-dev/platform'), import('@auxo-dev/dkg')]);
+        state.ZkAppPlatform = ZkAppPlatform;
+        state.ZkAppDkg = ZkAppDkg;
     },
     getPercentageComplieDone: async (args: {}) => {
-        return ((state.complieDone / 6) * 100).toFixed(0);
+        return ((state.complieDone / 20) * 100).toFixed(0);
     },
     checkValidAddress: async (args: { address: string }) => {
         try {
@@ -48,56 +58,140 @@ export const zkFunctions = {
         }
     },
     compileContract: async (args: { fileCache: any }) => {
-        await state.TypeZkApp!.Project.CreateProject.compile({ cache: FileSystem(args.fileCache) }); // 1
-        console.log('complie CreateProject done');
+        await state.ZkAppDkg!.Requester.UpdateTask.compile({ cache: FileSystem(args.fileCache) }); // 1
+        console.log('1. complie UpdateTask done');
         state.complieDone += 1;
 
-        await state.TypeZkApp!.Project.ProjectContract.compile({ cache: FileSystem(args.fileCache) }); // 2
-        console.log('complie ProjectContract done');
+        await state.ZkAppDkg!.Requester.RequesterContract.compile({ cache: FileSystem(args.fileCache) }); // 2
+        console.log('2. complie RequesterContract done');
         state.complieDone += 1;
 
-        await state.TypeZkApp!.Participation.JoinCampaign.compile({ cache: FileSystem(args.fileCache) }); // 3
-        console.log('complie JoinCampaign done');
+        await state.ZkAppDkg!.DKG.UpdateKey.compile({ cache: FileSystem(args.fileCache) }); // 3
+        console.log('3. complie UpdateKey done');
         state.complieDone += 1;
 
-        await state.TypeZkApp!.Participation.ParticipationContract.compile({ cache: FileSystem(args.fileCache) }); // 4
-        console.log('complie JoinCampaign done');
+        await state.ZkAppDkg!.DKG.DkgContract.compile({ cache: FileSystem(args.fileCache) }); // 4
+        console.log('4. complie DkgContract done');
         state.complieDone += 1;
 
-        await state.TypeZkApp!.Treasury.ClaimFund.compile({ cache: FileSystem(args.fileCache) }); // 5
-        console.log('complie ClaimFund done');
+        await state.ZkAppDkg!.Request.ComputeResult.compile({ cache: FileSystem(args.fileCache) }); // 5
+        console.log('5. complie ComputeResult done');
         state.complieDone += 1;
 
-        await state.TypeZkApp!.Treasury.TreasuryContract.compile({ cache: FileSystem(args.fileCache) }); // 6
-        console.log('complie TreasuryContract done');
+        await state.ZkAppDkg!.Request.UpdateRequest.compile({ cache: FileSystem(args.fileCache) }); // 6
+        console.log('6. complie UpdateRequest done');
+        state.complieDone += 1;
+
+        await state.ZkAppDkg!.Request.RequestContract.compile({ cache: FileSystem(args.fileCache) }); // 7
+        console.log('7. complie RequestContract done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Project.RollupProject.compile({ cache: FileSystem(args.fileCache) }); // 8
+        console.log('8. complie RollupProject done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Campaign.RollupCampaign.compile({ cache: FileSystem(args.fileCache) }); // 9
+        console.log('9. complie RollupCampaign done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Participation.RollupParticipation.compile({ cache: FileSystem(args.fileCache) }); // 10
+        console.log('10. complie RollupParticipation done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Funding.RollupFunding.compile({ cache: FileSystem(args.fileCache) }); // 11
+        console.log('11. complie RollupFunding done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.TreasuryManager.RollupTreasuryManager.compile({ cache: FileSystem(args.fileCache) }); // 12
+        console.log('12. complie RollupTreasuryManager done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Project.ProjectContract.compile({ cache: FileSystem(args.fileCache) }); // 13
+        console.log('13. complie ProjectContract done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Campaign.CampaignContract.compile({ cache: FileSystem(args.fileCache) }); // 14
+        console.log('14. complie CampaignContract done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Participation.ParticipationContract.compile({ cache: FileSystem(args.fileCache) }); // 15
+        console.log('15. complie ParticipationContract done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Funding.FundingContract.compile({ cache: FileSystem(args.fileCache) }); // 16
+        console.log('16. complie FundingContract done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.TreasuryManager.TreasuryManagerContract.compile({ cache: FileSystem(args.fileCache) }); // 17
+        console.log('17. complie TreasuryManagerContract done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Commitment.RollupCommitment.compile({ cache: FileSystem(args.fileCache) }); // 18
+        console.log('18. complie RollupCommitment done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Commitment.CommitmentContract.compile({ cache: FileSystem(args.fileCache) }); // 19
+        console.log('19. complie CommitmentContract done');
+        state.complieDone += 1;
+
+        await state.ZkAppPlatform!.Vesting.VestingContract.compile({ cache: FileSystem(args.fileCache) }); // 20
+        console.log('20. complie VestingContract done');
         state.complieDone += 1;
     },
     fetchAccount: async (args: { publicKey58: string }) => {
         const publicKey = PublicKey.fromBase58(args.publicKey58);
         return await fetchAccount({ publicKey });
     },
-    initZkappInstance: async (args: { projectContract: string; participationContract: string; treasuryContract: string }) => {
+    initZkappInstance: async (args: {
+        fundingRequesterContract: string;
+        vestingRequesterContract: string;
+        requestContract: string;
+        dkgContract: string;
+        projectContract: string;
+        participationContract: string;
+        treasuryContract: string;
+        commitmentContract: string;
+        vestingContract: string;
+    }) => {
+        const fundingRequesterContractPub = PublicKey.fromBase58(args.fundingRequesterContract);
+        state.FundingRequesterContract = new state.ZkAppDkg!.Requester.RequesterContract!(fundingRequesterContractPub);
+
+        const vestingRequesterContractPub = PublicKey.fromBase58(args.vestingRequesterContract);
+        state.VestingRequesterContract = new state.ZkAppDkg!.Requester.RequesterContract!(vestingRequesterContractPub);
+
+        const requestContractPub = PublicKey.fromBase58(args.requestContract);
+        state.RequestContract = new state.ZkAppDkg!.Request.RequestContract!(requestContractPub);
+
+        const dkgContractPub = PublicKey.fromBase58(args.dkgContract);
+        state.DkgContract = new state.ZkAppDkg!.DKG.DkgContract!(dkgContractPub);
+
         const projectContractPub = PublicKey.fromBase58(args.projectContract);
-        state.ProjectContract = new state.TypeZkApp!.Project.ProjectContract!(projectContractPub);
+        state.ProjectContract = new state.ZkAppPlatform!.Project.ProjectContract!(projectContractPub);
 
         const participationContractPub = PublicKey.fromBase58(args.participationContract);
-        state.ParticipationContract = new state.TypeZkApp!.Participation.ParticipationContract!(participationContractPub);
+        state.ParticipationContract = new state.ZkAppPlatform!.Participation.ParticipationContract!(participationContractPub);
 
         const treasuryContractPub = PublicKey.fromBase58(args.treasuryContract);
-        state.TreasuryContract = new state.TypeZkApp!.Treasury.TreasuryContract!(treasuryContractPub);
+        state.TreasuryContract = new state.ZkAppPlatform!.TreasuryManager.TreasuryManagerContract!(treasuryContractPub);
+
+        const commitmentContractPub = PublicKey.fromBase58(args.commitmentContract);
+        state.CommitmentContract = new state.ZkAppPlatform!.Commitment.CommitmentContract!(commitmentContractPub);
+
+        const vestingContractPub = PublicKey.fromBase58(args.vestingContract);
+        state.VestingContract = new state.ZkAppPlatform!.Vesting.VestingContract!(vestingContractPub);
     },
 
-    submitProject: async (args: { sender: string; projectId: string; members: string[]; ipfsHash: string; projectPubBase58: string }) => {
+    submitProject: async (args: { sender: string; projectId: string; members: string[]; ipfsHash: string; treasuryAddress58: string }) => {
         const sender = PublicKey.fromBase58(args.sender);
         await fetchAccount({ publicKey: sender });
         await fetchAccount({ publicKey: state.ProjectContract!.address });
 
-        const transaction = await Mina.transaction(sender, () => {
-            state.ProjectContract!.createProject({
-                members: new Storage.ProjectStorage.MemberArray(args.members.map((mem) => PublicKey.fromBase58(mem))),
-                ipfsHash: IPFSHash.fromString(args.ipfsHash),
-                payeeAccount: PublicKey.fromBase58(args.projectPubBase58),
-            });
+        const transaction = await Mina.transaction(sender, async () => {
+            await state.ProjectContract!.createProject(
+                new Storage.ProjectStorage.MemberArray(args.members.map((mem) => PublicKey.fromBase58(mem))),
+                IpfsHash.fromString(args.ipfsHash),
+                PublicKey.fromBase58(args.treasuryAddress58)
+            );
         });
         state.transaction = transaction;
     },
@@ -116,8 +210,8 @@ export const zkFunctions = {
         await fetchAccount({ publicKey: state.ParticipationContract!.address });
         await fetchAccount({ publicKey: state.ProjectContract!.address });
 
-        const transaction = await Mina.transaction(sender, () => {
-            state.ParticipationContract!.joinCampaign({
+        const transaction = await Mina.transaction(sender, async () => {
+            await state.ParticipationContract!.joinCampaign({
                 campaignId: new Field(args.campaignId),
                 projectId: new Field(args.projectId),
                 indexWitness: Storage.ParticipationStorage.Level1CWitness.fromJSON(args.lv1CWitness),

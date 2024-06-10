@@ -1,17 +1,20 @@
 import { atom, useAtom, useAtomValue } from 'jotai';
 import ZkAppWorkerClient from 'src/libs/AppWorker/zkWorkerClient';
 import { toast } from 'react-toastify';
+import { NetworkId } from 'src/constants';
 
 export type TContractData = {
     workerClient: ZkAppWorkerClient | null;
     isInitWorker: boolean;
     isLoading: boolean;
+    networkId: NetworkId;
 };
 
 const initData: TContractData = {
     workerClient: null,
     isInitWorker: true,
     isLoading: false,
+    networkId: NetworkId.AuxoDevNet,
 };
 
 const appContract = atom<TContractData>(initData);
@@ -74,9 +77,15 @@ export const useAppContractFunction = () => {
                 await zkApp.workerClient.loadContract();
                 await zkApp.workerClient.compileContract(cacheFiles);
                 await zkApp.workerClient.initZkappInstance({
-                    projectContract: 'B62qkkQtrPfqBmECb2hFpD2PRfhVCRjhxzxcRcUoWR3J7WdhfjGp5yv',
-                    participationContract: 'B62qqKAeVVxmGqLwGwDWMQ99Szfus5jgKmHTFwTMkwDXh3wtQA694Zk',
-                    treasuryContract: 'B62qm7GPk6oLpgTfkio8XYzeAtykht8aMpH1VfmfqXgB22TVXqJXd3A',
+                    dkgContract: 'B62qizA7ZJxGakVK3Vcy6pdSedtXEY9rZber9EimAkzMAt4fCBpCQL9',
+                    requestContract: 'B62qq1KbnHnU6ZDv3R1ZytiNpiU73wWnoC3WZkVF5Ndo8Nf5W6K2xe7',
+                    fundingRequesterContract: 'B62qkcg1F7ncX45x6661jcmseVR1pAajDUEcyTm1Uhw6WK2ZHE68ANq',
+                    vestingRequesterContract: 'B62qqsUHyRwG1qL6R7wAptwA9d8fWNKtTsk5ZWr3wEL7XJ5u23GebL7',
+                    commitmentContract: 'B62qoCN9873TFC3m1br7nKV8khJxXdsj87ZKaqFTSonJVjqxKEUyHSG',
+                    vestingContract: 'B62qpLiwizQ3bS3R55uxyrPuJKUMmujj8gK7TzDUMSWZV8TnejxtLg1',
+                    projectContract: 'B62qrXSf1v8nhbkqTGvZmThwehN3QDZaT5VzJWsX3d52SNgiQwtCv5y',
+                    participationContract: 'B62qpoGFc1w2LWyD6zArBeVPaqXhzqHMpweSQJWkSnDzUPuRi5Zhw3j',
+                    treasuryContract: 'B62qkrNwWtie39pZj1C8qNY1v5Gwc5e7yLB8j71L1c9Ghm9gneKMi64',
                 });
                 setAppContractData({
                     isLoading: false,

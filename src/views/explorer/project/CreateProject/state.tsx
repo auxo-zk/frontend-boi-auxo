@@ -207,7 +207,7 @@ export const useCreateProjectFunctions = () => {
                 ipfsHash: ipfsData.Hash,
                 members: [walletData.userAddress],
                 projectId: '',
-                projectPubBase58: projectData.publicKey,
+                treasuryAddress58: projectData.publicKey,
             });
 
             await workerClient.proveTransaction();
@@ -219,9 +219,7 @@ export const useCreateProjectFunctions = () => {
             toast.update(idtoast, { render: 'Send transaction successfull!', isLoading: false, type: 'success', autoClose: 3000, hideProgressBar: false });
         } catch (error) {
             console.log(error);
-            if (idtoast) {
-                toast.update(idtoast, { render: error as string, type: 'error', position: 'top-center', isLoading: false, autoClose: 3000, hideProgressBar: false });
-            }
+            toast.update(idtoast, { render: (error as Error).message, type: 'error', position: 'top-center', isLoading: false, autoClose: 5000, hideProgressBar: false });
         }
     };
 
