@@ -2,6 +2,7 @@ import axios from 'axios';
 import { apiUrl } from '../url';
 import { LocalStorageKey } from 'src/constants';
 import { BACKEND_BASE_URL } from '../baseUrl';
+import { TFileSaved } from '../services';
 
 export enum KeyProjectInput {
     'solution' = 'solution',
@@ -126,6 +127,7 @@ export type MemberDataType = {
     profileName: string;
     role: string;
     socialLink: string;
+    publicKey: string;
 };
 export type TEditProjectData = {
     draftId?: string;
@@ -143,10 +145,8 @@ export type TEditProjectData = {
             description?: string;
         };
     };
-    teamMember?: {
-        [id: string]: MemberDataType;
-    };
-    additionalDocument?: any;
+    members: MemberDataType[];
+    documents: TFileSaved[];
 };
 export async function saveProject(address: string, project: TEditProjectData) {
     if (!project.draftId || !address) {
@@ -163,8 +163,8 @@ export async function saveProject(address: string, project: TEditProjectData) {
             problemStatement: project.problemStatement,
             solution: project.solution,
             challengeAndRisks: project.challengeAndRisk,
-            members: project.teamMember,
-            documents: [],
+            members: project.members,
+            documents: project.documents,
         },
         {
             headers: {
@@ -193,10 +193,10 @@ export async function createProject(id: string = '', address: string, project: T
             problemStatement: project.problemStatement,
             solution: project.solution,
             challengeAndRisk: project.challengeAndRisk,
-            members: Object.values(project.teamMember || {}).map((member) => {
-                return { name: member.profileName, role: member.role, link: member.socialLink };
+            members: project.members.map((member) => {
+                return { name: member.profileName, role: member.role, link: member.socialLink, publicKey: member.publicKey };
             }),
-            documents: [],
+            documents: project.documents,
         },
         {
             headers: {
@@ -223,14 +223,15 @@ export async function getDraftProjectDetail(draftId: string): Promise<TEditProje
         overViewDescription: response.description,
         problemStatement: response.problemStatement,
         publicKey: response.publicKey,
-        // customSections:
         solution: response.solution,
-        additionalDocument: response.documents,
+        documents: response.documents,
         draftId: response._id,
-        teamMember: Object.assign(
-            {},
-            (response.members || []).map((member: any) => ({ profileName: member.name, role: member.role, socialLink: member.link }))
-        ),
+        members: (response.members || []).map((member: any) => ({
+            profileName: member.name,
+            role: member.role,
+            socialLink: member.link,
+            publicKey: member.publicKey,
+        })),
         avatarImage: response.avatarImage,
         coverImage: response.coverImage,
         customSections: {},
@@ -285,8 +286,9 @@ export type IPFSProjectInput = {
         name: string;
         role: string;
         link: string;
+        publicKey: string;
     }[];
-    documents: string[];
+    documents: TFileSaved[];
     //
 } & { [key in KeyProjectInput]: string };
 

@@ -125,9 +125,10 @@ export async function getWitnessIndex(): Promise<TWitness[]> {
     return res;
 }
 
-export async function saveFile(file: File): Promise<string> {
+export type TFileSaved = { fileName: string; fileSize: number; URL: string };
+export async function saveFile(file: File): Promise<TFileSaved> {
     const formData = new FormData();
     formData.append('file', file);
-    const res: string = (await axios.post(apiUrl.saveFile, formData)).data;
+    const res = (await axios.post(apiUrl.saveFile, formData)).data;
     return res;
 }

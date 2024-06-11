@@ -16,15 +16,15 @@ import { toast } from 'react-toastify';
 
 export default function CreateProject() {
     const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey, avatarImage, coverImage } = useCreateProjectData();
-    const { setProjectData, handleCreateProject, handleSubmitProject } = useCreateProjectFunctions();
+    const { setProjectData, handleSaveDraftProject, handleSubmitProject } = useCreateProjectFunctions();
     const [loading, setLoading] = useState<boolean>(false);
     const [submiting, setSubmiting] = useState<boolean>(false);
     const router = useRouter();
 
-    const handleSaveButton = async () => {
+    const handleSaveClick = async () => {
         setLoading(true);
         try {
-            await handleCreateProject(String(router.query.id || ''));
+            await handleSaveDraftProject(String(router.query.id || ''));
             router.push('/profile');
         } catch (error) {
             console.log(error);
@@ -154,7 +154,7 @@ export default function CreateProject() {
             </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                <ButtonLoading muiProps={{ variant: 'contained', onClick: handleSaveButton, sx: { mr: 1 } }} isLoading={loading}>
+                <ButtonLoading muiProps={{ variant: 'contained', onClick: handleSaveClick, sx: { mr: 1 } }} isLoading={loading}>
                     Save
                 </ButtonLoading>
                 <ButtonLoading isLoading={submiting} muiProps={{ variant: 'contained', onClick: handleSubmitClick }}>
