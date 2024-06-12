@@ -63,7 +63,7 @@ export const useAppContractFunction = () => {
         return false;
     }
 
-    async function complie(cacheFiles: any) {
+    async function compile(cacheFiles: any) {
         setAppContractData({ isLoading: true });
         try {
             if (zkApp.workerClient) {
@@ -101,7 +101,7 @@ export const useAppContractFunction = () => {
 
     return {
         setAppContractData,
-        complie,
+        compile,
         initClient,
     };
 };
