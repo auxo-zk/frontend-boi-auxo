@@ -2,6 +2,7 @@ import { sleep } from 'src/utils/format';
 import { ZkappWorkerReponse, ZkappWorkerRequest } from './worker';
 import { ArgumentZkFuction, ReturenValueZkFunction, TZkFuction } from './zkFunction';
 import { NetworkId } from 'src/constants';
+import { chainInfo } from 'src/constants/chainInfo';
 
 export default class ZkAppWorkerClient {
     worker: Worker;
@@ -29,6 +30,15 @@ export default class ZkAppWorkerClient {
         await sleep(4100);
     }
 
+    _call<Key extends TZkFuction>(fn: Key, args: ArgumentZkFuction<Key>): ReturenValueZkFunction<Key> {
+        return new Promise((resolve, reject) => {
+            this.promises[this.nextId] = { resolve, reject };
+            const message: ZkappWorkerRequest = { id: this.nextId, fn, args };
+            this.worker.postMessage(message);
+            this.nextId++;
+        }) as ReturenValueZkFunction<Key>;
+    }
+
     async sendTransaction(transactionJSON: string, memo?: string, transactionFee: number = 0.1) {
         const { hash } = await window.mina!.sendTransaction({
             transaction: transactionJSON,
@@ -37,17 +47,10 @@ export default class ZkAppWorkerClient {
                 memo: memo || '',
             },
         });
-        const transactionLink = `https://berkeley.minaexplorer.com/transaction/${hash}`;
-        return { hash, transactionLink };
-    }
 
-    _call<Key extends TZkFuction>(fn: Key, args: ArgumentZkFuction<Key>): ReturenValueZkFunction<Key> {
-        return new Promise((resolve, reject) => {
-            this.promises[this.nextId] = { resolve, reject };
-            const message: ZkappWorkerRequest = { id: this.nextId, fn, args };
-            this.worker.postMessage(message);
-            this.nextId++;
-        }) as ReturenValueZkFunction<Key>;
+        const networkId = await this._call('getNetworkId', {});
+        const transactionLink = `${networkId ? chainInfo[networkId].explorerUrl : 'NULL'}/transaction/${hash}`;
+        return { hash, transactionLink };
     }
 
     setActiveInstanceToNetwork(chainId: NetworkId) {

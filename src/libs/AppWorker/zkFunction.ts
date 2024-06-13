@@ -27,6 +27,7 @@ const state = {
     TreasuryContract: null as null | ZkAppPlatform.TreasuryManager.TreasuryManagerContract,
     transaction: null as null | Transaction,
     compileDone: 0 as number,
+    networkId: null as null | NetworkId,
 };
 
 // ---------------------------------------------------------------------------------------
@@ -40,6 +41,10 @@ export const zkFunctions = {
         });
         console.log(`${networkInfo.name} Instance Created`);
         Mina.setActiveInstance(Network);
+        state.networkId = args.chainId;
+    },
+    getNetworkId: async (args: {}) => {
+        return state.networkId;
     },
     loadContract: async (args: {}) => {
         const [{ ZkApp: ZkAppPlatform }, { ZkApp: ZkAppDkg }] = await Promise.all([import('@auxo-dev/platform'), import('@auxo-dev/dkg')]);
@@ -211,19 +216,9 @@ export const zkFunctions = {
         await fetchAccount({ publicKey: state.ProjectContract!.address });
 
         const transaction = await Mina.transaction(sender, async () => {
-            await state.ParticipationContract!.joinCampaign({
-                campaignId: new Field(args.campaignId),
-                projectId: new Field(args.projectId),
-                indexWitness: Storage.ParticipationStorage.Level1CWitness.fromJSON(args.lv1CWitness),
-                memberLv1Witness: Storage.ProjectStorage.Level1Witness.fromJSON(args.memberLv1Witness),
-                memberLv2Witness: Storage.ProjectStorage.Level2Witness.fromJSON(args.memberLv2Witness),
-                participationInfo: IPFSHash.fromString(args.participationInfo),
-                projectRef: new Storage.SharedStorage.ZkAppRef({
-                    address: state.ProjectContract!.address,
-                    witness: Storage.SharedStorage.AddressWitness.fromJSON(args.projectRef.addressWitness),
-                }),
-            });
+            await state.ParticipationContract!.participateCampaign(new Field(args.campaignId), new Field(args.projectId), IpfsHash.fromString(args.participationInfo));
         });
+
         state.transaction = transaction;
     },
 
