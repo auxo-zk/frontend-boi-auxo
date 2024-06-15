@@ -35,8 +35,8 @@ export default function Explorer({ topProjects, latestFundingCampaigns }: InferG
 export const getStaticProps = (async (context) => {
     try {
         const res = await Promise.all([getTopProject(), getLatestFundingCampaigns()]);
-        const topProjects = res[0];
-        const latestFundingCampaigns = res[1];
+        const topProjects = res[0] || [];
+        const latestFundingCampaigns = res[1] || [];
 
         return {
             props: {

@@ -7,12 +7,6 @@ const initData: TProjectDetail = {
     avatar: '',
     date: '',
     banner: '',
-    fundrasing: {
-        raiseInfo: [],
-        raisedAmount: 0,
-        targetAmount: 0,
-        documents: [],
-    },
     overview: {
         description: '',
         documents: [],
@@ -32,7 +26,7 @@ export default function InitProjectDetailData({ data }: { data: TProjectDetail }
     useEffect(() => {
         setProjectDetailData(data);
         console.log('set:', data);
-    }, [data, setProjectDetailData]);
+    }, [data]);
     return <></>;
 }
 

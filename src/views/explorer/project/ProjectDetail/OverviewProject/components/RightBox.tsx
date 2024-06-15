@@ -24,7 +24,7 @@ export default function RightBox() {
                     return (
                         <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', placeItems: 'center', pt: 3 }}>
                             <Typography variant="body2" color={'primary.light'}>
-                                FileName.pdf
+                                {item.fileName}
                             </Typography>
                             <SaveAltRounded sx={{ color: 'primary.light', cursor: 'pointer' }} fontSize="small" />
                         </Box>
@@ -46,7 +46,7 @@ export default function RightBox() {
                                 key={index}
                                 sx={{ mb: 1 }}
                                 name={member.name}
-                                urlImage="https://pbs.twimg.com/profile_images/1732964434363248640/UtVeR8Io_200x200.jpg"
+                                urlImage="https://storage.googleapis.com/auxo/c23662e2974d9451dcd5c83150dba1a2cd875afe1225726a30561f1c9a3a1775.jpg"
                                 desc={member.role}
                             />
                         );

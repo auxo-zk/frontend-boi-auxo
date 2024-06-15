@@ -106,7 +106,7 @@ export type TProjectParticipationInput = {
         raisingAmount: string;
         deadline: string;
     }[];
-    documents: string[];
+    documents: TFileSaved[];
 };
 export async function postProjectparticipation(projectId: string, input: TProjectParticipationInput): Promise<TProjectParticipation> {
     const jwt = getJwt();

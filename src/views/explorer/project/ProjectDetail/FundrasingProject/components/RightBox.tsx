@@ -3,9 +3,9 @@ import { Box, Divider, Typography } from '@mui/material';
 import React from 'react';
 import { IconFolder } from 'src/assets/svg/icon';
 import { useProjectDetailData } from '../../state';
+import { TProjectFundRaising } from 'src/services/project/api';
 
-export default function RightBox() {
-    const { fundrasing } = useProjectDetailData();
+export default function RightBox({ fundrasing }: { fundrasing: TProjectFundRaising }) {
     return (
         <Box sx={{ minWidth: '309px', zIndex: -1 }}>
             <Box sx={{ borderRadius: '12px', bgcolor: 'background.secondary', p: { xs: 2, xsm: 3 }, boxShadow: 3 }}>
@@ -23,7 +23,7 @@ export default function RightBox() {
                     return (
                         <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', placeItems: 'center', pt: 3 }}>
                             <Typography variant="body2" color={'primary.light'}>
-                                FileName.pdf
+                                {item.fileName}
                             </Typography>
                             <SaveAltRounded sx={{ color: 'primary.light', cursor: 'pointer' }} fontSize="small" />
                         </Box>

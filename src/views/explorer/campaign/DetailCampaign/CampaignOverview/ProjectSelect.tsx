@@ -6,21 +6,6 @@ import { TProjectData, getAddressProject } from 'src/services/project/api';
 import { useModalData, useModalFunction } from 'src/states/modal';
 import { useWalletData } from 'src/states/wallet';
 
-const mockOptions = [
-    {
-        label: 'Mina hackathon 1',
-        value: 1,
-    },
-    {
-        label: 'Mina hackathon 2',
-        value: 2,
-    },
-    {
-        label: 'Mina hackathon 3',
-        value: 3,
-    },
-];
-// getAddressProject
 export default function ProjectSelect() {
     const [project, setProject] = useState<number | string>();
     const [listProject, setListProject] = useState<TProjectData[]>([]);
@@ -41,19 +26,10 @@ export default function ProjectSelect() {
     }, [userAddress]);
     return (
         <Box>
-            {/* <Typography variant="h6">Select your project</Typography> */}
             <Typography variant="body1" mb={3}>
                 {`Select a project to apply for this fundraising campaignYou will be required to provide answers to the organizer's questions to complete the application process`}
             </Typography>
-            {/* <Select>
-                {mockOptions.map((item, index) => {
-                    return (
-                        <MenuItem key={item.value} value={item.value}>
-                            {item.label}
-                        </MenuItem>
-                    );
-                })}
-            </Select> */}
+
             <Autocomplete
                 options={listProject.map((pj) => ({ label: pj.name, value: pj.idProject }))}
                 renderInput={(params) => <TextField {...params} color="secondary" placeholder="Select project" />}

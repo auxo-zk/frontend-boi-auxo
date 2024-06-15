@@ -13,28 +13,14 @@ export default function MilestoneDetailPage({ campaignDetail, projectDetail }: I
     const projectId = String(router.query.projectId || '');
     const campaignId = String(router.query.campaignId || '');
     useEffect(() => {
-        const questions = campaignDetail.questions
-            .map((i) => ({
-                question: i.question,
-                required: i.isRequired,
-                hint: i.hint,
-                answer: '',
-            }))
-            .reduce((current, i, index) => {
-                return {
-                    ...current,
-                    [index]: {
-                        question: i.question,
-                        hint: i.hint,
-                        required: i.required,
-                        answer: i.answer,
-                    },
-                };
-            }, {});
+        const questions = campaignDetail.questions.map((item) => ({
+            ...item,
+            answer: '',
+        }));
 
         setMilestoneData({
             campaignBanner: campaignDetail.banner,
-            campaignQuestions: Object.assign({}, questions),
+            campaignQuestions: questions,
             campaignId: campaignId,
             projectData: {
                 challengeAndRisk: projectDetail?.overview ? projectDetail?.overview[KeyProjectInput.challengesAndRisks] || '' : '',
@@ -43,6 +29,7 @@ export default function MilestoneDetailPage({ campaignDetail, projectDetail }: I
                 customAnswer: '',
                 projectId: projectId,
             },
+            projectImg: projectDetail.avatar,
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [campaignDetail, projectDetail]);
