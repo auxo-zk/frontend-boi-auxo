@@ -1,7 +1,8 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
 import { toast } from 'react-toastify';
 import { KeyProjectInput, MemberDataType, TEditProjectData, createProject, postProjectsToIpfs } from 'src/services/project/api';
-import { TFileSaved, saveFile } from 'src/services/services';
+import { saveFile } from 'src/services/services';
+import { TFileSaved } from 'src/services/type';
 import { useAppContract } from 'src/states/contracts';
 import { useWalletData } from 'src/states/wallet';
 

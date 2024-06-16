@@ -1,5 +1,4 @@
 import { Typography, Paper, Box, Button, TextField, IconButton } from '@mui/material';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddIcon from '@mui/icons-material/Add';
 import dynamic from 'next/dynamic';
 import { useMilestoneData, useMilestoneFunctions } from './state';

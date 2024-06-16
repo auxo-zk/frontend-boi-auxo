@@ -1,10 +1,9 @@
-import { Constants, Storage } from '@auxo-dev/platform';
+import { Constants } from '@auxo-dev/platform';
 import { atom, useSetAtom, useAtomValue } from 'jotai';
-import { Field } from 'o1js';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { TCampaignQuestion } from 'src/services/campaign/api';
-import { getParticipationZkApp, getProjectMemLvl1, getProjectMemLvl2, getWitnessIndex, postProjectparticipation, saveFile } from 'src/services/services';
+import { TScopeOfWorks, postProjectparticipation, saveFile } from 'src/services/services';
 import { useAppContract } from 'src/states/contracts';
 import { useWalletData } from 'src/states/wallet';
 
@@ -12,20 +11,14 @@ export type MilestoneData = {
     projectImg: string;
     campaignBanner: string;
     campaignId: string;
-    campaignQuestions: { question: string; hint: string; isRequired: boolean; answer: string }[];
-    scopeOfWorks: {
-        id: string;
-        information: string;
-        milestone: string;
-        raisingAmount: string;
-        deadline: string;
-    }[];
+    campaignQuestions: (TCampaignQuestion & { answer: string })[];
+    scopeOfWorks: (TScopeOfWorks & { id: string })[];
     projectData: {
         problemStatement: string;
         solution: string;
         challengeAndRisk: string;
-        customAnswer?: string;
         projectId: string;
+        customAnswer?: string;
     };
     documentFiles: { name: string; file: File }[];
 };
@@ -62,14 +55,7 @@ export const useMilestoneFunctions = () => {
     const { userAddress } = useWalletData();
     const { workerClient } = useAppContract();
 
-    const setMilestoneData = (
-        data: Partial<
-            MilestoneData & {
-                avatarFile?: Blob | MediaSource;
-                bannerFile?: Blob | MediaSource;
-            }
-        >
-    ) => {
+    const setMilestoneData = (data: Partial<MilestoneData>) => {
         _setMilestoneData((prev) => ({
             ...prev,
             ...data,
@@ -133,22 +119,15 @@ export const useMilestoneFunctions = () => {
                     return i.answer || '';
                 }),
                 documents: documents,
-                scopeOfWorks: Object.values(scopeOfWorks).map((i) => ({
+                scopeOfWorks: scopeOfWorks.map((i) => ({
                     deadline: i.deadline || '',
-                    information: [i.information],
+                    information: i.information,
                     milestone: i.milestone,
                     raisingAmount: i.raisingAmount,
                 })),
             });
-            const witnessIndex = await getWitnessIndex();
-            const x = Storage.ParticipationStorage.IndexStorage.calculateLevel1Index({
-                campaignId: new Field(campaignId),
-                projectId: new Field(projectData.projectId),
-            });
-            console.log('🚀 ~ handleSubmitProject ~ x:', Number(x), witnessIndex[Number(x)]);
-            const t = Storage.ParticipationStorage.Level1CWitness.fromJSON(witnessIndex[Number(x)]);
-            // console.log('🚀 ~ handleSubmitProject ~  t:', t);
-            const witnessAll = await Promise.all([getProjectMemLvl1(), getProjectMemLvl2(projectData.projectId), getParticipationZkApp()]);
+
+            // const witnessAll = await Promise.all([getProjectMemLvl1(), getProjectMemLvl2(projectData.projectId), getParticipationZkApp()]);
             await workerClient.joinCampaign({
                 campaignId: campaignId,
                 projectId: projectData.projectId,

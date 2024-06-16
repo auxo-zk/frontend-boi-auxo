@@ -37,4 +37,7 @@ export const apiUrl = {
     getParticipationZkApp: `${BACKEND_BASE_URL}/v0/storages/participation/zkapps`,
     postProjectParticipation: (projectId: string) => `${BACKEND_BASE_URL}/v0/projects/${projectId}/participations`,
     getWitnessIndex: `${BACKEND_BASE_URL}/v0/storages/participation/index/level1`,
+
+    getDataParticipateCampaign: (campaignId: string, projectId: string) =>
+        `${BACKEND_BASE_URL}/v0/method-inputs/participation-contract/participate-campaign?campaignId=${campaignId}&projectId=${projectId}`,
 };

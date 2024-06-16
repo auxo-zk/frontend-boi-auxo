@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from '../url';
 import { LocalStorageKey } from 'src/constants';
-import { BACKEND_BASE_URL } from '../baseUrl';
-import { TFileSaved } from '../services';
+import { TFileSaved } from '../type';
 
 export enum KeyProjectInput {
     'solution' = 'solution',
@@ -54,16 +53,11 @@ export type TMemberData = {
     publicKey: string;
 };
 
-export type TDocumentData = {
-    fileName: string;
-    fileSize: number;
-    URL: string;
-};
 export type TProjectOverview = {
     raisingAmount?: number;
     campaignAmount?: number;
     description: string;
-    documents: TDocumentData[];
+    documents: TFileSaved[];
     member: TMemberData[];
 } & {
     [key in KeyProjectInput]: string;
@@ -77,30 +71,8 @@ export type TProjectFundRaising = {
         budgetRequired: string;
         etc: string;
     }[];
-    documents: TDocumentData[];
+    documents: TFileSaved[];
 };
-// fundrasing: {
-//     raisedAmount: 0,
-//     targetAmount: 0,
-//     raiseInfo: [
-//         {
-//             budgetRequired: '30.000 MINA',
-//             etc: new Date().toLocaleDateString(),
-//             scope: '1',
-//         },
-//         {
-//             budgetRequired: '30.000 MINA',
-//             etc: new Date().toLocaleDateString(),
-//             scope: '2',
-//         },
-//         {
-//             budgetRequired: '30.000 MINA',
-//             etc: new Date().toLocaleDateString(),
-//             scope: '3',
-//         },
-//     ],
-//     documents: [],
-// },
 
 export type TProjectDetail = {
     name: string;

@@ -8,7 +8,6 @@ import { Storage, type ZkApp as ZkAppPlatform } from '@auxo-dev/platform';
 import type { ZkApp as ZkAppDkg } from '@auxo-dev/dkg';
 import { ArgumentTypes } from 'src/global.config';
 import { FileSystem } from 'src/states/cache';
-import { TWitness } from 'src/services/services';
 import { IpfsHash } from '@auxo-dev/auxo-libs';
 import { chainInfo } from 'src/constants/chainInfo';
 import { NetworkId } from 'src/constants';
@@ -200,16 +199,7 @@ export const zkFunctions = {
         });
         state.transaction = transaction;
     },
-    joinCampaign: async (args: {
-        sender: string;
-        campaignId: string;
-        projectId: string;
-        participationInfo: string;
-        lv1CWitness: TWitness;
-        memberLv1Witness: TWitness;
-        memberLv2Witness: TWitness;
-        projectRef: { addressWitness: TWitness };
-    }) => {
+    joinCampaign: async (args: { sender: string; campaignId: string; projectId: string; participationInfo: string }) => {
         const sender = PublicKey.fromBase58(args.sender);
         await fetchAccount({ publicKey: sender });
         await fetchAccount({ publicKey: state.ParticipationContract!.address });

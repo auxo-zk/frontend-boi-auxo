@@ -7,11 +7,9 @@ import { KeyProjectInput, getProjectDetail } from 'src/services/project/api';
 import MilestoneDetail from 'src/views/explorer/campaign/MilestoneDetail';
 import { InitMileStoneData, useMilestoneFunctions } from 'src/views/explorer/campaign/MilestoneDetail/state';
 
-export default function MilestoneDetailPage({ campaignDetail, projectDetail }: InferGetStaticPropsType<typeof getServerSideProps>) {
+export default function MilestoneDetailPage({ campaignDetail, projectDetail, campaignId, projectId }: InferGetStaticPropsType<typeof getServerSideProps>) {
     const { setMilestoneData } = useMilestoneFunctions();
-    const router = useRouter();
-    const projectId = String(router.query.projectId || '');
-    const campaignId = String(router.query.campaignId || '');
+
     useEffect(() => {
         const questions = campaignDetail.questions.map((item) => ({
             ...item,
@@ -22,6 +20,7 @@ export default function MilestoneDetailPage({ campaignDetail, projectDetail }: I
             campaignBanner: campaignDetail.banner,
             campaignQuestions: questions,
             campaignId: campaignId,
+            projectImg: projectDetail.avatar,
             projectData: {
                 challengeAndRisk: projectDetail?.overview ? projectDetail?.overview[KeyProjectInput.challengesAndRisks] || '' : '',
                 problemStatement: projectDetail?.overview ? projectDetail?.overview[KeyProjectInput.problemStatement] || '' : '',
@@ -29,10 +28,8 @@ export default function MilestoneDetailPage({ campaignDetail, projectDetail }: I
                 customAnswer: '',
                 projectId: projectId,
             },
-            projectImg: projectDetail.avatar,
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [campaignDetail, projectDetail]);
+    }, []);
     return (
         <>
             <MilestoneDetail />
@@ -49,6 +46,8 @@ export const getServerSideProps = (async (context) => {
             props: {
                 campaignDetail: result[0],
                 projectDetail: result[1],
+                campaignId: campaignId,
+                projectId: projectId,
             },
         };
     } catch (error) {
