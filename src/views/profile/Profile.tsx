@@ -1,13 +1,12 @@
-import { LinkedIn, Telegram } from '@mui/icons-material';
-import { Box, Button, Container, Grid, IconButton, List, Typography } from '@mui/material';
+import { Box, Button, Chip, Container, Grid, IconButton, Typography } from '@mui/material';
 import Link from 'next/link';
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconEdit, IconSpinLoading } from 'src/assets/svg/icon';
 import Avatar from 'src/components/Avatar/Avatar';
 import { useProfileData, useProfileFunction } from './state';
 import Card from 'src/components/Card/Card';
 import NoData from 'src/components/NoData';
-import { useModalData, useModalFunction } from 'src/states/modal';
+import { useModalFunction } from 'src/states/modal';
 import EditForm from './EditForm';
 import { useWalletData } from 'src/states/wallet';
 
@@ -100,18 +99,23 @@ function ListProjects() {
                         {project.map((item, index) => {
                             return (
                                 <Grid key={index} item xs={12} sm={3}>
+                                    {/* <CardProject  data={item}/> */}
                                     <Card avatar={item.avatar} banner={item.banner}>
                                         <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Box sx={{ width: '100%' }}>
-                                                <Typography mb={1} variant="h6">
+                                                <Typography
+                                                    variant="h6"
+                                                    fontWeight={600}
+                                                    mt={1}
+                                                    component={'p'}
+                                                    title={item.name}
+                                                    sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                                >
                                                     {item.name || 'No name'}
                                                 </Typography>
 
                                                 <Box dangerouslySetInnerHTML={{ __html: item.overviewDesc }}></Box>
                                             </Box>
-                                            {/* <Button fullWidth variant="outlined" size="small">
-                                        Edit
-                                    </Button> */}
                                         </Box>
                                     </Card>
                                 </Grid>
@@ -160,29 +164,24 @@ function ListDrafts() {
                                     <Card avatar={item.avatar} banner={item.banner}>
                                         <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Box sx={{ width: '100%' }}>
-                                                <Typography mb={1} variant="h6">
+                                                <Typography
+                                                    variant="h6"
+                                                    fontWeight={600}
+                                                    mt={1}
+                                                    component={'p'}
+                                                    title={item.name}
+                                                    sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                                >
                                                     {item.name || 'No name'}
                                                 </Typography>
-                                                <Box
-                                                    sx={{
-                                                        borderRadius: 4,
-                                                        border: '1px solid #FFCCBC',
-                                                        height: '28px',
-                                                        width: '77px',
-                                                        display: 'flex',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center',
-                                                        color: '#FFCCBC',
-                                                    }}
-                                                >
-                                                    <Typography variant="body3" color="secondary.main">
-                                                        Drafting...
-                                                    </Typography>
+                                                <Box textAlign={'right'} my={1}>
+                                                    <Chip variant="outlined" color="secondary" label="Drafting..." size="small"></Chip>
                                                 </Box>
                                                 <Box
                                                     dangerouslySetInnerHTML={{ __html: item.overviewDesc }}
                                                     sx={{
-                                                        '& > p': {
+                                                        '& > *': {
+                                                            m: 0,
                                                             display: '-webkit-box',
                                                             WebkitLineClamp: '3',
                                                             WebkitBoxOrient: 'vertical',

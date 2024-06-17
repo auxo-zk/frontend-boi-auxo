@@ -1,16 +1,20 @@
-import { Field, Mina, PublicKey, fetchAccount } from 'o1js';
+import { Field, Mina, PublicKey, UInt64, fetchAccount } from 'o1js';
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
 import { Storage, type ZkApp as ZkAppPlatform } from '@auxo-dev/platform';
-import type { ZkApp as ZkAppDkg } from '@auxo-dev/dkg';
+import { ZkAppRef, type ZkApp as ZkAppDkg } from '@auxo-dev/dkg';
 import { ArgumentTypes } from 'src/global.config';
 import { FileSystem } from 'src/states/cache';
 import { IpfsHash } from '@auxo-dev/auxo-libs';
 import { chainInfo } from 'src/constants/chainInfo';
 import { NetworkId } from 'src/constants';
+import { TDataParticipateCampaign } from 'src/services/services';
+import { CampaignLevel1Witness, Timeline } from '@auxo-dev/platform/build/esm/src/storages/CampaignStorage';
+import { ProjectMemberLevel1Witness, ProjectMemberLevel2Witness } from '@auxo-dev/platform/build/esm/src/storages/ProjectStorage';
+import { ParticipationLevel1Witness } from '@auxo-dev/platform/build/esm/src/storages/ParticipationStorage';
 
 const state = {
     ZkAppPlatform: null as null | typeof ZkAppPlatform,
@@ -199,14 +203,31 @@ export const zkFunctions = {
         });
         state.transaction = transaction;
     },
-    joinCampaign: async (args: { sender: string; campaignId: string; projectId: string; participationInfo: string }) => {
+    joinCampaign: async (args: { sender: string; campaignId: string; projectId: string; participationInfo: string; dataBackend: TDataParticipateCampaign }) => {
         const sender = PublicKey.fromBase58(args.sender);
         await fetchAccount({ publicKey: sender });
         await fetchAccount({ publicKey: state.ParticipationContract!.address });
         await fetchAccount({ publicKey: state.ProjectContract!.address });
 
         const transaction = await Mina.transaction(sender, async () => {
-            await state.ParticipationContract!.participateCampaign(new Field(args.campaignId), new Field(args.projectId), IpfsHash.fromString(args.participationInfo));
+            await state.ParticipationContract!.participateCampaign(
+                new Field(args.campaignId),
+                new Field(args.projectId),
+                IpfsHash.fromString(args.participationInfo),
+                new Timeline({
+                    startFunding: new UInt64(args.dataBackend.timeline.startFunding),
+                    startParticipation: new UInt64(args.dataBackend.timeline.startParticipation),
+                    startRequesting: new UInt64(args.dataBackend.timeline.startRequesting),
+                }),
+                CampaignLevel1Witness.fromJSON(args.dataBackend.timelineWitness),
+                ProjectMemberLevel1Witness.fromJSON(args.dataBackend.memberWitnessLevel1),
+                ProjectMemberLevel2Witness.fromJSON(args.dataBackend.memberWitnessLevel2),
+                ParticipationLevel1Witness.fromJSON(args.dataBackend.projectIndexWitness),
+                new Field(args.dataBackend.projectCounter),
+                CampaignLevel1Witness.fromJSON(args.dataBackend.projectCounterWitness),
+                ZkAppRef.fromJSON(args.dataBackend.campaignContractRef),
+                ZkAppRef.fromJSON(args.dataBackend.projectContractRef)
+            );
         });
 
         state.transaction = transaction;

@@ -3,7 +3,7 @@ import { atom, useSetAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { TCampaignQuestion } from 'src/services/campaign/api';
-import { TScopeOfWorks, postProjectparticipation, saveFile } from 'src/services/services';
+import { TScopeOfWorks, getDataParticipateCampaign, postProjectparticipation, saveFile } from 'src/services/services';
 import { useAppContract } from 'src/states/contracts';
 import { useWalletData } from 'src/states/wallet';
 
@@ -127,18 +127,13 @@ export const useMilestoneFunctions = () => {
                 })),
             });
 
-            // const witnessAll = await Promise.all([getProjectMemLvl1(), getProjectMemLvl2(projectData.projectId), getParticipationZkApp()]);
+            const dataBackend = await getDataParticipateCampaign(campaignId, projectData.projectId);
             await workerClient.joinCampaign({
                 campaignId: campaignId,
                 projectId: projectData.projectId,
                 sender: userAddress,
-                memberLv1Witness: witnessAll[0][Number(projectData.projectId)],
-                memberLv2Witness: witnessAll[1][0],
                 participationInfo: String(postResult.Hash),
-                projectRef: {
-                    addressWitness: witnessAll[2][Constants.ZkAppEnum.PROJECT],
-                },
-                lv1CWitness: witnessIndex[Number(x)],
+                dataBackend: dataBackend,
             });
             await workerClient.proveTransaction();
 

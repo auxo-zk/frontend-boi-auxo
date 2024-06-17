@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from './url';
 import { getJwt } from './project/api';
-import { TFileSaved } from './type';
+import { TFileSaved, TRef, TWitness } from './type';
 
 export type TCommitteeData = {
     id: string;
@@ -98,7 +98,23 @@ export async function saveFile(file: File): Promise<TFileSaved> {
     return res;
 }
 
-export async function getDataParticipateCampaign(campaignId: string, projectId: string) {
+export type TDataParticipateCampaign = {
+    timeline: {
+        startParticipation: number;
+        startFunding: number;
+        startRequesting: number;
+    };
+    timelineWitness: TWitness;
+    memberWitnessLevel1: TWitness;
+    memberWitnessLevel2: TWitness;
+    projectIndexWitness: TWitness;
+    projectCounter: number;
+    projectCounterWitness: TWitness;
+    campaignContractRef: TRef;
+    projectContractRef: TRef;
+};
+
+export async function getDataParticipateCampaign(campaignId: string, projectId: string): Promise<TDataParticipateCampaign> {
     const res = await axios.get(apiUrl.getDataParticipateCampaign(campaignId, projectId));
     return res.data;
 }
