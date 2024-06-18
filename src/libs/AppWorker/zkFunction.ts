@@ -12,9 +12,9 @@ import { IpfsHash } from '@auxo-dev/auxo-libs';
 import { chainInfo } from 'src/constants/chainInfo';
 import { NetworkId } from 'src/constants';
 import { TDataParticipateCampaign } from 'src/services/services';
-import { CampaignLevel1Witness, Timeline } from '@auxo-dev/platform/build/esm/src/storages/CampaignStorage';
+import { CampaignLevel1Witness, Timeline, TimelineLevel1Witness } from '@auxo-dev/platform/build/esm/src/storages/CampaignStorage';
 import { ProjectMemberLevel1Witness, ProjectMemberLevel2Witness } from '@auxo-dev/platform/build/esm/src/storages/ProjectStorage';
-import { ParticipationLevel1Witness } from '@auxo-dev/platform/build/esm/src/storages/ParticipationStorage';
+import { ParticipationLevel1Witness, ProjectCounterLevel1Witness, ProjectIndexLevel1Witness } from '@auxo-dev/platform/build/esm/src/storages/ParticipationStorage';
 
 const state = {
     ZkAppPlatform: null as null | typeof ZkAppPlatform,
@@ -28,6 +28,7 @@ const state = {
     CommitmentContract: null as null | ZkAppPlatform.Commitment.CommitmentContract,
     VestingContract: null as null | ZkAppPlatform.Vesting.VestingContract,
     TreasuryContract: null as null | ZkAppPlatform.TreasuryManager.TreasuryManagerContract,
+    CampaignContract: null as null | ZkAppPlatform.Campaign.CampaignContract,
     transaction: null as null | Transaction,
     compileDone: 0 as number,
     networkId: null as null | NetworkId,
@@ -150,6 +151,11 @@ export const zkFunctions = {
         const publicKey = PublicKey.fromBase58(args.publicKey58);
         return await fetchAccount({ publicKey });
     },
+    checkAccountExist: async (args: { publicKey58: string }) => {
+        const publicKey = PublicKey.fromBase58(args.publicKey58);
+        const res = await fetchAccount({ publicKey });
+        return res.error == null;
+    },
     initZkappInstance: async (args: {
         fundingRequesterContract: string;
         vestingRequesterContract: string;
@@ -160,6 +166,7 @@ export const zkFunctions = {
         treasuryContract: string;
         commitmentContract: string;
         vestingContract: string;
+        campaignContract: string;
     }) => {
         const fundingRequesterContractPub = PublicKey.fromBase58(args.fundingRequesterContract);
         state.FundingRequesterContract = new state.ZkAppDkg!.Requester.RequesterContract!(fundingRequesterContractPub);
@@ -187,6 +194,9 @@ export const zkFunctions = {
 
         const vestingContractPub = PublicKey.fromBase58(args.vestingContract);
         state.VestingContract = new state.ZkAppPlatform!.Vesting.VestingContract!(vestingContractPub);
+
+        const campaignContractPub = PublicKey.fromBase58(args.campaignContract);
+        state.CampaignContract = new state.ZkAppPlatform!.Campaign.CampaignContract!(campaignContractPub);
     },
 
     submitProject: async (args: { sender: string; projectId: string; members: string[]; ipfsHash: string; treasuryAddress58: string }) => {
@@ -206,9 +216,16 @@ export const zkFunctions = {
     joinCampaign: async (args: { sender: string; campaignId: string; projectId: string; participationInfo: string; dataBackend: TDataParticipateCampaign }) => {
         const sender = PublicKey.fromBase58(args.sender);
         await fetchAccount({ publicKey: sender });
-        await fetchAccount({ publicKey: state.ParticipationContract!.address });
+        await fetchAccount({ publicKey: state.CampaignContract!.address });
         await fetchAccount({ publicKey: state.ProjectContract!.address });
+        await fetchAccount({ publicKey: state.ParticipationContract!.address });
 
+        console.log({
+            campaignId: args.campaignId,
+            projectId: args.projectId,
+            participationInfo: args.participationInfo,
+            dataBackend: args.dataBackend,
+        });
         const transaction = await Mina.transaction(sender, async () => {
             await state.ParticipationContract!.participateCampaign(
                 new Field(args.campaignId),
@@ -219,12 +236,12 @@ export const zkFunctions = {
                     startParticipation: new UInt64(args.dataBackend.timeline.startParticipation),
                     startRequesting: new UInt64(args.dataBackend.timeline.startRequesting),
                 }),
-                CampaignLevel1Witness.fromJSON(args.dataBackend.timelineWitness),
+                TimelineLevel1Witness.fromJSON(args.dataBackend.timelineWitness),
                 ProjectMemberLevel1Witness.fromJSON(args.dataBackend.memberWitnessLevel1),
                 ProjectMemberLevel2Witness.fromJSON(args.dataBackend.memberWitnessLevel2),
-                ParticipationLevel1Witness.fromJSON(args.dataBackend.projectIndexWitness),
+                ProjectIndexLevel1Witness.fromJSON(args.dataBackend.projectIndexWitness),
                 new Field(args.dataBackend.projectCounter),
-                CampaignLevel1Witness.fromJSON(args.dataBackend.projectCounterWitness),
+                ProjectCounterLevel1Witness.fromJSON(args.dataBackend.projectCounterWitness),
                 ZkAppRef.fromJSON(args.dataBackend.campaignContractRef),
                 ZkAppRef.fromJSON(args.dataBackend.projectContractRef)
             );

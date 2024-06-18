@@ -41,7 +41,7 @@ export default function ProjectSelect() {
                     variant="contained"
                     onClick={() => {
                         closeModal();
-                        router.push(`/${router.asPath}/milestones-detail/${project}`);
+                        router.push(`${router.asPath}/milestones-detail/${project}`);
                     }}
                 >
                     Continue

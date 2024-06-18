@@ -86,6 +86,7 @@ export const useAppContractFunction = () => {
                     projectContract: 'B62qrXSf1v8nhbkqTGvZmThwehN3QDZaT5VzJWsX3d52SNgiQwtCv5y',
                     participationContract: 'B62qpoGFc1w2LWyD6zArBeVPaqXhzqHMpweSQJWkSnDzUPuRi5Zhw3j',
                     treasuryContract: 'B62qkrNwWtie39pZj1C8qNY1v5Gwc5e7yLB8j71L1c9Ghm9gneKMi64',
+                    campaignContract: 'B62qpaYMPKGMpC4UvuscjW5VoX21eQJFWmcGxGW1zVqfMAUC18yx933',
                 });
                 setAppContractData({
                     isLoading: false,

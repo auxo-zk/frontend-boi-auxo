@@ -5,19 +5,17 @@ import { toast } from 'react-toastify';
 import { LocalStorageKey, LocalStorageValue } from 'src/constants';
 import { verifyJwt } from 'src/services/profile/api';
 import { getServerSig, getTokenFromSig } from 'src/services/services';
+import { useAppContract, useAppContractFunction } from './contracts';
 
 export type TWalletData = {
     userAddress: string;
-    userPubKey: null | PublicKey;
-    accountExists: boolean;
+
     isConnecting: boolean;
     loadingZkClient: boolean;
     logged: boolean;
 };
 const initData: TWalletData = {
     userAddress: '',
-    userPubKey: null,
-    accountExists: false,
     isConnecting: false,
     loadingZkClient: true,
     logged: false,
@@ -29,6 +27,7 @@ export const useWalletData = () => useAtomValue(wallet);
 export const useWalletFunction = () => {
     const _setWalletData = useSetAtom(wallet);
     const walletData = useAtomValue(wallet);
+    const { workerClient } = useAppContract();
 
     function setWalletData(data: Partial<TWalletData>) {
         _setWalletData((prev) => {
@@ -45,12 +44,12 @@ export const useWalletFunction = () => {
             }
 
             const address: string = (await mina.requestAccounts())[0];
-            const publicKey = PublicKey.fromBase58(address);
+            // const publicKey = PublicKey.fromBase58(address);
 
-            const res = await fetchAccount({ publicKey });
-            const accountExists = res.error == null;
+            // const res = await workerClient.fetchAccount({ publicKey });
+            // const accountExists = res.error == null;
 
-            setWalletData({ userAddress: address, userPubKey: publicKey, accountExists: accountExists, isConnecting: false, logged: false });
+            setWalletData({ userAddress: address, isConnecting: false, logged: false });
             localStorage.setItem(LocalStorageKey.IsConnected, LocalStorageValue.IsConnectedYes);
             if (!localStorage.getItem(LocalStorageKey.AccessToken)) {
                 await login(address);
@@ -61,8 +60,6 @@ export const useWalletFunction = () => {
 
             setWalletData({
                 userAddress: '',
-                userPubKey: null,
-                accountExists: false,
                 isConnecting: false,
                 logged: false,
             });
