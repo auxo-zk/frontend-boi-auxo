@@ -12,6 +12,7 @@ export default function CustomEditor({ value, onChange }: { value: string; onCha
                     border: 'none !important',
                     boxShadow: '0px 2px 2px 0px rgba(0, 0, 0, 0.12)',
                     backgroundColor: '#FFFFFF',
+                    width: 'fit-content',
                 },
                 '& .ql-editor': {
                     border: '1px solid ' + theme.palette.background.primary + ' !important',

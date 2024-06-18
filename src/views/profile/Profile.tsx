@@ -1,30 +1,22 @@
-import { LinkedIn, Telegram } from '@mui/icons-material';
-import { Box, Button, Container, Grid, IconButton, Typography } from '@mui/material';
+import { Box, Button, Chip, Container, Grid, IconButton, Typography } from '@mui/material';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
-import { IconEdit } from 'src/assets/svg/icon';
+import React, { useEffect, useState } from 'react';
+import { IconEdit, IconSpinLoading } from 'src/assets/svg/icon';
 import Avatar from 'src/components/Avatar/Avatar';
 import { useProfileData, useProfileFunction } from './state';
 import Card from 'src/components/Card/Card';
 import NoData from 'src/components/NoData';
-import { useModalData, useModalFunction } from 'src/states/modal';
+import { useModalFunction } from 'src/states/modal';
 import EditForm from './EditForm';
+import { useWalletData } from 'src/states/wallet';
 
 export default function Profile() {
-    const profileProjects = useProfileData();
+    const { userAddress } = useWalletData();
 
-    const { fetchDraft, fetchProject } = useProfileFunction();
-    async function getData() {
-        try {
-            await fetchDraft();
-            await fetchProject();
-        } catch (err) {
-            console.log(err);
-        }
-    }
     const { description, name, img } = useProfileData();
-    const { getProfileData, setProfileData, submitProfileAvatar } = useProfileFunction();
-    const {} = useModalData();
+
+    const { getProfileData, submitProfileAvatar } = useProfileFunction();
+
     const { setModalData } = useModalFunction();
 
     const handleOpenModal = () => {
@@ -32,12 +24,8 @@ export default function Profile() {
     };
     useEffect(() => {
         getProfileData();
-    }, [getProfileData]);
+    }, [userAddress]);
 
-    useEffect(() => {
-        getData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
     return (
         <Container sx={{ pt: 5, pb: 3 }}>
             <Typography variant="h1" textTransform={'uppercase'}>
@@ -59,13 +47,13 @@ export default function Profile() {
                 <Box sx={{ flexGrow: 1 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="h4" fontWeight={600}>
-                            {name}
+                            {name || 'Your name'}
                         </Typography>
                         <IconButton onClick={handleOpenModal}>
                             <IconEdit color="primary" sx={{ cursor: 'pointer' }} />
                         </IconButton>
                     </Box>
-                    <Typography mt={1.5}>{description}</Typography>
+                    <Typography mt={1.5}>{description || 'Describe something about yourself.'}</Typography>
 
                     {/* <Box sx={{ display: 'flex', gap: 1.5, placeItems: 'center', mt: 2 }}>
                         <LinkedIn fontSize="large" sx={{ color: 'primary.light' }} />
@@ -73,96 +61,156 @@ export default function Profile() {
                     </Box> */}
                 </Box>
             </Box>
+
+            <ListProjects />
+            <ListDrafts />
+        </Container>
+    );
+}
+
+function ListProjects() {
+    const { userAddress } = useWalletData();
+    const { project } = useProfileData();
+    const { fetchProject } = useProfileFunction();
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        (async () => {
+            setLoading(true);
+            await fetchProject();
+            setLoading(false);
+        })();
+    }, [userAddress]);
+
+    return (
+        <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', my: 5 }}>
                 <Typography variant="h6">Owner Projects</Typography>
                 <Link href="/explorer/projects/create" style={{ color: 'inherit', textDecoration: 'none' }}>
                     <Button variant="contained">Create Projects</Button>
                 </Link>
             </Box>
-            <Grid container spacing={2}>
-                {profileProjects?.project?.map((item, index) => {
-                    return (
-                        <Grid key={index} item xs={12} sm={3}>
-                            <Card avatar={item.avatar} banner={item.banner}>
-                                <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Box sx={{ width: '100%' }}>
-                                        <Typography mb={1} variant="h6">
-                                            {item.name || 'No name'}
-                                        </Typography>
+            {loading ? (
+                <Box>
+                    <IconSpinLoading sx={{ fontSize: '100px' }} />
+                </Box>
+            ) : (
+                <>
+                    <Grid container spacing={2}>
+                        {project.map((item, index) => {
+                            return (
+                                <Grid key={index} item xs={12} sm={3}>
+                                    {/* <CardProject  data={item}/> */}
+                                    <Card avatar={item.avatar} banner={item.banner}>
+                                        <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <Box sx={{ width: '100%' }}>
+                                                <Typography
+                                                    variant="h6"
+                                                    fontWeight={600}
+                                                    mt={1}
+                                                    component={'p'}
+                                                    title={item.name}
+                                                    sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                                >
+                                                    {item.name || 'No name'}
+                                                </Typography>
 
-                                        <Box dangerouslySetInnerHTML={{ __html: item.overviewDesc }}></Box>
-                                    </Box>
-                                    <Button fullWidth variant="outlined" size="small">
-                                        Edit
-                                    </Button>
-                                </Box>
-                            </Card>
-                        </Grid>
-                    );
-                })}
-                {(profileProjects?.project?.length || 0) === 0 && (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                        <NoData text="No Project Found!" />
-                    </Box>
-                )}
-            </Grid>
-            <Grid container spacing={2} mt={2}>
-                {profileProjects?.draft?.map((item, index) => {
-                    return (
-                        <Grid key={index} item xs={12} xsm={6} sm={4} lg={3}>
-                            <Card avatar={item.avatar} banner={item.banner}>
-                                <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Box sx={{ width: '100%' }}>
-                                        <Typography mb={1} variant="h6">
-                                            {item.name || 'No name'}
-                                        </Typography>
-                                        <Box
-                                            sx={{
-                                                borderRadius: 4,
-                                                border: '1px solid #FFCCBC',
-                                                height: '28px',
-                                                width: '77px',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                color: '#FFCCBC',
-                                            }}
-                                        >
-                                            <Typography variant="body3" color="secondary.main">
-                                                Drafting...
-                                            </Typography>
+                                                <Box dangerouslySetInnerHTML={{ __html: item.overviewDesc }}></Box>
+                                            </Box>
                                         </Box>
-                                        <Box
-                                            dangerouslySetInnerHTML={{ __html: item.overviewDesc }}
-                                            sx={{
-                                                '& > p': {
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: '3',
-                                                    WebkitBoxOrient: 'vertical',
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    height: '60px',
-                                                    lineHeight: '20px',
-                                                },
-                                            }}
-                                        ></Box>
-                                    </Box>
-                                    <Link style={{ color: 'inherit', textDecoration: 'none', width: '100%' }} href={`/explorer/projects/edit/${item.id}`}>
-                                        <Button fullWidth variant="outlined" size="small">
-                                            Edit
-                                        </Button>
-                                    </Link>
-                                </Box>
-                            </Card>
-                        </Grid>
-                    );
-                })}
-                {(profileProjects?.draft?.length || 0) === 0 && (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                        <NoData text="No Draft Found!" />
-                    </Box>
-                )}
-            </Grid>
-        </Container>
+                                    </Card>
+                                </Grid>
+                            );
+                        })}
+                    </Grid>
+                    {project.length === 0 && (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                            <NoData text="No Project Found!" />
+                        </Box>
+                    )}
+                </>
+            )}
+        </>
+    );
+}
+
+function ListDrafts() {
+    const { draft } = useProfileData();
+    const { fetchDraft } = useProfileFunction();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        (async () => {
+            setLoading(true);
+            await fetchDraft();
+            setLoading(false);
+        })();
+    }, []);
+
+    return (
+        <>
+            <Typography variant="h6" mt={5}>
+                Draft Projects
+            </Typography>
+            {loading ? (
+                <Box>
+                    <IconSpinLoading />
+                </Box>
+            ) : (
+                <>
+                    <Grid container spacing={2} mt={2}>
+                        {draft.map((item, index) => {
+                            return (
+                                <Grid key={index} item xs={12} xsm={6} sm={4} lg={3}>
+                                    <Card avatar={item.avatar} banner={item.banner}>
+                                        <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <Box sx={{ width: '100%' }}>
+                                                <Typography
+                                                    variant="h6"
+                                                    fontWeight={600}
+                                                    mt={1}
+                                                    component={'p'}
+                                                    title={item.name}
+                                                    sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                                >
+                                                    {item.name || 'No name'}
+                                                </Typography>
+                                                <Box textAlign={'right'} my={1}>
+                                                    <Chip variant="outlined" color="secondary" label="Drafting..." size="small"></Chip>
+                                                </Box>
+                                                <Box
+                                                    dangerouslySetInnerHTML={{ __html: item.overviewDesc }}
+                                                    sx={{
+                                                        '& > *': {
+                                                            m: 0,
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: '3',
+                                                            WebkitBoxOrient: 'vertical',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                            height: '60px',
+                                                            lineHeight: '20px',
+                                                        },
+                                                    }}
+                                                ></Box>
+                                            </Box>
+                                            <Link style={{ color: 'inherit', textDecoration: 'none', width: '100%' }} href={`/explorer/projects/edit/${item.id}`}>
+                                                <Button fullWidth variant="outlined" size="small">
+                                                    Edit
+                                                </Button>
+                                            </Link>
+                                        </Box>
+                                    </Card>
+                                </Grid>
+                            );
+                        })}
+                    </Grid>
+                    {draft.length === 0 && (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                            <NoData text="No Draft Found!" />
+                        </Box>
+                    )}
+                </>
+            )}
+        </>
     );
 }

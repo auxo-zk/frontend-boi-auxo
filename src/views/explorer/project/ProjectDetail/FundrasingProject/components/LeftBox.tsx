@@ -5,10 +5,9 @@ import { formatDate, formatNumber } from 'src/utils/format';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import { useProjectDetailData } from '../../state';
 import { IconMina } from 'src/assets/svg/icon';
+import { TProjectFundRaising } from 'src/services/project/api';
 
-export default function LeftBox() {
-    const { fundrasing } = useProjectDetailData();
-
+export default function LeftBox({ fundrasing }: { fundrasing: TProjectFundRaising }) {
     return (
         <Box>
             <Select color="secondary" fullWidth sx={{ mb: 4 }}>

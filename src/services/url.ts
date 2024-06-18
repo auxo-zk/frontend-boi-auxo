@@ -31,10 +31,13 @@ export const apiUrl = {
     checkJwt: `${BACKEND_BASE_URL}/v0/auth/profile`,
 
     getProjectMemberWitness: (projectId: string, memberId: string) => `${BACKEND_BASE_URL}/v0/storages/project/members/witness/${projectId}-${memberId}`,
-    getParticipationZkappWitness: `${BACKEND_BASE_URL}/v0/storages/participation/zkApps/witness/${Constants.ZkAppEnum.PROJECT}`,
+    getParticipationZkappWitness: `${BACKEND_BASE_URL}/v0/storages/participation/zkApps/witness/${Constants.ZkAppIndex.PROJECT}`,
     getProjectMemLvl1: `${BACKEND_BASE_URL}/v0/storages/project/member/level1`,
     getProjectMemLvl2: (projectId: string) => `${BACKEND_BASE_URL}/v0/storages/project/member/level2/${projectId}`,
     getParticipationZkApp: `${BACKEND_BASE_URL}/v0/storages/participation/zkapps`,
     postProjectParticipation: (projectId: string) => `${BACKEND_BASE_URL}/v0/projects/${projectId}/participations`,
     getWitnessIndex: `${BACKEND_BASE_URL}/v0/storages/participation/index/level1`,
+
+    getDataParticipateCampaign: (campaignId: string, projectId: string) =>
+        `${BACKEND_BASE_URL}/v0/method-inputs/participation-contract/participate-campaign?campaignId=${campaignId}&projectId=${projectId}`,
 };

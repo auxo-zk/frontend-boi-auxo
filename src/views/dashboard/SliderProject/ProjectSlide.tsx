@@ -29,7 +29,11 @@ export default function ProjectSlide() {
                     '&:hover': { height: '155px', border: '1px solid', borderColor: 'primary.light', boxShadow: '0px 4px 8px 0px rgba(44, 151, 143, 0.48)' },
                 }}
             >
-                <Img src="https://pbs.twimg.com/profile_images/1732964434363248640/UtVeR8Io_200x200.jpg" alt="" sx={{ width: '66px', height: '66px', borderRadius: '50%' }} />
+                <Img
+                    src="https://storage.googleapis.com/auxo/a5e3aa2339034369e2ce80652145e4b0979a74d799fb666d8c4471ef8d49962a.png"
+                    alt=""
+                    sx={{ width: '66px', height: '66px', borderRadius: '50%' }}
+                />
                 <Typography variant="h6" fontWeight={500}>
                     Watcher.Guru
                 </Typography>

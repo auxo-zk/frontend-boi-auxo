@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from './url';
 import { getJwt } from './project/api';
+import { TFileSaved, TRef, TWitness } from './type';
 
 export type TCommitteeData = {
     id: string;
@@ -63,71 +64,57 @@ export async function getTokenFromSig(data: {
 }
 
 //TODO ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-export type TWitness = {
-    path: string[];
-    isLeft: boolean[];
-};
-
-export async function getProjectMemberWitness(projectId: string, memberId: string): Promise<TWitness[]> {
-    const response = await axios.get(apiUrl.getProjectMemberWitness(projectId, memberId));
-    return response.data || [];
-}
-
-export async function getParticipationZkappWitness(): Promise<TWitness[]> {
-    const response = await axios.get(apiUrl.getParticipationZkappWitness);
-    return response.data;
-}
-
-export async function getProjectMemLvl1(): Promise<TWitness[]> {
-    const res: TWitness[] = (await axios.get(apiUrl.getProjectMemLvl1)).data || [];
-    return res;
-}
-
-export async function getProjectMemLvl2(projectId: string): Promise<TWitness[]> {
-    const res: TWitness[] = (await axios.get(apiUrl.getProjectMemLvl2(projectId || ''))).data || [];
-    return res;
-}
-
-export async function getParticipationZkApp(): Promise<TWitness[]> {
-    const res: TWitness[] = (await axios.get(apiUrl.getParticipationZkApp)).data || [];
-    return res;
-}
 
 export type TProjectParticipation = {
-    Name: 'string';
-    Hash: 'string';
+    Name: string;
+    Hash: string;
     Size: number;
+};
+export type TScopeOfWorks = {
+    information: string;
+    milestone: string;
+    raisingAmount: string;
+    deadline: string;
 };
 export type TProjectParticipationInput = {
     answers: string[];
-    scopeOfWorks: {
-        information: string[];
-        milestone: string;
-        raisingAmount: string;
-        deadline: string;
-    }[];
-    documents: string[];
+    scopeOfWorks: TScopeOfWorks[];
+    documents: TFileSaved[];
 };
 export async function postProjectparticipation(projectId: string, input: TProjectParticipationInput): Promise<TProjectParticipation> {
     const jwt = getJwt();
-    const res: TProjectParticipation = (
-        await axios.post(apiUrl.postProjectParticipation(projectId), input, {
-            headers: {
-                Authorization: `Bearer ${jwt}`,
-            },
-        })
-    ).data;
-    return res;
+    const res = await axios.post(apiUrl.postProjectParticipation(projectId), input, {
+        headers: {
+            Authorization: `Bearer ${jwt}`,
+        },
+    });
+    return res.data;
 }
 
-export async function getWitnessIndex(): Promise<TWitness[]> {
-    const res: TWitness[] = (await axios.get(apiUrl.getWitnessIndex)).data;
-    return res;
-}
-
-export async function saveFile(file: File): Promise<string> {
+export async function saveFile(file: File): Promise<TFileSaved> {
     const formData = new FormData();
     formData.append('file', file);
-    const res: string = (await axios.post(apiUrl.saveFile, formData)).data;
+    const res = (await axios.post(apiUrl.saveFile, formData)).data;
     return res;
+}
+
+export type TDataParticipateCampaign = {
+    timeline: {
+        startParticipation: number;
+        startFunding: number;
+        startRequesting: number;
+    };
+    timelineWitness: TWitness;
+    memberWitnessLevel1: TWitness;
+    memberWitnessLevel2: TWitness;
+    projectIndexWitness: TWitness;
+    projectCounter: number;
+    projectCounterWitness: TWitness;
+    campaignContractRef: TRef;
+    projectContractRef: TRef;
+};
+
+export async function getDataParticipateCampaign(campaignId: string, projectId: string): Promise<TDataParticipateCampaign> {
+    const res = await axios.get(apiUrl.getDataParticipateCampaign(campaignId, projectId));
+    return res.data;
 }

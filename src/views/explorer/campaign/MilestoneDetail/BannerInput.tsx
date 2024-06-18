@@ -13,7 +13,6 @@ export default function BannerInput({ img }: { img?: string }) {
         if (file) {
             const reader = new FileReader();
             reader.onload = () => {
-                setMilestoneData({ bannerFile: file });
                 setPreviewImage(reader.result as any);
             };
             reader.readAsDataURL(file);

@@ -1,11 +1,13 @@
 import { sleep } from 'src/utils/format';
 import { ZkappWorkerReponse, ZkappWorkerRequest } from './worker';
 import { ArgumentZkFuction, ReturenValueZkFunction, TZkFuction } from './zkFunction';
+import { NetworkId } from 'src/constants';
+import { chainInfo } from 'src/constants/chainInfo';
 
 export default class ZkAppWorkerClient {
     worker: Worker;
 
-    promises: { [id: number]: { resolve: (res: any) => void; reject: (error: any) => void } };
+    promises: { [id: number]: { resolve: (res: any) => void; reject: (err: any) => void } };
 
     nextId: number;
 
@@ -28,18 +30,6 @@ export default class ZkAppWorkerClient {
         await sleep(4100);
     }
 
-    async sendTransaction(transactionJSON: string, memo?: string, transactionFee: number = 0.1) {
-        const { hash } = await window.mina!.sendTransaction({
-            transaction: transactionJSON,
-            feePayer: {
-                fee: transactionFee,
-                memo: memo || '',
-            },
-        });
-        const transactionLink = `https://berkeley.minaexplorer.com/transaction/${hash}`;
-        return { hash, transactionLink };
-    }
-
     _call<Key extends TZkFuction>(fn: Key, args: ArgumentZkFuction<Key>): ReturenValueZkFunction<Key> {
         return new Promise((resolve, reject) => {
             this.promises[this.nextId] = { resolve, reject };
@@ -49,8 +39,22 @@ export default class ZkAppWorkerClient {
         }) as ReturenValueZkFunction<Key>;
     }
 
-    setActiveInstanceToBerkeley() {
-        return this._call('setActiveInstanceToBerkeley', {});
+    async sendTransaction(transactionJSON: string, memo?: string, transactionFee: number = 0.1) {
+        const { hash } = await window.mina!.sendTransaction({
+            transaction: transactionJSON,
+            feePayer: {
+                fee: transactionFee,
+                memo: memo || '',
+            },
+        });
+
+        const networkId = await this._call('getNetworkId', {});
+        const transactionLink = `${networkId ? chainInfo[networkId].explorerUrl : 'NULL'}/transaction/${hash}`;
+        return { hash, transactionLink };
+    }
+
+    setActiveInstanceToNetwork(chainId: NetworkId) {
+        return this._call('setActiveInstanceToNetwork', { chainId });
     }
     loadContract() {
         console.log('Loading contract');

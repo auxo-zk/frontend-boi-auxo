@@ -1,7 +1,8 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
 import { toast } from 'react-toastify';
-import { KeyProjectInput, TEditProjectData, createProject, postProjectsToIpfs } from 'src/services/project/api';
+import { KeyProjectInput, MemberDataType, TEditProjectData, createProject, postProjectsToIpfs } from 'src/services/project/api';
 import { saveFile } from 'src/services/services';
+import { TFileSaved } from 'src/services/type';
 import { useAppContract } from 'src/states/contracts';
 import { useWalletData } from 'src/states/wallet';
 
@@ -24,14 +25,8 @@ export const projectInitData: TEditProjectData & {
             description: '',
         },
     },
-    teamMember: {
-        0: {
-            profileName: 'You',
-            role: 'Product Owner',
-            socialLink: '',
-        },
-    },
-    additionalDocument: {},
+    members: [],
+    documents: [],
     documentFiles: [],
 };
 
@@ -72,14 +67,34 @@ export const useCreateProjectFunctions = () => {
             },
         }));
     };
-    const setTeamMember = (data: TEditProjectData['teamMember']) => {
+    const addTeamMember = (data: MemberDataType) => {
         _setProjectData((prev) => ({
             ...prev,
-            teamMember: {
-                ...prev.teamMember,
-                ...data,
-            },
+            members: [...prev.members, data],
         }));
+    };
+    const editTeamMember = (index: number, data: Partial<MemberDataType>) => {
+        _setProjectData((prev) => {
+            const newMembers = [...prev.members];
+            newMembers[index] = {
+                ...newMembers[index],
+                ...data,
+            };
+            return {
+                ...prev,
+                members: newMembers,
+            };
+        });
+    };
+    const removeTeamMember = (index: number) => {
+        _setProjectData((prev) => {
+            const newMembers = [...prev.members];
+            newMembers.splice(index, 1);
+            return {
+                ...prev,
+                members: newMembers,
+            };
+        });
     };
 
     const addDocumentFiles = (files: { name: string; file: File }[]) => {
@@ -102,19 +117,35 @@ export const useCreateProjectFunctions = () => {
         });
     };
 
-    const handleCreateProject = async (id: string | undefined) => {
+    const deleteDocuments = (index: number) => {
+        _setProjectData((prev) => {
+            const newDoc = [...prev.documents];
+            newDoc.splice(index, 1);
+            return {
+                ...prev,
+                documents: newDoc,
+            };
+        });
+    };
+
+    const handleSaveDraftProject = async (id: string | undefined) => {
         let avatarUrl = '';
         let banner = '';
+        let documents: TFileSaved[] = [];
         if (projectData.avatarFile) {
-            avatarUrl = await saveFile(projectData.avatarFile);
+            avatarUrl = (await saveFile(projectData.avatarFile)).URL;
         }
         if (projectData.bannerFile) {
-            banner = await saveFile(projectData.bannerFile);
+            banner = (await saveFile(projectData.bannerFile)).URL;
+        }
+        if (projectData.documentFiles.length > 0) {
+            documents = await Promise.all(projectData.documentFiles.map((i) => saveFile(i.file)));
         }
         const result = await createProject(id, walletData.userAddress, {
             ...projectData,
             avatarImage: avatarUrl || projectData.avatarImage || '',
             coverImage: banner || projectData.coverImage || '',
+            documents: [...projectData.documents, ...documents],
         });
         toast('Create Project Success', { type: 'success' });
         resetProjectData();
@@ -161,10 +192,10 @@ export const useCreateProjectFunctions = () => {
             //avatar and banner
             let avatarUrl = '';
             let bannerUrl = '';
-            let documentUrls: string[] = [];
+            let documentUrls: TFileSaved[] = [];
 
             if (projectData.avatarFile) {
-                avatarUrl = await saveFile(projectData.avatarFile);
+                avatarUrl = (await saveFile(projectData.avatarFile)).URL;
             } else {
                 if (projectData.avatarImage) {
                     avatarUrl = projectData.avatarImage;
@@ -174,7 +205,7 @@ export const useCreateProjectFunctions = () => {
             }
 
             if (projectData.bannerFile) {
-                bannerUrl = await saveFile(projectData.bannerFile);
+                bannerUrl = (await saveFile(projectData.bannerFile)).URL;
             } else {
                 if (projectData.coverImage) {
                     bannerUrl = projectData.coverImage;
@@ -186,15 +217,17 @@ export const useCreateProjectFunctions = () => {
             console.log({ bannerUrl, avatarUrl });
 
             documentUrls = await Promise.all(projectData.documentFiles.map((i) => saveFile(i.file)));
+
             const ipfsData = await postProjectsToIpfs({
                 description: projectData.overViewDescription,
-                documents: documentUrls,
+                documents: [...projectData.documents, ...documentUrls],
                 avatarImage: avatarUrl,
                 coverImage: bannerUrl,
-                members: Object.values(projectData.teamMember || {}).map((member) => ({
+                members: projectData.members.map((member) => ({
                     name: member.profileName,
                     link: member.socialLink,
                     role: member.role,
+                    publicKey: member.publicKey,
                 })),
                 name: projectData.name,
                 publicKey: projectData.publicKey,
@@ -207,7 +240,7 @@ export const useCreateProjectFunctions = () => {
                 ipfsHash: ipfsData.Hash,
                 members: [walletData.userAddress],
                 projectId: '',
-                projectPubBase58: projectData.publicKey,
+                treasuryAddress58: projectData.publicKey,
             });
 
             await workerClient.proveTransaction();
@@ -219,9 +252,7 @@ export const useCreateProjectFunctions = () => {
             toast.update(idtoast, { render: 'Send transaction successfull!', isLoading: false, type: 'success', autoClose: 3000, hideProgressBar: false });
         } catch (error) {
             console.log(error);
-            if (idtoast) {
-                toast.update(idtoast, { render: error as string, type: 'error', position: 'top-center', isLoading: false, autoClose: 3000, hideProgressBar: false });
-            }
+            toast.update(idtoast, { render: (error as Error).message, type: 'error', position: 'top-center', isLoading: false, autoClose: 5000, hideProgressBar: false });
         }
     };
 
@@ -231,12 +262,15 @@ export const useCreateProjectFunctions = () => {
     return {
         setProjectData,
         setCustomSection,
-        setTeamMember,
-        handleCreateProject,
+        addTeamMember,
+        handleSaveDraftProject,
         handleSubmitProject,
         addDocumentFiles,
         deleteDocumentFiles,
         resetProjectData,
+        deleteDocuments,
+        editTeamMember,
+        removeTeamMember,
     };
 };
 

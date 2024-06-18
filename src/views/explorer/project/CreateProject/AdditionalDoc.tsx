@@ -7,8 +7,8 @@ import { DeleteOutlineRounded } from '@mui/icons-material';
 import { compactNumber, formatAddress } from 'src/utils/format';
 
 export default function AdditionalDoc() {
-    const { documentFiles } = useCreateProjectData();
-    const { addDocumentFiles, deleteDocumentFiles } = useCreateProjectFunctions();
+    const { documentFiles, documents } = useCreateProjectData();
+    const { addDocumentFiles, deleteDocumentFiles, deleteDocuments } = useCreateProjectFunctions();
 
     const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -66,6 +66,25 @@ export default function AdditionalDoc() {
                             Uploaded Files
                         </Typography>
                         <Box sx={{ maxHeight: '200px', overflow: 'auto' }}>
+                            {documents.map((item, index) => {
+                                const FileIcon = fileIcon['unknown'];
+                                return (
+                                    <Box key={item.URL + index} sx={{ display: 'flex', alignItems: 'center', my: 1, gap: 2 }}>
+                                        <FileIcon sx={{ fontSize: '40px', color: 'primary.light' }} />
+                                        <Box>
+                                            <Typography title={item.fileName} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '290px' }}>
+                                                {item.fileName}
+                                            </Typography>
+                                            <Typography variant="body3" color={'text.secondary'}>
+                                                {compactNumber(item.fileSize)}B
+                                            </Typography>
+                                        </Box>
+                                        <IconButton sx={{ ml: 'auto', color: 'primary.light' }} onClick={() => deleteDocuments(index)}>
+                                            <DeleteOutlineRounded />
+                                        </IconButton>
+                                    </Box>
+                                );
+                            })}
                             {documentFiles.map((item, index) => {
                                 const FileIcon = fileIcon[item.file.type] ? fileIcon[item.file.type] : fileIcon['unknown'];
                                 return (

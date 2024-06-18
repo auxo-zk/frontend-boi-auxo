@@ -3,6 +3,8 @@ import { useCreateProjectData, useCreateProjectFunctions } from './state';
 import RemoveCircleOutlinedIcon from '@mui/icons-material/RemoveCircleOutlined';
 import { IconRemove } from 'src/assets/svg/icon';
 import { MemberDataType } from 'src/services/project/api';
+import { useEffect } from 'react';
+import { useProfileData } from 'src/views/profile/state';
 
 const rowStyle: SxProps<Theme> = (theme) => ({
     display: 'flex',
@@ -10,37 +12,32 @@ const rowStyle: SxProps<Theme> = (theme) => ({
 });
 
 export default function TeamMember() {
-    const { teamMember } = useCreateProjectData();
-    const { setTeamMember, setProjectData } = useCreateProjectFunctions();
+    const userProfile = useProfileData();
+    const { members } = useCreateProjectData();
+    const { addTeamMember, setProjectData, editTeamMember, removeTeamMember } = useCreateProjectFunctions();
 
-    const handleAddTeamMember = () => {
-        const timeStamp = Date.now();
-        setTeamMember({
-            [String(timeStamp)]: {
-                profileName: '',
-                role: '',
-                socialLink: '',
-            },
-        });
+    const handleAddTeamMember = () => {};
+
+    const handleRemoveMember = (index: number) => {
+        removeTeamMember(index);
     };
 
-    const handleRemoveMember = (id: string) => {
-        const current = { ...teamMember };
-        try {
-            delete current[id];
-        } catch (error) {}
-        setProjectData({ teamMember: current });
+    const handleEditTeamMember = (index: number, value: Partial<MemberDataType>) => {
+        editTeamMember(index, value);
     };
 
-    const handleEditTeamMember = (key: string, value: Partial<MemberDataType>) => {
-        const tempValue = { ...teamMember![key] };
-        setTeamMember({
-            [key]: {
-                ...tempValue,
-                ...value,
-            },
-        });
-    };
+    useEffect(() => {
+        if (members.length === 0) {
+            addTeamMember({
+                profileName: userProfile?.name || '',
+                role: userProfile?.role || '',
+                publicKey: userProfile?.address || '',
+                socialLink: userProfile?.website || '',
+            });
+        } else {
+            editTeamMember(0, { profileName: userProfile?.name || '', role: userProfile?.role || '', publicKey: userProfile?.address || '', socialLink: userProfile?.website || '' });
+        }
+    }, [userProfile.name, userProfile.role, userProfile.address, userProfile.website]);
     return (
         <Box
             sx={{
@@ -63,37 +60,19 @@ export default function TeamMember() {
                 className="member-row"
                 spacing={2}
             >
-                <Grid item xs={12} md={3.5}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Avatar sx={{ width: '50px', height: '50px' }} />
-                        <Typography ml={2} variant="body1" fontWeight={500}>
-                            {teamMember!['0']?.profileName}
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                    <Typography variant="body1" fontWeight={500}>
-                        {teamMember!['0']?.role}
-                    </Typography>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <Typography variant="body1" fontWeight={500}>
-                        {teamMember!['0']?.socialLink}
-                    </Typography>
-                </Grid>
+                <Grid item xs={12} md={3.5}></Grid>
+                <Grid item xs={12} md={3}></Grid>
+                <Grid item xs={12} md={4}></Grid>
                 <Grid item xs={12} md={1.5} sx={{ justifyContent: 'flex-end' }}>
                     <Button sx={{ minWidth: '100px' }} variant="outlined" onClick={handleAddTeamMember}>
                         Add
                     </Button>
                 </Grid>
             </Grid>
-            {Object.entries(teamMember || {}).map(([id, member], index) => {
-                if (id === '0') {
-                    return;
-                }
+            {members.map((member, index) => {
                 return (
                     <Grid
-                        key={id}
+                        key={member.publicKey + index}
                         container
                         spacing={2}
                         sx={{
@@ -111,7 +90,7 @@ export default function TeamMember() {
                                     sx={{ ml: 2 }}
                                     label="Profile Name"
                                     onChange={(e) => {
-                                        handleEditTeamMember(id, {
+                                        handleEditTeamMember(index, {
                                             profileName: e.target.value,
                                         });
                                     }}
@@ -123,7 +102,7 @@ export default function TeamMember() {
                             <TextField
                                 label="Role"
                                 onChange={(e) => {
-                                    handleEditTeamMember(id, {
+                                    handleEditTeamMember(index, {
                                         role: e.target.value,
                                     });
                                 }}
@@ -134,7 +113,7 @@ export default function TeamMember() {
                             <TextField
                                 label="Social Link"
                                 onChange={(e) => {
-                                    handleEditTeamMember(id, {
+                                    handleEditTeamMember(index, {
                                         socialLink: e.target.value,
                                     });
                                 }}
@@ -145,7 +124,7 @@ export default function TeamMember() {
                             <Box sx={{ minWidth: '100px', display: 'flex', justifyContent: 'center' }}>
                                 <IconButton
                                     onClick={() => {
-                                        handleRemoveMember(id);
+                                        handleRemoveMember(index);
                                     }}
                                 >
                                     <IconRemove sx={{ fontSize: '2rem', color: 'background.primary' }} />

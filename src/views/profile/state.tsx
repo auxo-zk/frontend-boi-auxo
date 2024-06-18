@@ -35,8 +35,7 @@ export const useProfileData = () => useAtomValue(profileProjects);
 
 export const useProfileFunction = () => {
     const _setProfileProjects = useSetAtom(profileProjects);
-    const profileProjectsData = useProfileData();
-    const { imgFile } = useProfileData();
+
     const { userAddress } = useWalletData();
     const setProfileData = (data: Partial<TProfile>) => {
         _setProfileProjects((prev) => {
@@ -47,29 +46,42 @@ export const useProfileFunction = () => {
         });
     };
     const fetchDraft = async () => {
-        const res = await getDraftProject();
-        setProfileData({ draft: res });
+        try {
+            const res = await getDraftProject();
+            setProfileData({ draft: res });
+        } catch (error) {
+            console.log('fetchDraft error', error);
+            setProfileData({ draft: [] });
+        }
     };
     const fetchProject = async () => {
-        const res = await getUserProject(userAddress);
-        setProfileData({ project: res });
+        try {
+            if (userAddress) {
+                const res = await getUserProject(userAddress);
+                setProfileData({ project: res });
+            }
+        } catch (error) {
+            console.log('fetchProject error', error);
+            setProfileData({ project: [] });
+        }
     };
-    const getProfileData = useCallback(async () => {
+    const getProfileData = async () => {
         if (userAddress) {
             try {
                 const result = await getUserProfile(userAddress);
-                console.log('🚀 ~ getProfileData ~ userAddress:', userAddress);
-                console.log('🚀 ~ getProfileData ~ result:', result);
+                console.log({ userAddress, result });
+
                 setProfileData({
                     address: userAddress,
                     description: result.description,
                     img: result.img,
                     name: result.name,
                 });
-            } catch (error) {}
+            } catch (error) {
+                console.log('getProfileData error', error);
+            }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userAddress]);
+    };
 
     const submitProfileInfo = async (input: TProfileInput) => {
         try {

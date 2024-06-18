@@ -7,35 +7,20 @@ import { KeyProjectInput, getProjectDetail } from 'src/services/project/api';
 import MilestoneDetail from 'src/views/explorer/campaign/MilestoneDetail';
 import { InitMileStoneData, useMilestoneFunctions } from 'src/views/explorer/campaign/MilestoneDetail/state';
 
-export default function MilestoneDetailPage({ campaignDetail, projectDetail }: InferGetStaticPropsType<typeof getServerSideProps>) {
+export default function MilestoneDetailPage({ campaignDetail, projectDetail, campaignId, projectId }: InferGetStaticPropsType<typeof getServerSideProps>) {
     const { setMilestoneData } = useMilestoneFunctions();
-    const router = useRouter();
-    const projectId = String(router.query.projectId || '');
-    const campaignId = String(router.query.campaignId || '');
+
     useEffect(() => {
-        const questions = campaignDetail.questions
-            .map((i) => ({
-                question: i.question,
-                required: i.isRequired,
-                hint: i.hint,
-                answer: '',
-            }))
-            .reduce((current, i, index) => {
-                return {
-                    ...current,
-                    [index]: {
-                        question: i.question,
-                        hint: i.hint,
-                        required: i.required,
-                        answer: i.answer,
-                    },
-                };
-            }, {});
+        const questions = campaignDetail.questions.map((item) => ({
+            ...item,
+            answer: '',
+        }));
 
         setMilestoneData({
             campaignBanner: campaignDetail.banner,
-            campaignQuestions: Object.assign({}, questions),
+            campaignQuestions: questions,
             campaignId: campaignId,
+            projectImg: projectDetail.avatar,
             projectData: {
                 challengeAndRisk: projectDetail?.overview ? projectDetail?.overview[KeyProjectInput.challengesAndRisks] || '' : '',
                 problemStatement: projectDetail?.overview ? projectDetail?.overview[KeyProjectInput.problemStatement] || '' : '',
@@ -44,8 +29,7 @@ export default function MilestoneDetailPage({ campaignDetail, projectDetail }: I
                 projectId: projectId,
             },
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [campaignDetail, projectDetail]);
+    }, []);
     return (
         <>
             <MilestoneDetail />
@@ -62,6 +46,8 @@ export const getServerSideProps = (async (context) => {
             props: {
                 campaignDetail: result[0],
                 projectDetail: result[1],
+                campaignId: campaignId,
+                projectId: projectId,
             },
         };
     } catch (error) {

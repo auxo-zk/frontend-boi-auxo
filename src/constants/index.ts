@@ -18,3 +18,12 @@ export const fileIcon: { [k: string]: SvgComponent } = {
     'image/svg': ImageRounded,
     unknown: InsertDriveFile,
 };
+
+export enum NetworkId {
+    'Berkeley' = 'Berkeley',
+    'AuxoNetwork' = 'AuxoNetwork',
+    'Mainnet' = 'Mainnet',
+    'AuxoDevNet' = 'AuxoDevNetwork',
+}
+
+export const fundingOption = ['Private Grant', 'Public Funding', 'Unknow'];

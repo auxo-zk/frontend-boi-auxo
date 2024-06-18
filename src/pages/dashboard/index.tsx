@@ -5,6 +5,7 @@ import { Box, Button, Container, Typography } from '@mui/material';
 import Image from 'next/image';
 import { imagePath } from 'src/constants/imagePath';
 import SliderProject from 'src/views/dashboard/SliderProject/SliderProject';
+import ParticipatedCampaign from 'src/views/dashboard/ParticipatedCampaign/ParticipatedCampaign';
 
 export default function Dashboard() {
     return (
@@ -23,7 +24,7 @@ export default function Dashboard() {
             </Box>
 
             <Box my={5}>
-                <Button variant="outlined">Outlinebutton</Button>
+                <ParticipatedCampaign />
             </Box>
         </Container>
     );

@@ -9,7 +9,7 @@ export default function CardProject({ data }: { data: TProjectData }) {
     return (
         <Card avatar={data.avatar} banner={data.banner}>
             <Link href={`/explorer/projects/${data.idProject}`} style={{ textDecoration: 'none', color: 'unset' }}>
-                <Typography variant="h6" fontWeight={600} mt={1}>
+                <Typography variant="h6" fontWeight={600} mt={1} component={'p'} title={data.name} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {data.name}
                 </Typography>
             </Link>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from '../url';
 import { LocalStorageKey } from 'src/constants';
-import { BACKEND_BASE_URL } from '../baseUrl';
+import { TFileSaved } from '../type';
 
 export enum KeyProjectInput {
     'solution' = 'solution',
@@ -46,16 +46,19 @@ export async function getAddressProject(address: string): Promise<TProjectData[]
 }
 
 //PROJECT DETAIL ************************************************************************************************************************************************
+export type TMemberData = {
+    name: string;
+    role: string;
+    link: string;
+    publicKey: string;
+};
+
 export type TProjectOverview = {
     raisingAmount?: number;
     campaignAmount?: number;
     description: string;
-    documents: string[];
-    member: {
-        name: string;
-        role: string;
-        link: string;
-    }[];
+    documents: TFileSaved[];
+    member: TMemberData[];
 } & {
     [key in KeyProjectInput]: string;
 };
@@ -68,7 +71,7 @@ export type TProjectFundRaising = {
         budgetRequired: string;
         etc: string;
     }[];
-    documents: string[];
+    documents: TFileSaved[];
 };
 
 export type TProjectDetail = {
@@ -77,7 +80,6 @@ export type TProjectDetail = {
     banner: string;
     date: string;
     overview: TProjectOverview;
-    fundrasing: TProjectFundRaising;
 };
 export async function getProjectDetail(projectId: string): Promise<TProjectDetail> {
     const response = (await axios.get(apiUrl.projectDetail + `/${projectId}`)).data;
@@ -86,31 +88,10 @@ export async function getProjectDetail(projectId: string): Promise<TProjectDetai
         avatar: response?.ipfsData?.avatarImage || '',
         banner: response?.ipfsData?.coverImage || '',
         date: new Date().toLocaleDateString(),
-        fundrasing: {
-            raisedAmount: 0,
-            targetAmount: 0,
-            raiseInfo: [
-                {
-                    budgetRequired: '30.000 MINA',
-                    etc: new Date().toLocaleDateString(),
-                    scope: '1',
-                },
-                {
-                    budgetRequired: '30.000 MINA',
-                    etc: new Date().toLocaleDateString(),
-                    scope: '2',
-                },
-                {
-                    budgetRequired: '30.000 MINA',
-                    etc: new Date().toLocaleDateString(),
-                    scope: '3',
-                },
-            ],
-            documents: [],
-        },
+
         overview: {
             description: response?.ipfsData?.description || '',
-            documents: [],
+            documents: response?.ipfsData?.documents || [],
             member: response?.ipfsData?.members || [],
             campaignAmount: 0,
             raisingAmount: 0,
@@ -126,6 +107,7 @@ export type MemberDataType = {
     profileName: string;
     role: string;
     socialLink: string;
+    publicKey: string;
 };
 export type TEditProjectData = {
     draftId?: string;
@@ -143,10 +125,8 @@ export type TEditProjectData = {
             description?: string;
         };
     };
-    teamMember?: {
-        [id: string]: MemberDataType;
-    };
-    additionalDocument?: any;
+    members: MemberDataType[];
+    documents: TFileSaved[];
 };
 export async function saveProject(address: string, project: TEditProjectData) {
     if (!project.draftId || !address) {
@@ -163,8 +143,8 @@ export async function saveProject(address: string, project: TEditProjectData) {
             problemStatement: project.problemStatement,
             solution: project.solution,
             challengeAndRisks: project.challengeAndRisk,
-            members: project.teamMember,
-            documents: [],
+            members: project.members,
+            documents: project.documents,
         },
         {
             headers: {
@@ -193,10 +173,10 @@ export async function createProject(id: string = '', address: string, project: T
             problemStatement: project.problemStatement,
             solution: project.solution,
             challengeAndRisk: project.challengeAndRisk,
-            members: Object.values(project.teamMember || {}).map((member) => {
-                return { name: member.profileName, role: member.role, link: member.socialLink };
+            members: project.members.map((member) => {
+                return { name: member.profileName, role: member.role, link: member.socialLink, publicKey: member.publicKey };
             }),
-            documents: [],
+            documents: project.documents,
         },
         {
             headers: {
@@ -223,14 +203,15 @@ export async function getDraftProjectDetail(draftId: string): Promise<TEditProje
         overViewDescription: response.description,
         problemStatement: response.problemStatement,
         publicKey: response.publicKey,
-        // customSections:
         solution: response.solution,
-        additionalDocument: response.documents,
+        documents: response.documents,
         draftId: response._id,
-        teamMember: Object.assign(
-            {},
-            (response.members || []).map((member: any) => ({ profileName: member.name, role: member.role, socialLink: member.link }))
-        ),
+        members: (response.members || []).map((member: any) => ({
+            profileName: member.name,
+            role: member.role,
+            socialLink: member.link,
+            publicKey: member.publicKey,
+        })),
         avatarImage: response.avatarImage,
         coverImage: response.coverImage,
         customSections: {},
@@ -265,11 +246,10 @@ export async function getUserProject(address: string): Promise<ProjectMetaData[]
         name: item.ipfsData?.name || '',
         avatar: item?.ipfsData?.avatarImage || '',
         banner: item?.ipfsData?.coverImage || '',
-        desc: item.ipfsData?.description || '',
+        overviewDesc: item.ipfsData?.description || '',
         date: new Date().toLocaleDateString(),
         idProject: item.projectId + '' || '#',
         type: 'project',
-        overviewDesc: item.description,
     }));
 }
 
@@ -285,8 +265,9 @@ export type IPFSProjectInput = {
         name: string;
         role: string;
         link: string;
+        publicKey: string;
     }[];
-    documents: string[];
+    documents: TFileSaved[];
     //
 } & { [key in KeyProjectInput]: string };
 

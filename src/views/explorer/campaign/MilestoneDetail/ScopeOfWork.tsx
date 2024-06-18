@@ -1,48 +1,38 @@
 import { Typography, Paper, Box, Button, TextField, IconButton } from '@mui/material';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddIcon from '@mui/icons-material/Add';
 import dynamic from 'next/dynamic';
 import { useMilestoneData, useMilestoneFunctions } from './state';
 import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
+import { IconTrash } from 'src/assets/svg/icon';
 const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEditor'), { ssr: false });
 
 export default function ScopeOfWork() {
-    const { setScopeOfWorks, setMilestoneData } = useMilestoneFunctions();
+    const { addScopeOfWork, deleteScopeOfWork, editScopeOfWork, setMilestoneData } = useMilestoneFunctions();
     const { scopeOfWorks } = useMilestoneData();
 
     const handleAddScopeOfWork = () => {
-        const newKey = Date.now();
-        setScopeOfWorks({
-            [newKey]: {
-                information: '',
-                milestone: '',
-                raisingAmount: '',
-            },
+        addScopeOfWork({
+            id: Date.now().toString(),
+            information: '',
+            milestone: '',
+            raisingAmount: '',
+            deadline: Date.now().toLocaleString(),
         });
     };
-    const handleRemoveScopeOfWork = (key: string) => {
-        let tempObj = { ...scopeOfWorks };
-        if (Object.keys(tempObj).length === 1) {
-            return;
-        }
-        try {
-            delete tempObj[key];
-        } catch (error) {}
-        setMilestoneData({ scopeOfWorks: tempObj });
-    };
+
     return (
         <>
-            {Object.entries(scopeOfWorks || {}).map(([key, item], index) => {
+            {scopeOfWorks.map((item, index) => {
                 return (
-                    <Box key={key} sx={{ mb: 2 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography variant="h6" my={2}>
-                                Scope Of Work {index}
+                    <Box key={item.id + index} sx={{ mb: 2 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }} my={2}>
+                            <Typography variant="h6" mr={1}>
+                                Scope of work {index + 1}
                             </Typography>
-                            <IconButton onClick={() => handleRemoveScopeOfWork(key)}>
-                                <DeleteOutlineIcon />
+                            <IconButton onClick={() => deleteScopeOfWork(index)}>
+                                <IconTrash />
                             </IconButton>
                         </Box>
                         <Paper sx={{ p: 3, backgroundColor: '#FFF8F6' }}>
@@ -57,11 +47,8 @@ export default function ScopeOfWork() {
                             <CustomEditor
                                 value={item.information || ''}
                                 onChange={(v) =>
-                                    setScopeOfWorks({
-                                        [key]: {
-                                            ...item,
-                                            information: v,
-                                        },
+                                    editScopeOfWork(index, {
+                                        information: v,
                                     })
                                 }
                             />
@@ -77,11 +64,8 @@ export default function ScopeOfWork() {
                             <CustomEditor
                                 value={item.milestone || ''}
                                 onChange={(v) =>
-                                    setScopeOfWorks({
-                                        [key]: {
-                                            ...item,
-                                            milestone: v,
-                                        },
+                                    editScopeOfWork(index, {
+                                        milestone: v,
                                     })
                                 }
                             />
@@ -97,13 +81,13 @@ export default function ScopeOfWork() {
                                         label="Amount"
                                         type="number"
                                         onChange={(e) =>
-                                            setScopeOfWorks({
-                                                [key]: {
-                                                    ...item,
-                                                    raisingAmount: e.target.value,
-                                                },
+                                            editScopeOfWork(index, {
+                                                raisingAmount: e.target.value,
                                             })
                                         }
+                                        InputProps={{
+                                            endAdornment: 'Mina',
+                                        }}
                                         sx={{ mr: 1 }}
                                     />
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -111,7 +95,7 @@ export default function ScopeOfWork() {
                                             label="Deadline"
                                             sx={{ ml: 1 }}
                                             onChange={(value: Dayjs | null, _: any) => {
-                                                setScopeOfWorks({ [key]: { ...item, deadline: value?.toDate().toISOString() || '' } });
+                                                editScopeOfWork(index, { deadline: value?.toDate().toISOString() || '' });
                                             }}
                                         />
                                     </LocalizationProvider>
