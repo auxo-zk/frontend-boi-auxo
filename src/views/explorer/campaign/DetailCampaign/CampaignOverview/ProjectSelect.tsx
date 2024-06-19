@@ -1,9 +1,8 @@
-import { Autocomplete, Box, Button, MenuItem, Select, TextField, Typography } from '@mui/material';
-import Link from 'next/link';
+import { Autocomplete, Box, Button, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { TProjectData, getAddressProject } from 'src/services/project/api';
-import { useModalData, useModalFunction } from 'src/states/modal';
+import { useModalFunction } from 'src/states/modal';
 import { useWalletData } from 'src/states/wallet';
 
 export default function ProjectSelect() {
