@@ -81,7 +81,7 @@ export const useAppContractFunction = () => {
                     requestContract: 'B62qq1KbnHnU6ZDv3R1ZytiNpiU73wWnoC3WZkVF5Ndo8Nf5W6K2xe7',
                     fundingRequesterContract: 'B62qkcg1F7ncX45x6661jcmseVR1pAajDUEcyTm1Uhw6WK2ZHE68ANq',
                     vestingRequesterContract: 'B62qqsUHyRwG1qL6R7wAptwA9d8fWNKtTsk5ZWr3wEL7XJ5u23GebL7',
-                    commitmentContract: 'B62qoCN9873TFC3m1br7nKV8khJxXdsj87ZKaqFTSonJVjqxKEUyHSG',
+                    nullifierContract: 'B62qoCN9873TFC3m1br7nKV8khJxXdsj87ZKaqFTSonJVjqxKEUyHSG',
                     vestingContract: 'B62qpLiwizQ3bS3R55uxyrPuJKUMmujj8gK7TzDUMSWZV8TnejxtLg1',
                     projectContract: 'B62qrXSf1v8nhbkqTGvZmThwehN3QDZaT5VzJWsX3d52SNgiQwtCv5y',
                     participationContract: 'B62qpoGFc1w2LWyD6zArBeVPaqXhzqHMpweSQJWkSnDzUPuRi5Zhw3j',

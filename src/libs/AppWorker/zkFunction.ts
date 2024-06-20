@@ -25,7 +25,7 @@ const state = {
     RequestContract: null as null | ZkAppDkg.Request.RequestContract,
     ProjectContract: null as null | ZkAppPlatform.Project.ProjectContract,
     ParticipationContract: null as null | ZkAppPlatform.Participation.ParticipationContract,
-    CommitmentContract: null as null | ZkAppPlatform.Commitment.CommitmentContract,
+    NullifierContract: null as null | ZkAppPlatform.Nullifier.NullifierContract,
     VestingContract: null as null | ZkAppPlatform.Vesting.VestingContract,
     TreasuryContract: null as null | ZkAppPlatform.TreasuryManager.TreasuryManagerContract,
     CampaignContract: null as null | ZkAppPlatform.Campaign.CampaignContract,
@@ -135,12 +135,12 @@ export const zkFunctions = {
         console.log('17. compile TreasuryManagerContract done');
         state.compileDone += 1;
 
-        await state.ZkAppPlatform!.Commitment.RollupCommitment.compile({ cache: FileSystem(args.fileCache) }); // 18
-        console.log('18. compile RollupCommitment done');
+        await state.ZkAppPlatform!.Nullifier.RollupNullifier.compile({ cache: FileSystem(args.fileCache) }); // 18
+        console.log('18. compile RollupNullifier done');
         state.compileDone += 1;
 
-        await state.ZkAppPlatform!.Commitment.CommitmentContract.compile({ cache: FileSystem(args.fileCache) }); // 19
-        console.log('19. compile CommitmentContract done');
+        await state.ZkAppPlatform!.Nullifier.NullifierContract.compile({ cache: FileSystem(args.fileCache) }); // 19
+        console.log('19. compile NullifierContract done');
         state.compileDone += 1;
 
         await state.ZkAppPlatform!.Vesting.VestingContract.compile({ cache: FileSystem(args.fileCache) }); // 20
@@ -164,7 +164,7 @@ export const zkFunctions = {
         projectContract: string;
         participationContract: string;
         treasuryContract: string;
-        commitmentContract: string;
+        nullifierContract: string;
         vestingContract: string;
         campaignContract: string;
     }) => {
@@ -189,8 +189,8 @@ export const zkFunctions = {
         const treasuryContractPub = PublicKey.fromBase58(args.treasuryContract);
         state.TreasuryContract = new state.ZkAppPlatform!.TreasuryManager.TreasuryManagerContract!(treasuryContractPub);
 
-        const commitmentContractPub = PublicKey.fromBase58(args.commitmentContract);
-        state.CommitmentContract = new state.ZkAppPlatform!.Commitment.CommitmentContract!(commitmentContractPub);
+        const nullifierContractPub = PublicKey.fromBase58(args.nullifierContract);
+        state.NullifierContract = new state.ZkAppPlatform!.Nullifier.NullifierContract!(nullifierContractPub);
 
         const vestingContractPub = PublicKey.fromBase58(args.vestingContract);
         state.VestingContract = new state.ZkAppPlatform!.Vesting.VestingContract!(vestingContractPub);
