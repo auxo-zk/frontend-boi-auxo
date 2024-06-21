@@ -25,13 +25,13 @@ export const apiUrl = {
     getCampaign: `${BACKEND_BASE_URL}/v0/campaigns`,
     getCampaignAll: `${BACKEND_BASE_URL}/v0/campaigns/all`,
     campaignDetail: `${BACKEND_BASE_URL}/v0/campaigns`,
+    getProjectNotParticipateCampaign: (campaignId: string, address: string) => `${BACKEND_BASE_URL}/v0/campaigns/${campaignId}/projects/not-participated?projectOwner=${address}`,
     getParticipatingProjects: (campaignId: string) => `${BACKEND_BASE_URL}/v0/campaigns/${campaignId}/projects`,
     //profile
     getUserProfile: `${BACKEND_BASE_URL}/v0/builders`,
     editProfile: `${BACKEND_BASE_URL}/v0/builders`,
     editProfileImage: `${BACKEND_BASE_URL}/v0/builders/update-avatar`,
     checkJwt: `${BACKEND_BASE_URL}/v0/auth/profile`,
-
     getProjectMemberWitness: (projectId: string, memberId: string) => `${BACKEND_BASE_URL}/v0/storages/project/members/witness/${projectId}-${memberId}`,
     getParticipationZkappWitness: `${BACKEND_BASE_URL}/v0/storages/participation/zkApps/witness/${Constants.ZkAppIndex.PROJECT}`,
     getProjectMemLvl1: `${BACKEND_BASE_URL}/v0/storages/project/member/level1`,
