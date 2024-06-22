@@ -9,6 +9,7 @@ import THUMBNAIL3 from 'public/images/auxo-thumbnail3.png';
 
 import DEFAULT_AVATAR from 'public/images/defaultAvatar.png';
 import DEFAULT_BANNER from 'public/images/defaultBanner.png';
+import LOGO_ICON_2D from 'public/images/auxo-logo-icon.png';
 
 export const imagePath = {
     LOGO_FULLLL_GREEN,
@@ -23,4 +24,5 @@ export const imagePath = {
 
     DEFAULT_AVATAR,
     DEFAULT_BANNER,
+    LOGO_ICON_2D,
 };

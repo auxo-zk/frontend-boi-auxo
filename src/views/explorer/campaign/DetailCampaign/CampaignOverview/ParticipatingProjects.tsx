@@ -39,16 +39,6 @@ export default function ParticipatingProjects({ campaignId }: { campaignId: stri
         getListParticipatingProjects();
     }, []);
 
-    if (loading) {
-        return (
-            <Box sx={{ py: 5 }}>
-                <IconSpinLoading sx={{ fontSize: '100px' }} />
-            </Box>
-        );
-    }
-    if (listProject.length == 0) {
-        return <NoData text="No Project Found!" />;
-    }
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', placeItems: 'center' }} mt={5.5}>
@@ -57,19 +47,33 @@ export default function ParticipatingProjects({ campaignId }: { campaignId: stri
                     Apply New
                 </Button>
             </Box>
-            <Box mt={3}>
-                <TextField variant="outlined" color="secondary" label="Search project" name="project_name" sx={{ width: '100%', maxWidth: '380px', mb: 3 }} />
+            {loading ? (
+                <Box sx={{ py: 5 }}>
+                    <IconSpinLoading sx={{ fontSize: '100px' }} />
+                </Box>
+            ) : (
+                <>
+                    {listProject.length == 0 ? (
+                        <NoData text="No Project Found!" />
+                    ) : (
+                        <>
+                            <Box mt={3}>
+                                <TextField variant="outlined" color="secondary" label="Search project" name="project_name" sx={{ width: '100%', maxWidth: '380px', mb: 3 }} />
 
-                <Grid container spacing={3}>
-                    {listProject.map((item, index) => {
-                        return (
-                            <Grid key={'projectJoinedcampain' + index + item.name} item xs={12} xsm={6} md={4}>
-                                <CardProject data={item}></CardProject>
-                            </Grid>
-                        );
-                    })}
-                </Grid>
-            </Box>
+                                <Grid container spacing={3}>
+                                    {listProject.map((item, index) => {
+                                        return (
+                                            <Grid key={'projectJoinedcampain' + index + item.name} item xs={12} xsm={6} md={4}>
+                                                <CardProject data={item}></CardProject>
+                                            </Grid>
+                                        );
+                                    })}
+                                </Grid>
+                            </Box>
+                        </>
+                    )}
+                </>
+            )}
         </>
     );
 }

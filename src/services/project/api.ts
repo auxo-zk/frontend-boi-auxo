@@ -45,6 +45,18 @@ export async function getAddressProject(address: string): Promise<TProjectData[]
     }));
 }
 
+export async function getProjectNotParticipateCampaign(campaignId: string, address: string): Promise<TProjectData[]> {
+    const response: any[] = (await axios.get(apiUrl.getProjectNotParticipateCampaign(campaignId, address))).data;
+    return response.map((item: any) => ({
+        name: item.ipfsData?.name || '',
+        avatar: item?.ipfsData?.avatarImage || '',
+        banner: item?.ipfsData?.coverImage || '',
+        desc: item.ipfsData?.description || '',
+        date: new Date().toLocaleDateString(),
+        idProject: item.projectId + '' || '#',
+    }));
+}
+
 //PROJECT DETAIL ************************************************************************************************************************************************
 export type TMemberData = {
     name: string;
@@ -117,6 +129,12 @@ export type TProjectFundRaising = {
     scopeOfWorks: TScopeOfWork[];
     questions: TQuestions[];
     answers: string[];
+    ownerAddress: string;
+    timeline: {
+        startParticipation: string;
+        startFunding: string;
+        startRequesting: string;
+    };
 };
 
 export async function getFundRaisingProject(projectId: string): Promise<TProjectFundRaising[]> {
@@ -134,6 +152,12 @@ export async function getFundRaisingProject(projectId: string): Promise<TProject
         scopeOfWorks: item.ipfsData?.scopeOfWorks || [],
         questions: item.campaign?.ipfsData?.questions || [],
         answers: item.ipfsData?.answers || [],
+        ownerAddress: item.campaign?.owner || '',
+        timeline: {
+            startParticipation: item.campaign?.ipfsData?.timeline?.startParticipation || '',
+            startFunding: item.campaign?.ipfsData?.timeline?.startFunding || '',
+            startRequesting: item.campaign?.ipfsData?.timeline?.startRequesting || '',
+        },
     }));
 }
 
@@ -260,6 +284,7 @@ export type ProjectMetaData = {
     banner: string;
     type: 'project' | 'draft';
     overviewDesc: string;
+    idProject: string;
     id?: string;
 };
 export async function getDraftProject(): Promise<ProjectMetaData[]> {
@@ -271,6 +296,7 @@ export async function getDraftProject(): Promise<ProjectMetaData[]> {
         type: 'draft',
         overviewDesc: item.description,
         id: item._id,
+        idProject: '#',
     }));
 }
 
