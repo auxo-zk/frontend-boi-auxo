@@ -2,13 +2,13 @@ import { Box, Typography } from '@mui/material';
 import Link from 'next/link';
 import React from 'react';
 import Card from 'src/components/Card/Card';
-import { fundingOption } from 'src/constants';
 import { TCampaignData } from 'src/services/campaign/api';
 import StateCampaign from './StateCampaign';
+import { fundingOption } from 'src/constants';
 
 export default function CardCampaign({ data }: { data: TCampaignData }) {
     return (
-        <Card avatar={data.avatar} banner={data.banner}>
+        <Card avatar={data.avatar} banner={data.banner} sxBanner={{ minHeight: '150px' }}>
             <Box display={'flex'} sx={{ placeItems: 'center' }} mb={4}>
                 <Link href={`/explorer/campaigns/${data.campaignId}`} style={{ textDecoration: 'none', color: 'unset' }}>
                     <Typography variant="h6" fontWeight={600}>

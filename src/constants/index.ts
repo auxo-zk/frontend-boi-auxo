@@ -27,3 +27,11 @@ export enum NetworkId {
 }
 
 export const fundingOption = ['Private Grant', 'Public Funding', 'Unknow'];
+
+export enum FetchStatus {
+    IDLE = 'idle',
+    FETCHING = 'fetching',
+    UPDATING = 'updating',
+    SUCCESS = 'success',
+    FAILED = 'failed',
+}

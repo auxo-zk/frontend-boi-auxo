@@ -9,6 +9,7 @@ import NoData from 'src/components/NoData';
 import { useModalFunction } from 'src/states/modal';
 import EditForm from './EditForm';
 import { useWalletData } from 'src/states/wallet';
+import CardProject from '../common/CardProject';
 
 export default function Profile() {
     const { userAddress } = useWalletData();
@@ -99,8 +100,8 @@ function ListProjects() {
                         {project.map((item, index) => {
                             return (
                                 <Grid key={index} item xs={12} sm={3}>
-                                    {/* <CardProject  data={item}/> */}
-                                    <Card avatar={item.avatar} banner={item.banner}>
+                                    <CardProject data={{ avatar: item.avatar, banner: item.banner, date: '', desc: item.overviewDesc, idProject: item.idProject, name: item.name }} />
+                                    {/* <Card avatar={item.avatar} banner={item.banner}>
                                         <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Box sx={{ width: '100%' }}>
                                                 <Typography
@@ -117,7 +118,7 @@ function ListProjects() {
                                                 <Box dangerouslySetInnerHTML={{ __html: item.overviewDesc }}></Box>
                                             </Box>
                                         </Box>
-                                    </Card>
+                                    </Card> */}
                                 </Grid>
                             );
                         })}
@@ -161,7 +162,7 @@ function ListDrafts() {
                         {draft.map((item, index) => {
                             return (
                                 <Grid key={index} item xs={12} xsm={6} sm={4} lg={3}>
-                                    <Card avatar={item.avatar} banner={item.banner}>
+                                    <Card avatar={item.avatar} banner={item.banner} sxBanner={{ minHeight: '102px' }}>
                                         <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Box sx={{ width: '100%' }}>
                                                 <Typography

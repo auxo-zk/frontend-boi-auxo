@@ -129,6 +129,12 @@ export type TProjectFundRaising = {
     scopeOfWorks: TScopeOfWork[];
     questions: TQuestions[];
     answers: string[];
+    ownerAddress: string;
+    timeline: {
+        startParticipation: string;
+        startFunding: string;
+        startRequesting: string;
+    };
 };
 
 export async function getFundRaisingProject(projectId: string): Promise<TProjectFundRaising[]> {
@@ -146,6 +152,12 @@ export async function getFundRaisingProject(projectId: string): Promise<TProject
         scopeOfWorks: item.ipfsData?.scopeOfWorks || [],
         questions: item.campaign?.ipfsData?.questions || [],
         answers: item.ipfsData?.answers || [],
+        ownerAddress: item.campaign?.owner || '',
+        timeline: {
+            startParticipation: item.campaign?.ipfsData?.timeline?.startParticipation || '',
+            startFunding: item.campaign?.ipfsData?.timeline?.startFunding || '',
+            startRequesting: item.campaign?.ipfsData?.timeline?.startRequesting || '',
+        },
     }));
 }
 
@@ -272,6 +284,7 @@ export type ProjectMetaData = {
     banner: string;
     type: 'project' | 'draft';
     overviewDesc: string;
+    idProject: string;
     id?: string;
 };
 export async function getDraftProject(): Promise<ProjectMetaData[]> {
@@ -283,6 +296,7 @@ export async function getDraftProject(): Promise<ProjectMetaData[]> {
         type: 'draft',
         overviewDesc: item.description,
         id: item._id,
+        idProject: '#',
     }));
 }
 
