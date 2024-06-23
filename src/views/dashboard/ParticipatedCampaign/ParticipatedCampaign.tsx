@@ -7,6 +7,7 @@ import { useDashboardPageData, useDashboardPageFunction } from '../state/state';
 import TableRow from 'src/components/Table/TableRow';
 import StatusFund from './components/StatusFund';
 import { formatAddress } from 'src/utils/format';
+import ButtonClaimFund from './components/ButtonClaimFund';
 
 const tableCellRatio = [2, 2, 2, 2, 2, 2];
 
@@ -78,7 +79,9 @@ export default function ParticipatedCampaign({ projectId }: { projectId: string 
                                 <Typography>{campaign.fundedAmount} MINA</Typography>
                             </TableCell>
                             <TableCell xs={tableCellRatio[5]}>
-                                <Box textAlign={'right'}></Box>
+                                <Box textAlign={'right'}>
+                                    <ButtonClaimFund campaignId={campaign.campaignId} projectId={projectId} />
+                                </Box>
                             </TableCell>
                         </TableRow>
                     );
