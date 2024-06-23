@@ -54,7 +54,7 @@ export default function ParticipatedCampaign({ projectId }: { projectId: string 
                     </TableCell>
                     <TableCell xs={tableCellRatio[5]}>
                         <Typography variant="body2" color={'text.secondary'}>
-                            Milestones
+                            #
                         </Typography>
                     </TableCell>
                 </TableHeader>
@@ -78,7 +78,7 @@ export default function ParticipatedCampaign({ projectId }: { projectId: string 
                                 <Typography>{campaign.fundedAmount} MINA</Typography>
                             </TableCell>
                             <TableCell xs={tableCellRatio[5]}>
-                                <Typography>#</Typography>
+                                <Box textAlign={'right'}></Box>
                             </TableCell>
                         </TableRow>
                     );
