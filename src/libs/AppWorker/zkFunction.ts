@@ -5,16 +5,17 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 // ---------------------------------------------------------------------------------------
 
 import { Storage, type ZkApp as ZkAppPlatform } from '@auxo-dev/platform';
-import { ZkAppRef, type ZkApp as ZkAppDkg } from '@auxo-dev/dkg';
+import { RequestLevel1Witness, RequestLevel2Witness, ZkAppRef, type ZkApp as ZkAppDkg } from '@auxo-dev/dkg';
 import { ArgumentTypes } from 'src/global.config';
 import { FileSystem } from 'src/states/cache';
 import { IpfsHash } from '@auxo-dev/auxo-libs';
 import { chainInfo } from 'src/constants/chainInfo';
 import { NetworkId } from 'src/constants';
-import { TDataParticipateCampaign } from 'src/services/services';
+import { TDataClaimFund, TDataParticipateCampaign } from 'src/services/services';
 import { CampaignLevel1Witness, Timeline, TimelineLevel1Witness } from '@auxo-dev/platform/build/esm/src/storages/CampaignStorage';
-import { ProjectMemberLevel1Witness, ProjectMemberLevel2Witness } from '@auxo-dev/platform/build/esm/src/storages/ProjectStorage';
+import { ProjectMemberLevel1Witness, ProjectMemberLevel2Witness, TreasuryAddressLevel1Witness } from '@auxo-dev/platform/build/esm/src/storages/ProjectStorage';
 import { ParticipationLevel1Witness, ProjectCounterLevel1Witness, ProjectIndexLevel1Witness } from '@auxo-dev/platform/build/esm/src/storages/ParticipationStorage';
+import { ClaimedAmountLevel1Witness } from '@auxo-dev/platform/build/esm/src/storages/TreasuryManagerStorage';
 
 const state = {
     ZkAppPlatform: null as null | typeof ZkAppPlatform,
@@ -29,6 +30,7 @@ const state = {
     VestingContract: null as null | ZkAppPlatform.Vesting.VestingContract,
     TreasuryContract: null as null | ZkAppPlatform.TreasuryManager.TreasuryManagerContract,
     CampaignContract: null as null | ZkAppPlatform.Campaign.CampaignContract,
+    FundingContract: null as null | ZkAppPlatform.Funding.FundingContract,
     transaction: null as null | Transaction,
     compileDone: 0 as number,
     networkId: null as null | NetworkId,
@@ -167,6 +169,7 @@ export const zkFunctions = {
         nullifierContract: string;
         vestingContract: string;
         campaignContract: string;
+        fundingContract: string;
     }) => {
         const fundingRequesterContractPub = PublicKey.fromBase58(args.fundingRequesterContract);
         state.FundingRequesterContract = new state.ZkAppDkg!.Requester.RequesterContract!(fundingRequesterContractPub);
@@ -197,6 +200,9 @@ export const zkFunctions = {
 
         const campaignContractPub = PublicKey.fromBase58(args.campaignContract);
         state.CampaignContract = new state.ZkAppPlatform!.Campaign.CampaignContract!(campaignContractPub);
+
+        const fundingContractPub = PublicKey.fromBase58(args.fundingContract);
+        state.FundingContract = new state.ZkAppPlatform!.Funding.FundingContract!(fundingContractPub);
     },
 
     submitProject: async (args: { sender: string; projectId: string; members: string[]; ipfsHash: string; treasuryAddress58: string }) => {
@@ -243,6 +249,46 @@ export const zkFunctions = {
                 new Field(args.dataBackend.projectCounter),
                 ProjectCounterLevel1Witness.fromJSON(args.dataBackend.projectCounterWitness),
                 ZkAppRef.fromJSON(args.dataBackend.campaignContractRef),
+                ZkAppRef.fromJSON(args.dataBackend.projectContractRef)
+            );
+        });
+
+        state.transaction = transaction;
+    },
+
+    claimFund: async (args: { sender: string; campaignId: string; projectId: string; dataBackend: TDataClaimFund }) => {
+        const sender = PublicKey.fromBase58(args.sender);
+        await fetchAccount({ publicKey: sender });
+        await fetchAccount({ publicKey: state.CampaignContract!.address });
+        await fetchAccount({ publicKey: state.ProjectContract!.address });
+        await fetchAccount({ publicKey: state.ParticipationContract!.address });
+        await fetchAccount({ publicKey: state.FundingRequesterContract!.address });
+        await fetchAccount({ publicKey: state.RequestContract!.address });
+        await fetchAccount({ publicKey: state.TreasuryContract!.address });
+        await fetchAccount({ publicKey: state.FundingContract!.address });
+
+        console.log({
+            campaignId: args.campaignId,
+            projectId: args.projectId,
+            dataBackend: args.dataBackend,
+        });
+        const transaction = await Mina.transaction(sender, async () => {
+            await state.TreasuryContract!.claimFund(
+                new Field(args.campaignId),
+                new Field(args.projectId),
+                new Field(args.dataBackend.projectIndex),
+                ProjectIndexLevel1Witness.fromJSON(args.dataBackend.projectIndexWitness),
+                new Field(args.dataBackend.requestId),
+                RequestLevel1Witness.fromJSON(args.dataBackend.taskWitness),
+                RequestLevel1Witness.fromJSON(args.dataBackend.resultVectorWitness),
+                RequestLevel2Witness.fromJSON(args.dataBackend.resultValueWitness),
+                PublicKey.fromBase58(args.dataBackend.treasuryAddress),
+                TreasuryAddressLevel1Witness.fromJSON(args.dataBackend.treasuryAddressWitness),
+                ClaimedAmountLevel1Witness.fromJSON(args.dataBackend.claimedAmountWitness),
+                new UInt64(args.dataBackend.amount),
+                ZkAppRef.fromJSON(args.dataBackend.participationContractRef),
+                ZkAppRef.fromJSON(args.dataBackend.requestContractRef),
+                ZkAppRef.fromJSON(args.dataBackend.requesterContractRef),
                 ZkAppRef.fromJSON(args.dataBackend.projectContractRef)
             );
         });

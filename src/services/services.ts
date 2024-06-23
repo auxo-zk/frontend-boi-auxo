@@ -118,3 +118,25 @@ export async function getDataParticipateCampaign(campaignId: string, projectId: 
     const res = await axios.get(apiUrl.getDataParticipateCampaign(campaignId, projectId));
     return res.data;
 }
+
+export type TDataClaimFund = {
+    requestId: string;
+    projectIndex: string;
+    projectIndexWitness: TWitness;
+    taskWitness: TWitness;
+    resultVectorWitness: TWitness;
+    resultValueWitness: TWitness;
+    treasuryAddress: string;
+    treasuryAddressWitness: TWitness;
+    claimedAmountWitness: TWitness;
+    amount: string;
+    participationContractRef: TRef;
+    requestContractRef: TRef;
+    requesterContractRef: TRef;
+    projectContractRef: TRef;
+};
+
+export async function getDataClaimFund(campaignId: string, projectId: string): Promise<TDataClaimFund> {
+    const res = await axios.get(apiUrl.getDataClaimFund(campaignId, projectId));
+    return res.data;
+}

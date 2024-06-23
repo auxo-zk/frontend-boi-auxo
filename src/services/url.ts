@@ -42,4 +42,6 @@ export const apiUrl = {
 
     getDataParticipateCampaign: (campaignId: string, projectId: string) =>
         `${BACKEND_BASE_URL}/v0/method-inputs/participation-contract/participate-campaign?campaignId=${campaignId}&projectId=${projectId}`,
+
+    getDataClaimFund: (campaignId: string, projectId: string) => `${BACKEND_BASE_URL}/v0/method-inputs/treasury-manager-contract/claim-fund?campaignId=${campaignId}&projectId=${projectId}`,
 };

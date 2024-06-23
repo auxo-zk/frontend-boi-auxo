@@ -88,4 +88,7 @@ export default class ZkAppWorkerClient {
     checkValidAddress(address: string) {
         return this._call('checkValidAddress', { address: address });
     }
+    claimFund(args: ArgumentZkFuction<'claimFund'>) {
+        return this._call('claimFund', args);
+    }
 }
