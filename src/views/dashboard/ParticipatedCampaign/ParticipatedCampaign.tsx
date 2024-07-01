@@ -80,7 +80,7 @@ export default function ParticipatedCampaign({ projectId }: { projectId: string 
                             </TableCell>
                             <TableCell xs={tableCellRatio[5]}>
                                 <Box textAlign={'right'}>
-                                    <ButtonClaimFund campaignId={campaign.campaignId} projectId={projectId} />
+                                    <ButtonClaimFund disabled={campaign.fundedAmount < 0.01} campaignId={campaign.campaignId} projectId={projectId} />
                                 </Box>
                             </TableCell>
                         </TableRow>

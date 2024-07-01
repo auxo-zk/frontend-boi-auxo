@@ -5,7 +5,7 @@ import { getDataClaimFund } from 'src/services/services';
 import { useAppContract } from 'src/states/contracts';
 import { useWalletData } from 'src/states/wallet';
 
-export default function ButtonClaimFund({ campaignId, projectId }: { campaignId: string; projectId: string }) {
+export default function ButtonClaimFund({ campaignId, projectId, disabled }: { campaignId: string; projectId: string; disabled: boolean }) {
     const { userAddress } = useWalletData();
     const { workerClient } = useAppContract();
     const [loading, setLoading] = React.useState(false);
@@ -41,7 +41,7 @@ export default function ButtonClaimFund({ campaignId, projectId }: { campaignId:
         setLoading(false);
     }
     return (
-        <ButtonLoading isLoading={loading} muiProps={{ size: 'small', variant: 'contained', onClick: handleClaimFund }}>
+        <ButtonLoading isLoading={loading} muiProps={{ size: 'small', variant: 'contained', onClick: handleClaimFund, disabled: disabled }}>
             Claim Fund
         </ButtonLoading>
     );

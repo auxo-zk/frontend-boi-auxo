@@ -5,7 +5,7 @@ import { IconSpinLoading } from 'src/assets/svg/icon';
 type Props = { muiProps: ButtonProps; isLoading?: boolean; textLoading?: string; children: ReactNode };
 export default function ButtonLoading({ muiProps, isLoading, textLoading, children }: Props) {
     return (
-        <Button variant="contained" {...muiProps} disabled={isLoading}>
+        <Button variant="contained" {...muiProps} disabled={isLoading || muiProps.disabled}>
             {isLoading ? (
                 <>
                     <IconSpinLoading sx={{ mr: 0.5 }} /> {textLoading || 'Loading...'}

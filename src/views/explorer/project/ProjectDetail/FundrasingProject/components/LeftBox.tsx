@@ -44,7 +44,7 @@ export default function LeftBox() {
                                         {formatNumber(fundrasing[selectedCampaignIndex]?.fundedAmount || 0)}
                                     </Typography>
                                     <Typography variant="body2" color={'text.secondary'}>
-                                        $336.578.854
+                                        {/* $336.578.854 */}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -60,7 +60,7 @@ export default function LeftBox() {
                                         {formatNumber(fundrasing[selectedCampaignIndex]?.targetAmount || 0)}
                                     </Typography>
                                     <Typography variant="body2" color={'text.secondary'}>
-                                        $336.578.854
+                                        {/* $336.578.854 */}
                                     </Typography>
                                 </Box>
                             </Box>

@@ -15,7 +15,7 @@ export default function CampaignOverview({ data, idCampaign }: { data: TCampaign
         if (timeNow > data.timeline.startFunding) return 1;
         if (timeNow > data.timeline.startParticipation) return 0;
 
-        return 0;
+        return -1;
     }, [data]);
     return (
         <Box>
@@ -68,7 +68,7 @@ export default function CampaignOverview({ data, idCampaign }: { data: TCampaign
                 </Grid>
             </Grid>
 
-            <ParticipatingProjects campaignId={idCampaign} />
+            <ParticipatingProjects campaignId={idCampaign} timeForJoinCampaign={activeSteps == 0} />
         </Box>
     );
 }
