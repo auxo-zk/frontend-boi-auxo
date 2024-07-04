@@ -2,10 +2,10 @@ import { ChevronLeftRounded } from '@mui/icons-material';
 import { Box, Breadcrumbs, Container, TextField, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 const CustomEditor = dynamic(() => import('src/components/CustomEditor/CustomEditor'), { ssr: false });
-import { useCreateProjectData, useCreateProjectFunctions } from './state';
+import { projectInitData, useCreateProjectData, useCreateProjectFunctions } from './state';
 import TeamMember from './TeamMembers';
 import AdditionalDoc from './AdditionalDoc';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ButtonLoading from 'src/components/ButtonLoading/ButtonLoading';
 import { useRouter } from 'next/router';
 import BannerInput from './BannerInput';
@@ -38,6 +38,10 @@ export default function CreateProject() {
         await handleSubmitProject();
         setSubmiting(false);
     };
+
+    useEffect(() => {
+        setProjectData(projectInitData);
+    }, []);
 
     return (
         <Container

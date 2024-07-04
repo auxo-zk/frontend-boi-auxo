@@ -154,7 +154,7 @@ function ListDrafts() {
             </Typography>
             {loading ? (
                 <Box>
-                    <IconSpinLoading />
+                    <IconSpinLoading sx={{ fontSize: '100px' }} />
                 </Box>
             ) : (
                 <>
@@ -163,43 +163,30 @@ function ListDrafts() {
                             return (
                                 <Grid key={index} item xs={12} xsm={6} sm={4} lg={3}>
                                     <Card avatar={item.avatar} banner={item.banner} sxBanner={{ minHeight: '102px' }}>
-                                        <Box sx={{ height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <Box sx={{ width: '100%' }}>
-                                                <Typography
-                                                    variant="h6"
-                                                    fontWeight={600}
-                                                    mt={1}
-                                                    component={'p'}
-                                                    title={item.name}
-                                                    sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                                                >
-                                                    {item.name || 'No name'}
-                                                </Typography>
-                                                <Box textAlign={'right'} my={1}>
-                                                    <Chip variant="outlined" color="secondary" label="Drafting..." size="small"></Chip>
-                                                </Box>
-                                                <Box
-                                                    dangerouslySetInnerHTML={{ __html: item.overviewDesc }}
-                                                    sx={{
-                                                        '& > *': {
-                                                            m: 0,
-                                                            display: '-webkit-box',
-                                                            WebkitLineClamp: '3',
-                                                            WebkitBoxOrient: 'vertical',
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                            height: '60px',
-                                                            lineHeight: '20px',
-                                                        },
-                                                    }}
-                                                ></Box>
-                                            </Box>
-                                            <Link style={{ color: 'inherit', textDecoration: 'none', width: '100%' }} href={`/explorer/projects/edit/${item.id}`}>
-                                                <Button fullWidth variant="outlined" size="small">
-                                                    Edit
-                                                </Button>
-                                            </Link>
+                                        <Typography variant="h6" fontWeight={600} mt={1} component={'p'} title={item.name} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                            {item.name || 'No name'}
+                                        </Typography>
+                                        <Box textAlign={'right'} my={1}>
+                                            <Chip variant="outlined" color="secondary" label="Drafting..." size="small"></Chip>
                                         </Box>
+                                        <Box
+                                            dangerouslySetInnerHTML={{ __html: item.overviewDesc }}
+                                            sx={{
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                height: '70px',
+                                                minHeight: '70px',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: '3',
+                                                WebkitBoxOrient: 'vertical',
+                                                '& > *': { m: 0 },
+                                            }}
+                                        ></Box>
+                                        <Link style={{ color: 'inherit', textDecoration: 'none', width: '100%' }} href={`/explorer/projects/edit/${item.id}`}>
+                                            <Button fullWidth variant="outlined" size="small">
+                                                Edit
+                                            </Button>
+                                        </Link>
                                     </Card>
                                 </Grid>
                             );

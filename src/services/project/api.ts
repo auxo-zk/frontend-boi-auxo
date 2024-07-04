@@ -28,7 +28,7 @@ export async function getTopProject(): Promise<TProjectData[]> {
         avatar: item?.ipfsData?.avatarImage || '',
         banner: item?.ipfsData?.coverImage || '',
         desc: item.ipfsData?.description || '',
-        date: new Date().toLocaleDateString(),
+        date: new Date().toJSON(),
         idProject: item.projectId + '' || '#',
     }));
 }
@@ -40,7 +40,7 @@ export async function getAddressProject(address: string): Promise<TProjectData[]
         avatar: item?.ipfsData?.avatarImage || '',
         banner: item?.ipfsData?.coverImage || '',
         desc: item.ipfsData?.description || '',
-        date: new Date().toLocaleDateString(),
+        date: new Date().toJSON(),
         idProject: item.projectId + '' || '#',
     }));
 }

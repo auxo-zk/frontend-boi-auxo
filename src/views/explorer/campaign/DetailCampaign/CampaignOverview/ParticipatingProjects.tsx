@@ -8,7 +8,7 @@ import { useModalFunction } from 'src/states/modal';
 import CardProject from 'src/views/common/CardProject';
 import ProjectSelect from './ProjectSelect';
 
-export default function ParticipatingProjects({ campaignId, timeForJoinCampaign }: { campaignId: string; timeForJoinCampaign: boolean }) {
+export default function ParticipatingProjects({ campaignId, timeForJoinCampaign }: { campaignId: string; timeForJoinCampaign: number }) {
     const [listProject, setListProject] = useState<TProjectData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const { openModal } = useModalFunction();
@@ -43,13 +43,13 @@ export default function ParticipatingProjects({ campaignId, timeForJoinCampaign 
         <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', placeItems: 'center' }} mt={5.5}>
                 <Typography variant="h6">Participating Projects ({listProject.length})</Typography>
-                {timeForJoinCampaign ? (
+                {timeForJoinCampaign == 0 ? (
                     <Button sx={{ minWidth: '184px' }} variant="contained" onClick={handleOpen}>
                         Apply New
                     </Button>
                 ) : (
                     <Button variant="contained" disabled>
-                        Not time for join campaign
+                        {timeForJoinCampaign > 0 ? 'Application Ended' : 'Not time for join campaign'}
                     </Button>
                 )}
             </Box>

@@ -3,6 +3,7 @@ import { useWalletData, useWalletFunction } from 'src/states/wallet';
 import { formatAddress } from 'src/utils/format';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import { copyTextToClipboard } from 'src/utils';
 
 export default function WalletNotVerified() {
     const { userAddress } = useWalletData();
@@ -16,7 +17,7 @@ export default function WalletNotVerified() {
                 <Typography color="primary.main" display={'flex'} alignItems={'center'} variant="h6">
                     {formatAddress(userAddress)}
                 </Typography>
-                <IconButton>
+                <IconButton size="small" color="primary" onClick={() => copyTextToClipboard(userAddress)}>
                     <ContentCopyIcon />
                 </IconButton>
             </Box>

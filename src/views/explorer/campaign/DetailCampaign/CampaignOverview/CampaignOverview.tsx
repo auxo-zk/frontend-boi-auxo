@@ -59,16 +59,16 @@ export default function CampaignOverview({ data, idCampaign }: { data: TCampaign
                         <StepView
                             activeStep={activeSteps}
                             steps={[
-                                { title: 'Participation', content: `Start at: ${formatDate(Number(data.timeline.startParticipation || 0), 'MMMM dd, YYY')}` },
-                                { title: 'Investment', content: `Start at: ${formatDate(Number(data.timeline.startFunding || 0), 'MMMM dd, YYY')}` },
-                                { title: 'Allocation', content: `Start at: ${formatDate(Number(data.timeline.startRequesting || 0), 'MMMM dd, YYY')}` },
+                                { title: 'Participation', content: `Start at: ${formatDate(Number(data.timeline.startParticipation || 0), 'MMM dd yyyy, h:mm a')}` },
+                                { title: 'Investment', content: `Start at: ${formatDate(Number(data.timeline.startFunding || 0), 'MMM dd yyyy, h:mm a')}` },
+                                { title: 'Allocation', content: `Start at: ${formatDate(Number(data.timeline.startRequesting || 0), 'MMM dd yyyy, h:mm a')}` },
                             ]}
                         />
                     </Box>
                 </Grid>
             </Grid>
 
-            <ParticipatingProjects campaignId={idCampaign} timeForJoinCampaign={activeSteps == 0} />
+            <ParticipatingProjects campaignId={idCampaign} timeForJoinCampaign={activeSteps} />
         </Box>
     );
 }
@@ -101,9 +101,7 @@ function StepView({ steps, activeStep }: { steps: { title: string; content: stri
                                     {item.title}
                                 </Typography>
                             </Box>
-                            <Typography variant="h6" sx={{ fontWeight: '400', color: index < activeStep ? 'primary.light' : index == activeStep ? 'text.primary' : 'text.secondary' }}>
-                                {item.content}
-                            </Typography>
+                            <Typography sx={{ fontWeight: '600', color: index < activeStep ? 'primary.light' : index == activeStep ? 'text.primary' : 'text.secondary' }}>{item.content}</Typography>
                         </Box>
                         {index < steps.length - 1 ? (
                             <Box sx={{ height: '40px', width: '24px', justifyContent: 'center', display: 'flex' }}>
