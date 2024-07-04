@@ -13,9 +13,9 @@ export default function CardProject({ data, children }: { data: TProjectData; ch
                     {data.name}
                 </Typography>
             </Link>
-            <Typography variant="body3" mt={0.3} mb={1}>
+            {/* <Typography variant="body3" mt={0.3} mb={1}>
                 {formatDate(data.date, 'dd MMM yyyy')}
-            </Typography>
+            </Typography> */}
             {/* <Typography variant="h6" color={'secondary.main'}>
                 $870.975.003
                 </Typography>

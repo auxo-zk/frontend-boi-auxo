@@ -112,6 +112,7 @@ export const useMilestoneFunctions = () => {
         try {
             if (!userAddress) throw Error('Please connect your wallet first!');
             if (!workerClient) throw Error('Worker client is dead, reload page again!');
+            if (campaignQuestions.some((i) => i.isRequired && !i.answer)) throw Error('Please answer all required questions!');
             const documents = await Promise.all(documentFiles.map((i) => saveFile(i.file)));
 
             const postResult = await postProjectparticipation(projectData.projectId, {

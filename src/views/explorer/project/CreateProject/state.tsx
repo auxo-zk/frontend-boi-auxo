@@ -1,4 +1,5 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
+import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { KeyProjectInput, MemberDataType, TEditProjectData, createProject, postProjectsToIpfs } from 'src/services/project/api';
 import { saveFile } from 'src/services/services';
@@ -42,6 +43,7 @@ export const useCreateProjectFunctions = () => {
     const _setProjectData = useSetAtom(createProjectData);
     const projectData = useCreateProjectData();
     const walletData = useWalletData();
+    const router = useRouter();
     const { workerClient } = useAppContract();
 
     const setProjectData = (
@@ -250,6 +252,7 @@ export const useCreateProjectFunctions = () => {
             const { transactionLink } = await workerClient.sendTransaction(transactionJSON);
             console.log(transactionLink);
             toast.update(idtoast, { render: 'Send transaction successfull!', isLoading: false, type: 'success', autoClose: 3000, hideProgressBar: false });
+            router.push('/profile');
         } catch (error) {
             console.log(error);
             toast.update(idtoast, { render: (error as Error).message, type: 'error', position: 'top-center', isLoading: false, autoClose: 5000, hideProgressBar: false });
