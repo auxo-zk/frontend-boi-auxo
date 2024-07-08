@@ -45,7 +45,7 @@ export default function ParticipatingProjects({ campaignId, timeForJoinCampaign 
                 <Typography variant="h6">Participating Projects ({listProject.length})</Typography>
                 {timeForJoinCampaign == 0 ? (
                     <Button sx={{ minWidth: '184px' }} variant="contained" onClick={handleOpen}>
-                        Apply New
+                        Apply Project
                     </Button>
                 ) : (
                     <Button variant="contained" disabled>

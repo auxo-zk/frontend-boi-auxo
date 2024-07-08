@@ -68,7 +68,7 @@ export default function MilestoneDetail() {
                                 </Typography>
                             )}
                         </Box>
-                        <Typography color={'text.secondary'}>Hint: {question.hint}</Typography>
+                        {question.hint ? <Typography color={'text.secondary'}>Hint: {question.hint}</Typography> : <></>}
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
                             <Select
                                 size="small"

@@ -13,13 +13,15 @@ import { imagePath } from 'src/constants/imagePath';
 import Link from 'next/link';
 import Avatar from 'src/components/Avatar/Avatar';
 import { toast } from 'react-toastify';
+import { useProfileData } from 'src/views/profile/state';
 
 export default function CreateProject() {
-    const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey, avatarImage, coverImage } = useCreateProjectData();
+    const { overViewDescription, challengeAndRisk, problemStatement, solution, name, publicKey, avatarImage, coverImage, members } = useCreateProjectData();
     const { setProjectData, handleSaveDraftProject, handleSubmitProject } = useCreateProjectFunctions();
     const [loading, setLoading] = useState<boolean>(false);
     const [submiting, setSubmiting] = useState<boolean>(false);
     const router = useRouter();
+    const userProfile = useProfileData();
 
     const handleSaveClick = async () => {
         setLoading(true);
@@ -40,7 +42,12 @@ export default function CreateProject() {
     };
 
     useEffect(() => {
-        setProjectData(projectInitData);
+        if ((router.pathname = '/explorer/projects/create')) {
+            setProjectData({
+                ...projectInitData,
+                members: [{ profileName: userProfile?.name || '', role: userProfile?.role || 'Owner', publicKey: userProfile?.address || '', socialLink: userProfile?.website || '' }],
+            });
+        }
     }, []);
 
     return (
@@ -113,10 +120,14 @@ export default function CreateProject() {
             <Typography variant="h6" mt={6} mb={1}>
                 Overview description
             </Typography>
-            <CustomEditor
+            <TextField
+                fullWidth
+                type="text"
+                name="overview_desc"
+                placeholder="Description of your project"
                 value={overViewDescription}
-                onChange={(v: string) => {
-                    setProjectData({ overViewDescription: v });
+                onChange={(e) => {
+                    setProjectData({ overViewDescription: e.target.value });
                 }}
             />
 
