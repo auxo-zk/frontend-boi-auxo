@@ -45,12 +45,12 @@ export default function ParticipatedCampaign({ projectId }: { projectId: string 
                     </TableCell>
                     <TableCell xs={tableCellRatio[3]}>
                         <Typography variant="body2" color={'text.secondary'}>
-                            Target
+                            Claimed
                         </Typography>
                     </TableCell>
                     <TableCell xs={tableCellRatio[4]}>
                         <Typography variant="body2" color={'text.secondary'}>
-                            Funded
+                            Funded / Target
                         </Typography>
                     </TableCell>
                     <TableCell xs={tableCellRatio[5]}>
@@ -73,14 +73,16 @@ export default function ParticipatedCampaign({ projectId }: { projectId: string 
                                 <StatusFund amountFund={campaign.fundedAmount} timeAllocation={new Date(campaign.timeline.startRequesting).getTime()} />
                             </TableCell>
                             <TableCell xs={tableCellRatio[3]}>
-                                <Typography>{campaign.targetAmount} MINA</Typography>
+                                <Typography>{campaign.claimedAmount} MINA</Typography>
                             </TableCell>
                             <TableCell xs={tableCellRatio[4]}>
-                                <Typography>{campaign.fundedAmount} MINA</Typography>
+                                <Typography>
+                                    {campaign.fundedAmount} MINA / {campaign.targetAmount} MINA
+                                </Typography>
                             </TableCell>
                             <TableCell xs={tableCellRatio[5]}>
                                 <Box textAlign={'right'}>
-                                    <ButtonClaimFund disabled={campaign.fundedAmount < 0.01} campaignId={campaign.campaignId} projectId={projectId} />
+                                    <ButtonClaimFund disabled={campaign.campaignState != 1} campaignId={campaign.campaignId} projectId={projectId} />
                                 </Box>
                             </TableCell>
                         </TableRow>

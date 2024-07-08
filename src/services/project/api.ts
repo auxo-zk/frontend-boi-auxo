@@ -122,6 +122,7 @@ export type TProjectFundRaising = {
     campaignId: string;
     campaignName: string;
     fundedAmount: number;
+    claimedAmount: number;
     targetAmount: number;
     raiseInfo: {
         scope: string;
@@ -138,6 +139,7 @@ export type TProjectFundRaising = {
         startFunding: string;
         startRequesting: string;
     };
+    campaignState: number;
 };
 
 export async function getFundRaisingProject(projectId: string): Promise<TProjectFundRaising[]> {
@@ -145,7 +147,8 @@ export async function getFundRaisingProject(projectId: string): Promise<TProject
     return response.map((item: any) => ({
         campaignId: item.campaignId + '',
         campaignName: item.campaign?.ipfsData?.name || '',
-        fundedAmount: item.claimedAmount || 0,
+        fundedAmount: item.fundedAmount || 0,
+        claimedAmount: item.claimedAmount || 0,
         targetAmount:
             item.ipfsData?.scopeOfWorks?.reduce((accumulator: number, item: any) => {
                 return accumulator + Number(item.raisingAmount);
@@ -161,6 +164,7 @@ export async function getFundRaisingProject(projectId: string): Promise<TProject
             startFunding: item.campaign?.ipfsData?.timeline?.startFunding || '',
             startRequesting: item.campaign?.ipfsData?.timeline?.startRequesting || '',
         },
+        campaignState: item.campaign?.state || 0,
     }));
 }
 
