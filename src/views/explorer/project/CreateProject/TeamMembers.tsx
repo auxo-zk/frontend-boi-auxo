@@ -1,6 +1,5 @@
 import { Avatar, Box, Button, Grid, IconButton, SxProps, TextField, Theme, Typography } from '@mui/material';
 import { useCreateProjectData, useCreateProjectFunctions } from './state';
-import RemoveCircleOutlinedIcon from '@mui/icons-material/RemoveCircleOutlined';
 import { IconRemove } from 'src/assets/svg/icon';
 import { MemberDataType } from 'src/services/project/api';
 import { useEffect } from 'react';
@@ -16,7 +15,14 @@ export default function TeamMember() {
     const { members } = useCreateProjectData();
     const { addTeamMember, setProjectData, editTeamMember, removeTeamMember } = useCreateProjectFunctions();
 
-    const handleAddTeamMember = () => {};
+    const handleAddTeamMember = () => {
+        addTeamMember({
+            profileName: '',
+            role: '',
+            publicKey: '',
+            socialLink: '',
+        });
+    };
 
     const handleRemoveMember = (index: number) => {
         removeTeamMember(index);
