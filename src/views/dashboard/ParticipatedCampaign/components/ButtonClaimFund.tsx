@@ -1,4 +1,5 @@
-import React from 'react';
+import { Button } from '@mui/material';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import ButtonLoading from 'src/components/ButtonLoading/ButtonLoading';
 import { getDataClaimFund } from 'src/services/services';
@@ -9,6 +10,7 @@ export default function ButtonClaimFund({ campaignId, projectId, disabled }: { c
     const { userAddress } = useWalletData();
     const { workerClient } = useAppContract();
     const [loading, setLoading] = React.useState(false);
+    const [claimed, setClaimed] = useState<boolean>(false);
 
     async function handleClaimFund() {
         setLoading(true);
@@ -34,11 +36,19 @@ export default function ButtonClaimFund({ campaignId, projectId, disabled }: { c
             const { transactionLink } = await workerClient.sendTransaction(transactionJSON);
             console.log(transactionLink);
             toast.update(idtoast, { render: 'Send transaction successfull!', isLoading: false, type: 'success', autoClose: 3000, hideProgressBar: false });
+            setClaimed(true);
         } catch (error) {
             console.error(error);
             toast.update(idtoast, { render: (error as Error).message, type: 'error', position: 'top-center', isLoading: false, autoClose: 3000, hideProgressBar: false });
         }
         setLoading(false);
+    }
+    if (claimed) {
+        return (
+            <Button variant="contained" disabled>
+                Claimed
+            </Button>
+        );
     }
     return (
         <ButtonLoading isLoading={loading} muiProps={{ size: 'small', variant: 'contained', onClick: handleClaimFund, disabled: disabled }}>
