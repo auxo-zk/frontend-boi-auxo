@@ -148,7 +148,7 @@ export async function getFundRaisingProject(projectId: string): Promise<TProject
         campaignId: item.campaignId + '',
         campaignName: item.campaign?.ipfsData?.name || '',
         fundedAmount: item.fundedAmount || 0,
-        claimedAmount: item.claimedAmount || 0,
+        claimedAmount: item.claimedAmount / 10 ** 9 || 0,
         targetAmount:
             item.ipfsData?.scopeOfWorks?.reduce((accumulator: number, item: any) => {
                 return accumulator + Number(item.raisingAmount);

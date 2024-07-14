@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import TableCell from 'src/components/Table/TableCell';
 import TableHeader from 'src/components/Table/TableHeader';
@@ -82,7 +82,13 @@ export default function ParticipatedCampaign({ projectId }: { projectId: string 
                             </TableCell>
                             <TableCell xs={tableCellRatio[5]}>
                                 <Box textAlign={'right'}>
-                                    <ButtonClaimFund disabled={campaign.campaignState != 1} campaignId={campaign.campaignId} projectId={projectId} />
+                                    {campaign.claimedAmount > 0 ? (
+                                        <Button variant="contained" disabled>
+                                            Claimed
+                                        </Button>
+                                    ) : (
+                                        <ButtonClaimFund disabled={campaign.campaignState != 1} campaignId={campaign.campaignId} projectId={projectId} />
+                                    )}
                                 </Box>
                             </TableCell>
                         </TableRow>
