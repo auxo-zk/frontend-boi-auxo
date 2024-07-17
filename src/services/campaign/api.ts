@@ -63,7 +63,7 @@ export type TCampaignQuestion = {
     isRequired: boolean;
 };
 
-export type TCampaignResult = {};
+export type TCampaignResult = { state: number };
 export type TCampaignDetail = {
     campaignId: string;
     name: string;
@@ -94,12 +94,15 @@ export async function getCampaignOverview(campaignId: string): Promise<TCampaign
                 startRequesting: response.timeline?.startRequesting * 1000 || 0,
             },
         },
-        result: {},
+        result: {
+            state: response.state || 0,
+        },
         questions: response.ipfsData?.questions || [],
     };
 }
 
-export async function getParticipatingProjects(campaignId: string): Promise<TProjectData[]> {
+export type TProjectFundData = TProjectData & { totalFundedAmount: number };
+export async function getParticipatingProjects(campaignId: string): Promise<TProjectFundData[]> {
     const response = await axios.get(apiUrl.getParticipatingProjects(campaignId));
     return response.data.map((item: any) => {
         return {
@@ -109,6 +112,7 @@ export async function getParticipatingProjects(campaignId: string): Promise<TPro
             desc: item.ipfsData?.description || '',
             date: new Date().toLocaleDateString(),
             idProject: item.projectId + '' || '#',
+            totalFundedAmount: item.totalFundedAmount / 10 ** 9,
         };
     });
 }
